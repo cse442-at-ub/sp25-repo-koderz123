@@ -1,0 +1,20 @@
+/* GameScreen.css */
+
+/* Outer container to cover full screen */
+.game-screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #4d5667;
+}
+
+/* Full-screen image with cover fit */
+.game-image {
+    width: 95vw;
+    height: 95vh;
+    object-fit: contain;
+    object-position: center;
+}

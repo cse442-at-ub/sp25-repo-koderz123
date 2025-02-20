@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GameScreenBackground from "../assets/GameScreenBackground.png"
 import ExitModal from "./ExitModal";
+import HamburgerMenu from "./HamburgerMenu";
 import "./GameScreen.css";
 
 const GameScreen: React.FC = () => {
@@ -25,6 +26,10 @@ const GameScreen: React.FC = () => {
                 <button className="exit-button" onClick={handleOpenModal}>
                     Exit
                 </button>
+
+                <div className="game-screen">
+                <HamburgerMenu />
+                </div>
   
                 {/* Exit Modal Component */}
                 <ExitModal 

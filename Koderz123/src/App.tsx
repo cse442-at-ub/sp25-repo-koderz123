@@ -1,35 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-function App() {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+    return (
+        <Router>
+            <div className="container mx-auto p-4">
+                <Routes>
+                    <Route path="/" element={<div>Home</div>} /> {/* replace the html code with landing page component*/}
+                    <Route path="/mainmenu" element={<div>main menu</div>} /> {/*replace the html code with main menu component*/}
+                    <Route path="/levelselect" element={<div>Levelselect</div>} /> {/* replace the html code with difficulty page component */}
+                    <Route path="/gamescreen" element={<div>gamescreen</div>} /> {/* replace the html code with gamescreen component */}
+                    <Route path="/options" element={<div>options</div>} /> {/* replace the html code with options component */}
+                    <Route path="*" element={<div>404 - Not Found</div>} /> {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
+                </Routes>
+            </div>
+        </Router>
+    );
+};
 
-  return (
-    <><h1></h1>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
-
-export default App
+export default App;

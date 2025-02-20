@@ -3,15 +3,15 @@
 /* Outer Container */
 .hamburger-menu {
     position: fixed;
-    bottom: 2%;
-    left: 2%;
+    bottom: 4%;
+    left: 4%;
     z-index: 1000;
 }
 
 /* Hamburger Button */
 .hamburger-button {
     padding: 12px 16px;
-    background-color: #333;
+    background-color: #4d5667;
     color: white;
     border: none;
     border-radius: 8px;
@@ -22,17 +22,18 @@
 }
 
 .hamburger-button:hover {
-    background-color: #555;
+    background-color: #30558c;
+    transform: scale(1.05);
 }
 
 /* Bottom Image Modal */
 .menu-image-container {
     position: fixed;
     bottom: -50%;  /* Hidden off-screen by default */
-    left: 0;
-    width: 100%;
-    height: 40%;
-    background: black;
+    left: 10vw;
+    width: 80%;
+    height: 20%;
+    background: rgba(0, 0, 0, 0);
     display: flex;
     align-items: center;
     justify-content: center;

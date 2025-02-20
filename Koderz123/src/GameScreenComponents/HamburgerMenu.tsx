@@ -17,7 +17,6 @@ const HamburgerMenu: React.FC = () => {
             {/* Bottom Image Modal */}
             <div className={`menu-image-container ${isMenuOpen ? "open" : ""}`}>
                 <img src={MenuImage} alt="Menu" className="menu-image" />
-                <button className="close-button" onClick={toggleMenu}>✖</button>
             </div>
         </div>
     );

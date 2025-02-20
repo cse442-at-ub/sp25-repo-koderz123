@@ -27,7 +27,7 @@ const GameScreen: React.FC = () => {
                     Exit
                 </button>
 
-                <div className="game-screen">
+                <div>
                 <HamburgerMenu />
                 </div>
   

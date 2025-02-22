@@ -4,7 +4,7 @@ import GameScreen from './GameScreenComponents/GameScreen';
 
 const App: React.FC = () => {
     return (
-        <Router>
+        <Router basename='/CSE442/2025-Spring/cse-442p/'>
             <div className="container mx-auto p-4">
                 <Routes>
                     <Route path="/" element={<div>Home</div>} /> {/* replace the html code with landing page component*/}

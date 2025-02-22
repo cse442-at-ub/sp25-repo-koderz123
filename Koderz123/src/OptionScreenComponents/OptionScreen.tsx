@@ -1,4 +1,4 @@
-import React, { useState , ChangeEvent , MouseEvent} from 'react';
+import { useState , ChangeEvent , MouseEvent} from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./OptionScreen.css";
 

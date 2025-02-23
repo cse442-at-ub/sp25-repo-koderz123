@@ -1,18 +1,15 @@
-import { useState , ChangeEvent , MouseEvent} from 'react';
+import React, {MouseEvent} from 'react';
 import { useNavigate } from 'react-router-dom';
+import SoundControl from "./Sound.tsx"
+import music from "../assets/menu_music.mp3";
 import "./OptionScreen.css";
 
-export default function OptionScreen() {
-    const [volumeValue, setVolumeValue] = useState(50); //Middling number between 0 and 100
+const OptionScreen: React.FC = () => {
 
     const navigate = useNavigate(); //initialize navigation
 
     const clickBack = () => { //Used when back button is clicked to navigate back to the main menu
         navigate('/mainmenu');
-    };
-
-    const handleVolumeChange = (e: ChangeEvent<HTMLInputElement>) => { //function changes sound value whenever slider moves
-        setVolumeValue(e.target.valueAsNumber); 
     };
 
     const hovering = (e: MouseEvent<HTMLElement>) => { //function used when mouse is over BACK button specifically
@@ -29,11 +26,7 @@ export default function OptionScreen() {
         <div id = "optionpage">
             <h1>OPTIONS</h1>
             <div id = "settings">
-                <div id = "sound">
-                    <label htmlFor="volume">Sound</label>
-                    <input type="range" id="volume" name="volume" min="0" max="100" value={volumeValue} onChange={handleVolumeChange}/>
-                    <output id="newvol" name="newvol" htmlFor="volume">{volumeValue}</output>
-                </div>
+                <SoundControl musicID={music}/>
                 <div id = "explicit">
                     <label htmlFor="explicit">Explicit</label>
                     <input type="checkbox" id="explicit_checkbox"></input>
@@ -45,3 +38,5 @@ export default function OptionScreen() {
         </div>
     );
 }
+
+export default OptionScreen;

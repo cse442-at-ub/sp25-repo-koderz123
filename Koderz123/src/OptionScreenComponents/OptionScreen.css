@@ -34,16 +34,6 @@ h2 {
    border-radius: 25px;
 }
 
-#sound {
-    align-items: center;
-    display: flex;
-    gap: 30px;
-}
-
-#volume {
-    width: 200pt;
-}
-
 #explicit {
     display: flex;
     gap: 40px;

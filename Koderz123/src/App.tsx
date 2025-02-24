@@ -4,13 +4,14 @@ import GameScreen from './GameScreenComponents/GameScreen';
 import LevelSelect from './DifficultyScreenComponents/DifficultyScreen'
 import OptionScreen from './OptionScreenComponents/OptionScreen';
 import MainMenu from './MainMenuComponents/MainMenu';
+import LandingPage from './Landing page components/LandingPage';
 
 const App: React.FC = () => {
     return (
         <Router basename=''>
             <div className="container mx-auto p-4">
                 <Routes>
-                    <Route path="/" element={<div>Home</div>} /> {/* replace the html code with landing page component*/}
+                    <Route path="/" element={<LandingPage/>} /> {/* replace the html code with landing page component*/}
                     <Route path="/levelselect" element={<LevelSelect/>} /> {/* replace the html code with difficulty page component */}
                     <Route path="/mainmenu" element={<MainMenu/>} /> {/*replace the html code with main menu component*/}
                     <Route path="/gamescreen" element={<GameScreen/>} /> {/* replace the html code with gamescreen component */}

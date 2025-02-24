@@ -12,7 +12,7 @@
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: background-color 0.3s, easetransform 0.2s ease-in-out;
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
   }
 
   .button-brutal:hover {

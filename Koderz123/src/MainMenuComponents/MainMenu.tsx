@@ -5,7 +5,7 @@ import music from "../assets/menu_music.mp3";
 
 const MainMenu: React.FC = () => {
     const navigate = useNavigate(); 
-    const [audio, setAudio] = useState<HTMLAudioElement | null>(null); 
+    const [, setAudio] = useState<HTMLAudioElement | null>(null); 
 
     // Play music as soon as the page loads
     useEffect(() => {

@@ -1,0 +1,57 @@
+.intense-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .button-intense {
+    padding: 15px 25px;
+    font-size: 24px;
+    background-color: gray;  /* Default color */
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+  }
+
+  .button-relaxed:hover {
+    transform: scale(1.1); /* Slightly increases size */
+    background-color: darkgray; /* Optional: changes shade on hover */
+  }
+  
+  .button-intense.active {
+    background-color: #DAA520;  /* Turns FFD700 OTHER yellow when clicked */
+    color: rgb(255, 255, 255);
+  }
+  
+  .intense-go-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 24px;
+    background-color: #DAA520;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: white;
+  }
+  
+  .intense-go-button:hover {
+    background-color: #E5C100;
+  }
+  
+  .description-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .i-description-image {
+    margin-top: 15px;
+    width: 250px;  
+    height: auto;
+    border-radius: 10px;
+  }
+  

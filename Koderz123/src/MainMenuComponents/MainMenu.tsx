@@ -1,12 +1,31 @@
-import React, { MouseEvent } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainMenu.css";
+import music from "../assets/menu_music.mp3"; 
 
 const MainMenu: React.FC = () => {
-    const navigate = useNavigate(); // Initialize navigation
+    const navigate = useNavigate(); 
+    const [audio, setAudio] = useState<HTMLAudioElement | null>(null); 
+
+    // Play music as soon as the page loads
+    useEffect(() => {
+        const newAudio = new Audio(music);
+        newAudio.loop = true; // Loop 
+        newAudio.play(); // Start the music
+        newAudio.volume = 0.3; // Default start value
+
+        setAudio(newAudio); 
+
+        return () => {
+            if (newAudio) {
+                newAudio.pause(); // Stop the music
+                newAudio.currentTime = 0; // Reset the audio to the start
+            }
+        };
+    }, []);
 
     const clickNewGame = () => {
-        navigate("/difficulty");
+        navigate("/levelselect");
     };
 
     const clickOptions = () => {
@@ -14,15 +33,15 @@ const MainMenu: React.FC = () => {
     };
 
     const clickExit = () => {
-        navigate("/landing");
+        navigate("/");
     };
 
-    const hovering = (e: MouseEvent<HTMLElement>) => {
+    const hovering = (e: React.MouseEvent<HTMLElement>) => {
         (e.target as HTMLElement).style.fontSize = "38px";
         e.currentTarget.style.cursor = "pointer";
     };
 
-    const notHovering = (e: MouseEvent<HTMLElement>) => {
+    const notHovering = (e: React.MouseEvent<HTMLElement>) => {
         (e.target as HTMLElement).style.fontSize = "36px";
         e.currentTarget.style.cursor = "default";
     };

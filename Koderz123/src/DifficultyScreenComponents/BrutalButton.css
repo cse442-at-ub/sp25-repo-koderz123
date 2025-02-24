@@ -20,6 +20,7 @@
     background-color: darkgray; /* Optional: changes shade on hover */
   }
   
+  
   .button-brutal.active {
     background-color: #B22222;  /* Turns FFOOO0 red when clicked */
     color: white;

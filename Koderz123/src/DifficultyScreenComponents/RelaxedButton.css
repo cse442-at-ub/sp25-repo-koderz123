@@ -1,0 +1,59 @@
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.button-relaxed {
+  padding: 15px 25px;
+  font-size: 24px;
+  background-color: gray;  
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.button-relaxed:hover {
+  transform: scale(1.1); /* Slightly increases size */
+  background-color: darkgray; /* Optional: changes shade on hover */
+}
+
+
+.button-relaxed.active {
+  background-color: #228B22;  
+  color: white;
+  transform: scale(1.1);
+}
+
+.r-description-image {
+  margin-top: 15px;
+  width: 250px;  
+  height: auto;
+  border-radius: 10px;
+}
+
+.relaxed-go-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 24px;
+  background-color: #228B22;  
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.relaxed-go-button:hover {
+  background-color: darkgreen;
+}
+
+.description-container {
+  display: flex;
+  flex-direction: column;  
+  align-items: center;     
+  gap: 15px;              
+}
+

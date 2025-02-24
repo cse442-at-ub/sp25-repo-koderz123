@@ -15,7 +15,7 @@
     transition: background-color 0.3s ease, transform 0.2s ease-in-out;
   }
 
-  .button-relaxed:hover {
+  .button-intense:hover {
     transform: scale(1.1); /* Slightly increases size */
     background-color: darkgray; /* Optional: changes shade on hover */
   }
@@ -23,6 +23,7 @@
   .button-intense.active {
     background-color: #DAA520;  /* Turns FFD700 OTHER yellow when clicked */
     color: rgb(255, 255, 255);
+    transform: scale(1.1);
   }
   
   .intense-go-button {

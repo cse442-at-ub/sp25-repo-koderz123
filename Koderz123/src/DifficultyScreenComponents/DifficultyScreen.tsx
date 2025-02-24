@@ -17,7 +17,7 @@ const DifficultyScreen: React.FC = () => {
 
 
   const handleBackClick = () => {
-    navigate("/"); // Navigate back to the main menu
+    navigate("/mainmenu"); // Navigate back to the main menu
   };
 
   

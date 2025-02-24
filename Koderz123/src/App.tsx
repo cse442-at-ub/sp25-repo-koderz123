@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import GameScreen from './GameScreenComponents/GameScreen';
 import LevelSelect from './DifficultyScreenComponents/DifficultyScreen'
 const App: React.FC = () => {
     return (
-        <Router>
+        <Router basename=''>
             <div className="container mx-auto p-4">
                 <Routes>
                     <Route path="/" element={<div>Home</div>} /> {/* replace the html code with landing page component*/}

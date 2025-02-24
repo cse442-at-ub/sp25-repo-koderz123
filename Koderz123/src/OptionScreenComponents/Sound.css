@@ -1,0 +1,9 @@
+#sound {
+    align-items: center;
+    display: flex;
+    gap: 30px;
+}
+
+#volume {
+    width: 200pt;
+}

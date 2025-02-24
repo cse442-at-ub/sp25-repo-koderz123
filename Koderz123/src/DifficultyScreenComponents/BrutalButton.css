@@ -1,0 +1,52 @@
+.brutal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .button-brutal {
+    padding: 15px 25px;
+    font-size: 24px;
+    background-color: gray;  /* Default color */
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .button-brutal.active {
+    background-color: #B22222;  /* Turns FFOOO0 red when clicked */
+    color: white;
+  }
+  
+  .brutal-go-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 24px;
+    background-color: #B22222;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: white;
+  }
+  
+  .brutal-go-button:hover {
+    background-color: #CC0000;
+  }
+  
+  .description-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .b-description-image {
+    margin-top: 15px;
+    width: 250px;  
+    height: auto;
+    border-radius: 10px;
+  }
+  

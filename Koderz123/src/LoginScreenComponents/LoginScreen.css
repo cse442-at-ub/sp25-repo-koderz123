@@ -1,0 +1,7 @@
+#loginpage {
+    background-image: url("../assets/menu-background-image.png");
+    font-family: 'Kiwi Maru';
+    caret-color: transparent;
+    height: 100vh;
+    width: 100vw;
+}

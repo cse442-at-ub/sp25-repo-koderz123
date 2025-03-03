@@ -55,4 +55,14 @@
     background-color: #c0bbbb;
     cursor: pointer;
   }
+
+  #login-button {
+    position: absolute;
+    background-color: #c0bbbb;
+    color: black;
+    border-radius: 5px;
+    padding: 15px;
+    bottom: 0;
+    right: 0;
+  }
   

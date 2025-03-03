@@ -5,9 +5,12 @@ import music from "../assets/menu_music.mp3";
 
 const MainMenu: React.FC = () => {
     const navigate = useNavigate(); 
+
+    /*
     const [, setAudio] = useState<HTMLAudioElement | null>(null); 
 
     // Play music as soon as the page loads
+    
     useEffect(() => {
         const newAudio = new Audio(music);
         newAudio.loop = true; // Loop 
@@ -23,6 +26,7 @@ const MainMenu: React.FC = () => {
             }
         };
     }, []);
+    */
 
     const clickNewGame = () => {
         navigate("/levelselect");
@@ -36,6 +40,10 @@ const MainMenu: React.FC = () => {
         navigate("/");
     };
 
+    const clickLogin = () => {
+        navigate("/login");
+    };
+
     const hovering = (e: React.MouseEvent<HTMLElement>) => {
         (e.target as HTMLElement).style.fontSize = "38px";
         e.currentTarget.style.cursor = "pointer";
@@ -43,6 +51,14 @@ const MainMenu: React.FC = () => {
 
     const notHovering = (e: React.MouseEvent<HTMLElement>) => {
         (e.target as HTMLElement).style.fontSize = "36px";
+        e.currentTarget.style.cursor = "default";
+    };
+
+    const hoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+        e.currentTarget.style.cursor = "pointer";
+    };
+
+    const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
         e.currentTarget.style.cursor = "default";
     };
 
@@ -72,6 +88,12 @@ const MainMenu: React.FC = () => {
                 onMouseLeave={notHovering}
             >
                 EXIT
+            </div>
+            <div id="login-button" 
+                 onClick={clickLogin}
+                 onMouseEnter={hoverMouse} 
+                 onMouseLeave={nothoverMouse}>
+                LOGIN
             </div>
         </div>
     );

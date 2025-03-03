@@ -1,12 +1,15 @@
-import React, {MouseEvent} from 'react';
+import React, {MouseEvent, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import SoundControl from "./Sound.tsx"
-import music from "../assets/menu_music.mp3";
+import SoundControl from "./Sound.tsx";
+import { useMusic } from '../MusicContext.tsx'; // Import useMusic
 import "./OptionScreen.css";
 
 const OptionScreen: React.FC = () => {
 
     const navigate = useNavigate(); //initialize navigation
+    const { audioRef } = useMusic();
+    const initialVolume = audioRef.current ? audioRef.current.volume * 100 : 100;
+    const [volumeValue, setVolumeValue] = useState(initialVolume);
 
     const clickBack = () => { //Used when back button is clicked to navigate back to the main menu
         navigate('/mainmenu');
@@ -26,7 +29,7 @@ const OptionScreen: React.FC = () => {
         <div id = "optionpage">
             <h1>OPTIONS</h1>
             <div id = "settings">
-                <SoundControl musicID={music}/>
+                <SoundControl volumeValue={volumeValue} setVolumeValue={setVolumeValue}/>
                 <div id = "explicit">
                     <label htmlFor="explicit">Explicit</label>
                     <input type="checkbox" id="explicit_checkbox"></input>

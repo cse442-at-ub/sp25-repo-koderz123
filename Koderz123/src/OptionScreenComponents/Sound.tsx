@@ -1,52 +1,40 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useMusic } from '../MusicContext.tsx'; // Import useMusic
 import "./Sound.css"
 
-interface SoundControlProps {
-  musicID: string; // URL of your audio file
+interface SoundSliderProps {
+  volumeValue: number;
+  setVolumeValue: (value: number) => void;
 }
 
-const SoundControl: React.FC<SoundControlProps> = ({ musicID }) => {
-  const [volumeValue, setVolumeValue] = useState(50); // Initial volume: 50
-  const audioRef = useRef<HTMLAudioElement>(null);
+const SoundControl: React.FC<SoundSliderProps> = ({ volumeValue, setVolumeValue }) => {
+  const { audioRef } = useMusic();
 
   useEffect(() => {
     if (audioRef.current) {
-      audioRef.current.volume = volumeValue / 100; // Normalize to 0-1
-      audioRef.current.addEventListener('canplaythrough', () => {
-        if (audioRef.current){
-        audioRef.current.play().catch((error) => {
-            console.error('Autoplay was prevented.', error);
-          });
-        }
-      });
-      return () => {
-        if(audioRef.current){
-          audioRef.current.removeEventListener('canplaythrough', ()=>{});
-        }
-      }
+      audioRef.current.volume = volumeValue / 100;
     }
-  }, [volumeValue, musicID]);
+  }, [volumeValue, audioRef]);
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVolumeValue(parseInt(event.target.value));
   };
 
   return (
-    <div id="sound">
+    <div id="soundcontrol">
       <label htmlFor="volume">Sound</label>
       <input
         type="range"
         id="volume"
-        name="volume"
         min="0"
         max="100"
+        step="1"
         value={volumeValue}
         onChange={handleVolumeChange}
       />
       <output id="newvol" name="newvol" htmlFor="volume">
-        {volumeValue}
+        {(volumeValue).toFixed(0)}
       </output>
-      <audio ref={audioRef} loop id="audioplayer" src={musicID} preload="auto"></audio>
     </div>
   );
 };

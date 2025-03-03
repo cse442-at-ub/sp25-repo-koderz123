@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, useRef, ReactNode } from 'react';
-import music from "./assets/menu_music.mp3";
+import music from "./assets/menu_music.mp3"; 
 
 interface MusicContextType {
     audioRef: React.RefObject<HTMLAudioElement | null>;

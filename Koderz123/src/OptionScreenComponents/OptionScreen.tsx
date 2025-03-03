@@ -8,7 +8,7 @@ const OptionScreen: React.FC = () => {
 
     const navigate = useNavigate(); //initialize navigation
     const { audioRef } = useMusic();
-    const initialVolume = audioRef.current ? audioRef.current.volume * 100 : 100;
+    const initialVolume = audioRef.current ? audioRef.current.volume * 100 : 50;
     const [volumeValue, setVolumeValue] = useState(initialVolume);
 
     const clickBack = () => { //Used when back button is clicked to navigate back to the main menu

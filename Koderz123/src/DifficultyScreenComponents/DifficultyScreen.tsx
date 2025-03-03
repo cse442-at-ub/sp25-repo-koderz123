@@ -1,6 +1,6 @@
 import React from "react";
 import "./DifficultyScreen.css";
-import SpaceBackground from "../assets/SpaceBackground.png";
+import SpaceBackground from "../assets/menu-background-image.png";
 import SelectDifficultyTitle from "../assets/SelectDifficultyTitle.png";
 import BackButton from "../assets/BackButton.png";
 import { useNavigate } from "react-router-dom";

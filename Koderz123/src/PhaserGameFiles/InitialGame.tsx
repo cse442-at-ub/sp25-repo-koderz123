@@ -13,10 +13,10 @@ class Example extends Phaser.Scene {
     const graphics = this.add.graphics();
 
     // Path for enemies
-    const path = this.add.path(96, -32);
-    path.lineTo(96, 164);
-    path.lineTo(480, 164);
-    path.lineTo(480, 544);
+    const path = this.add.path(125, -32);
+    path.lineTo(125, 200);
+    path.lineTo(850, 200);
+    path.lineTo(850, 544);
 
     graphics.lineStyle(3, 0xffffff, 1);
     path.draw(graphics);

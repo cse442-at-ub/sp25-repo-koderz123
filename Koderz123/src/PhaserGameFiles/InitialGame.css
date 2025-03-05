@@ -10,6 +10,26 @@
     background-repeat: no-repeat; /* Prevents tiling */
 }
 
+.wave-button {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #ff5733;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.wave-button:hover {
+    background-color: #ff2e00;
+}
+
+
 .game-box {
     width: 95vw;  /* Game box width (adjust as needed) */
     max-width: 1000px; /* Ensures it doesn't exceed original game size */

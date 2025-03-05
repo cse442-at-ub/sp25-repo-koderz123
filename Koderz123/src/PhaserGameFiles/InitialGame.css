@@ -1,0 +1,31 @@
+.game-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../assets/menu-background-image.png'); /* Path to your image */
+    background-size: cover; /* Ensures the image covers the entire viewport */
+    background-position: center; /* Centers the image */
+    background-repeat: no-repeat; /* Prevents tiling */
+}
+
+.game-box {
+    width: 95vw;  /* Game box width (adjust as needed) */
+    max-width: 1000px; /* Ensures it doesn't exceed original game size */
+    height: auto;
+    aspect-ratio: 1000 / 512; /* Maintains correct aspect ratio */
+    padding: 40px; /* Adds padding around the game */
+    background-color: #222; /* Box background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px; /* Optional rounded corners */
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2); /* Optional glow */
+}
+
+#phaser-game {
+    display: block;
+    width: 100%;
+    height: 100%;
+}

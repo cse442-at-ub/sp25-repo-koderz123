@@ -8,6 +8,7 @@ import LandingPage from './Landing page components/LandingPage';
 import LoginScreen from './LoginScreenComponents/LoginScreen';
 import { MusicProvider } from './MusicContext';
 import PhaserHelloWorld from './PhaserHelloWorld/PhaserHelloWorldComponent';
+import InitialGame from './PhaserGameFiles/InitialGame';
 
 const App: React.FC = () => {
     return (
@@ -22,6 +23,7 @@ const App: React.FC = () => {
                         <Route path="/options" element={<OptionScreen/>} /> {/* replace the html code with options component */}
                         <Route path="/login" element={<LoginScreen/>} />
                         <Route path="/PhaserHelloWorld" element={<PhaserHelloWorld/>} />
+                        <Route path="/Gametesting" element={<InitialGame/>} />
                         <Route path="*" element={<div>404 - Not Found</div>} /> {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
                     </Routes>
                 </div>

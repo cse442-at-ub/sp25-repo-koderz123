@@ -1,13 +1,15 @@
 //@ts-nocheck
 import Phaser from "phaser";
+import React from "react";
 import GameComponent from "./InitialGameComponent";
 import "./InitialGame.css";
-
-const WAVE_SIZE = 5; // Number of enemies per wave
+ // Number of enemies per wave
 
 class Example extends Phaser.Scene {
   private enemies!: Phaser.GameObjects.Group;
   private nextEnemy!: number;
+  private WAVE_SIZE = 6;
+  private WAVE_NUMBER=1;
   private path!: Phaser.Curves.Path;
   private ENEMY_SPEED = 1 / 5000; // Adjust speed
   private waveActive = false;
@@ -34,9 +36,9 @@ class Example extends Phaser.Scene {
 
     // Create the "Start Wave" button inside Phaser
     this.startWaveButton = this.add
-      .text(500, 400, "Start Wave", {
+      .text(500, 400, `Start Wave ${this.WAVE_NUMBER}`, {
         fontSize: "24px",
-        backgroundColor: "#ff5733",
+        backgroundColor: "#2d2c2b",
         color: "#fff",
         padding: { x: 10, y: 5 },
       })
@@ -87,7 +89,7 @@ class Example extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    if (this.waveActive && this.enemiesSpawned < WAVE_SIZE && time > this.nextEnemy) {
+    if (this.waveActive && this.enemiesSpawned < this.WAVE_SIZE && time > this.nextEnemy) {
       const enemy = this.enemies.get() as Enemy;
       if (enemy) {
         enemy.startOnPath();
@@ -104,14 +106,23 @@ class Example extends Phaser.Scene {
       this.enemiesAlive = 0; // Reset alive enemies count
 
       // Hide the "Start Wave" button
+      this.startWaveButton.setText(`Wave ${this.WAVE_NUMBER} in Progress`);
       this.startWaveButton.setVisible(false);
     }
   }
 
   enemyDied() {
     this.enemiesAlive--; // Reduce count when an enemy dies
+  
     if (this.enemiesAlive === 0) {
       this.waveActive = false; // Allow new wave to start
+  
+      // Increment wave variables
+      this.WAVE_NUMBER += 1;
+      this.WAVE_SIZE += 2;
+  
+      // **Update button text before making it visible**
+      this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true); // Show the button again
     }
   }

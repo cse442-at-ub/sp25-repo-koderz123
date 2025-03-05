@@ -1,30 +1,67 @@
 //@ts-nocheck
 import Phaser from "phaser";
+import React from "react";
 import GameComponent from "./InitialGameComponent";
 import "./InitialGame.css";
+ // Number of enemies per wave
 
 class Example extends Phaser.Scene {
   private enemies!: Phaser.GameObjects.Group;
   private nextEnemy!: number;
+  private WAVE_SIZE = 6;
+  private WAVE_NUMBER=1;
   private path!: Phaser.Curves.Path;
   private ENEMY_SPEED = 1 / 5000; // Adjust speed
+  private waveActive = false;
+  private enemiesSpawned = 0;
+  private enemiesAlive = 0; // Track active enemies
+  private startWaveButton!: Phaser.GameObjects.Text;
 
   preload() {
-    this.load.setBaseURL("https://labs.phaser.io");
-    this.load.atlas("sprites", "assets/spritesheet.png", "assets/spritesheet.json");
-    this.load.image("bullet", "assets/bullet.png");
-    this.load.image("enemy", "assets/enemy.png"); // Ensure enemy image is loaded
+    
+    //this.load.setBaseURL("https://labs.phaser.io");
+    this.load.image("background", "assets/GameScreenBackground.png"); // ✅ Now correctly references `public/assets/`
+    this.load.image("enemy", "assets/enemy.png"); // ✅ Enemy sprite
   }
 
   create() {
+    const { width, height } = this.scale;
+
+    // Add background image and scale it to fit the game window
+    const background = this.add.image(width / 2, height / 2, "background");
+    background.setOrigin(0.5, 0.5); // Center the image
+
+    // Scale the image to match the screen size
+    background.setDisplaySize(width, height);
+    background.setDepth(-1);
     const graphics = this.add.graphics();
-    this.path = new Phaser.Curves.Path(125, -32);
-    this.path.lineTo(125, 200);
-    this.path.lineTo(850, 200);
-    this.path.lineTo(850, 544);
+    this.path = new Phaser.Curves.Path(-32, 140);
+    this.path.lineTo(-32, 140);
+    this.path.lineTo(150, 140);
+    this.path.lineTo(150, 265);
+    this.path.lineTo(450, 265);
+    this.path.lineTo(450, 430);
+    this.path.lineTo(760, 430);
+    this.path.lineTo(760, 180);
+    this.path.lineTo(1000, 180);
 
     graphics.lineStyle(3, 0xffffff, 1);
-    this.path.draw(graphics);
+    //this.path.draw(graphics);
+
+    // Create the "Start Wave" button inside Phaser
+    this.startWaveButton = this.add
+      .text(150, 475, `Start Wave ${this.WAVE_NUMBER}`, {
+        fontSize: "24px",
+        backgroundColor: "#2d2c2b",
+        color: "#fff",
+        padding: { x: 10, y: 5 },
+      })
+      .setOrigin(0.5)
+      .setInteractive();
+
+    this.startWaveButton.on("pointerdown", () => {
+      this.startWave();
+    });
 
     // Create Enemy class properly
     class Enemy extends Phaser.GameObjects.Image {
@@ -46,6 +83,7 @@ class Example extends Phaser.Scene {
         } else {
           this.setActive(false);
           this.setVisible(false);
+          this.scene.enemyDied(); // Notify scene that an enemy died
         }
       }
 
@@ -55,6 +93,9 @@ class Example extends Phaser.Scene {
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
         this.setActive(true);
         this.setVisible(true);
+
+        this.setScale(0.175); // Scale down the enemy
+        this.scene.enemiesAlive++; // Track number of alive enemies
       }
     }
 
@@ -64,12 +105,40 @@ class Example extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    if (time > this.nextEnemy) {
+    if (this.waveActive && this.enemiesSpawned < this.WAVE_SIZE && time > this.nextEnemy) {
       const enemy = this.enemies.get() as Enemy;
       if (enemy) {
         enemy.startOnPath();
-        this.nextEnemy = time + 2000; // Spawn next enemy after 2 seconds
+        this.enemiesSpawned++;
+        this.nextEnemy = time + 2000; // Spawn next enemy every 2 seconds
       }
+    }
+  }
+
+  startWave() {
+    if (!this.waveActive) {
+      this.waveActive = true;
+      this.enemiesSpawned = 0;
+      this.enemiesAlive = 0; // Reset alive enemies count
+
+      // Hide the "Start Wave" button
+      this.startWaveButton.setVisible(false);
+    }
+  }
+
+  enemyDied() {
+    this.enemiesAlive--; // Reduce count when an enemy dies
+  
+    if (this.enemiesAlive === 0) {
+      this.waveActive = false; // Allow new wave to start
+  
+      // Increment wave variables
+      this.WAVE_NUMBER += 1;
+      this.WAVE_SIZE += 2;
+  
+      // **Update button text before making it visible**
+      this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
+      this.startWaveButton.setVisible(true); // Show the button again
     }
   }
 }

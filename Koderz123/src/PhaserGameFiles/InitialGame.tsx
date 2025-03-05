@@ -18,25 +18,39 @@ class Example extends Phaser.Scene {
   private startWaveButton!: Phaser.GameObjects.Text;
 
   preload() {
-    this.load.setBaseURL("https://labs.phaser.io");
-    this.load.atlas("sprites", "assets/spritesheet.png", "assets/spritesheet.json");
-    this.load.image("bullet", "assets/bullet.png");
-    this.load.image("enemy", "assets/enemy.png"); // Ensure enemy image is loaded
+    
+    //this.load.setBaseURL("https://labs.phaser.io");
+    this.load.image("background", "assets/GameScreenBackground.png"); // ✅ Now correctly references `public/assets/`
+    this.load.image("enemy", "assets/enemy.png"); // ✅ Enemy sprite
   }
 
   create() {
+    const { width, height } = this.scale;
+
+    // Add background image and scale it to fit the game window
+    const background = this.add.image(width / 2, height / 2, "background");
+    background.setOrigin(0.5, 0.5); // Center the image
+
+    // Scale the image to match the screen size
+    background.setDisplaySize(width, height);
+    background.setDepth(-1);
     const graphics = this.add.graphics();
-    this.path = new Phaser.Curves.Path(125, -32);
-    this.path.lineTo(125, 200);
-    this.path.lineTo(850, 200);
-    this.path.lineTo(850, 544);
+    this.path = new Phaser.Curves.Path(-32, 140);
+    this.path.lineTo(-32, 140);
+    this.path.lineTo(150, 140);
+    this.path.lineTo(150, 265);
+    this.path.lineTo(450, 265);
+    this.path.lineTo(450, 430);
+    this.path.lineTo(760, 430);
+    this.path.lineTo(760, 180);
+    this.path.lineTo(1000, 180);
 
     graphics.lineStyle(3, 0xffffff, 1);
-    this.path.draw(graphics);
+    //this.path.draw(graphics);
 
     // Create the "Start Wave" button inside Phaser
     this.startWaveButton = this.add
-      .text(500, 400, `Start Wave ${this.WAVE_NUMBER}`, {
+      .text(150, 475, `Start Wave ${this.WAVE_NUMBER}`, {
         fontSize: "24px",
         backgroundColor: "#2d2c2b",
         color: "#fff",
@@ -79,6 +93,8 @@ class Example extends Phaser.Scene {
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
         this.setActive(true);
         this.setVisible(true);
+
+        this.setScale(0.175); // Scale down the enemy
         this.scene.enemiesAlive++; // Track number of alive enemies
       }
     }
@@ -106,7 +122,6 @@ class Example extends Phaser.Scene {
       this.enemiesAlive = 0; // Reset alive enemies count
 
       // Hide the "Start Wave" button
-      this.startWaveButton.setText(`Wave ${this.WAVE_NUMBER} in Progress`);
       this.startWaveButton.setVisible(false);
     }
   }

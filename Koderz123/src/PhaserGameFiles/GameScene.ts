@@ -11,11 +11,16 @@ class GameScene extends Phaser.Scene {
   private WAVE_ACCUMULATOR = 2;
   public path!: Phaser.Curves.Path;
   public ENEMY_SPEED = 1 / 5000; // Adjust speed
+  private const_speed_multiplier = 1.1;
+  private multiplier = (1).toFixed(2);
   private waveActive = false;
   private enemiesSpawned = 0;
   public SPAWN_DELAY = 200;
   public enemiesAlive = 0; // Track active enemies
   private startWaveButton!: StartWaveButton; // ✅ Use StartWaveButton class
+  private countdownTimer!: Phaser.Time.TimerEvent; // For countdown timers
+  private countdownText!: Phaser.GameObjects.Text;
+  private countdownSeconds = 60; // Initial countdown time in seconds
 
   preload() {
     this.load.image("background", "assets/GameScreenBackground.png");
@@ -43,9 +48,29 @@ class GameScene extends Phaser.Scene {
     graphics.lineStyle(3, 0xffffff, 1);
 
     // ✅ Create the "Start Wave" button using StartWaveButton class
-    this.startWaveButton = new StartWaveButton(this, 150, 475, `Start Wave ${this.WAVE_NUMBER}`, () => {
-      this.startWave();
-    });
+    this.startWaveButton = new StartWaveButton(
+      this,
+      150,
+      475,
+      `Start Wave ${this.WAVE_NUMBER}`,
+      () => {
+        this.startWave();
+      }
+    );
+
+    // Create the timer text
+    this.countdownText = this.add.text(
+      width / 2,
+      20,
+      `Time: ${this.countdownSeconds}     x${this.multiplier}`,
+      {
+        fontSize: "24px",
+        color: "#ffffff",
+        align: "center",
+      }
+    );
+    this.countdownText.setOrigin(0.5, 0);
+    this.countdownText.setDepth(1); // Ensure it's on top
 
     // Create enemies group
     this.enemies = this.add.group({ classType: Enemy, runChildUpdate: true });
@@ -53,7 +78,11 @@ class GameScene extends Phaser.Scene {
   }
 
   update(time: number, delta: number) {
-    if (this.waveActive && this.enemiesSpawned < this.WAVE_SIZE && time > this.nextEnemy) {
+    if (
+      this.waveActive &&
+      this.enemiesSpawned < this.WAVE_SIZE &&
+      time > this.nextEnemy
+    ) {
       const enemy = this.enemies.get() as Enemy;
       if (enemy) {
         enemy.startOnPath();
@@ -61,6 +90,46 @@ class GameScene extends Phaser.Scene {
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
       }
     }
+  }
+
+  endCountDown() {
+    this.countdownTimer.remove(); // Stop the timer
+    this.waveActive = false; // End the wave
+
+    // Handle what happens when the timer runs out (e.g., wave failure)
+    this.countdownText.setText("Time's up!");
+    this.startWaveButton.setVisible(true); // Show the start wave button again
+
+    this.enemies.clear(true, true); // Destroy remaining enemies
+  }
+
+  updateCountdown() {
+    this.countdownSeconds--;
+
+    if (this.countdownSeconds <= 0) {
+      this.endCountDown();
+      return;
+    }
+
+    this.countdownText.setText(
+      `Time: ${this.countdownSeconds}     x${this.multiplier}`
+    );
+  }
+
+  startCountdown() {
+    this.countdownSeconds = 60; // Reset the countdown
+
+    // Update the text immediately
+    this.countdownText.setText(
+      `Time: ${this.countdownSeconds}     x${this.multiplier}`
+    );
+
+    this.countdownTimer = this.time.addEvent({
+      delay: 1000, // 1 second
+      callback: this.updateCountdown,
+      callbackScope: this,
+      loop: true,
+    });
   }
 
   startWave() {
@@ -71,6 +140,7 @@ class GameScene extends Phaser.Scene {
 
       // ✅ Hide button when wave starts
       this.startWaveButton.setVisible(false);
+      this.startCountdown();
     }
   }
 
@@ -81,10 +151,15 @@ class GameScene extends Phaser.Scene {
       this.waveActive = false;
       this.WAVE_NUMBER += 1;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
+      this.ENEMY_SPEED *= this.const_speed_multiplier;
+      this.multiplier = (this.multiplier * this.const_speed_multiplier).toFixed(
+        2
+      );
 
       // ✅ Update button text and make it visible again
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
+      this.endCountDown();
     }
   }
 }

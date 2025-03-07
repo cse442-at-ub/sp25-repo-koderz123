@@ -10,8 +10,8 @@ app.use(cors());
 // Database Connection (XAMPP)
 const db = mysql.createConnection({
     host: "localhost",
-    user: "root",  
-    password: "",  
+    user: "mashfiqu",  
+    password: "50380344",  
     database: "cse442_2025_spring_team_p_db"
 });
 

@@ -12,7 +12,7 @@ const db = mysql.createConnection({
     host: "localhost",
     user: "root",  
     password: "",  
-    database: "galactic_tower_defense_td"
+    database: "cse442_2025_spring_team_p_db"
 });
 
 db.connect(err => {

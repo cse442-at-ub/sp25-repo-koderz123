@@ -4,6 +4,8 @@ import "./LoginScreen.css";
 
 const LoginScreen: React.FC = () => {
     const navigate = useNavigate();
+
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
     
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -28,10 +30,12 @@ const LoginScreen: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         
-        if (password.length < 8) {
-            setError("Password must be at least 8 characters long.");
+        
+        if (password.length < 11) {
+            setError("Password must be at least 11 characters long.");
             return;
         }
+
 
         try {
             const endpoint = isLogin ? "http://localhost:3100/login" : "http://localhost:3100/signup";

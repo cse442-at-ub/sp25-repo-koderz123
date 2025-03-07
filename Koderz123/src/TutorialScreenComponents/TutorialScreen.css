@@ -1,0 +1,63 @@
+/* TutorialScreen.css */
+
+.tutorial-screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #4d5667;
+    position: relative;
+}
+
+.game-image {
+    width: 95vw;
+    height: 95vh;
+    object-fit: contain;
+    object-position: center;
+    position: absolute;
+    z-index: 0;
+}
+
+.tutorial-content {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    z-index: 1;
+    width: 50%;
+}
+
+.exit-button {
+    position: absolute;
+    top: 10%;
+    right: 90%;
+    padding: 8px 16px;
+    background-color: #4d5667;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.exit-button.visible {
+    opacity: 1; /* Make visible */
+}
+
+.exit-button:hover {
+    background-color: #30558c;
+    transform: scale(1.05);
+}
+
+.exit-button:active {
+    background-color: #4031a4;
+    transform: scale(0.95);
+}

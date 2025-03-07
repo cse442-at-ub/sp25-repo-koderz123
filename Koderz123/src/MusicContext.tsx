@@ -1,17 +1,26 @@
-import React, { createContext, useState, useEffect, useContext, useRef, ReactNode } from 'react';
-import music from "./assets/menu_music.mp3"; 
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  ReactNode,
+} from "react";
+import music from "./assets/menu_music.mp3";
 
 interface MusicContextType {
-    audioRef: React.RefObject<HTMLAudioElement | null>;
-    changeMusic: (newSource: string) => void;
-  }
+  audioRef: React.RefObject<HTMLAudioElement | null>;
+  changeMusic: (newSource: string) => void;
+  playMusic: () => void;
+}
 
 const MusicContext = createContext<MusicContextType>({
-    audioRef: { current: null },
-    changeMusic: () => {},
-  });
+  audioRef: { current: null },
+  changeMusic: () => {},
+  playMusic: () => {},
+});
 
-export const MusicProvider = ({ children } : { children: ReactNode}) => {
+export const MusicProvider = ({ children }: { children: ReactNode }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioSource, setAudioSource] = useState(music); // Initial music source
 
@@ -19,22 +28,12 @@ export const MusicProvider = ({ children } : { children: ReactNode}) => {
     if (!audioRef.current) {
       audioRef.current = new Audio(audioSource);
       audioRef.current.loop = true;
-      audioRef.current.addEventListener('ended', () => {
-        // You might want to handle what happens when the audio ends, even with loop enabled.
+      audioRef.current.addEventListener("ended", () => {
+        alert("Music ended :(");
       });
-
-      // Start playing automatically
-      audioRef.current.play().catch(error => {
-        console.error("Autoplay failed:", error);
-        //Handle the error, possibly showing a message or retrying with a user interaction.
-      });
-
     } else {
-        //If the audio source changes, start the new audio.
-        audioRef.current.src = audioSource;
-        audioRef.current.play().catch(error => {
-            console.error("Autoplay failed:", error);
-        })
+      //If the audio source changes, start the new audio.
+      audioRef.current.src = audioSource;
     }
   }, [audioSource]);
 
@@ -42,15 +41,23 @@ export const MusicProvider = ({ children } : { children: ReactNode}) => {
     setAudioSource(newSource);
   };
 
+  const playMusic = () => {
+    // Add this function
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Playback failed:", error);
+      });
+    }
+  };
+
   const value = {
     audioRef: audioRef,
     changeMusic,
+    playMusic,
   };
 
   return (
-    <MusicContext.Provider value={value}>
-      {children}
-    </MusicContext.Provider>
+    <MusicContext.Provider value={value}>{children}</MusicContext.Provider>
   );
 };
 

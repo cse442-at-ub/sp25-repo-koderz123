@@ -23,16 +23,35 @@ const LoginScreen: React.FC = () => {
         e.currentTarget.style.cursor = 'default';
     };
 
-    const handleSubmit = (event: React.FormEvent) => {
-        event.preventDefault(); // Prevents page refresh
+    // Handle form submission
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault(); // Prevent page refresh
         
+        // Validate password length
         if (password.length < 8) {
             setError("Password must be at least 8 characters long.");
             return;
         }
 
-        // TODO: Send login request to backend
-        console.log("Logging in with:", { username, password });
+        try {
+            // Send login request to backend
+            const response = await fetch("http://localhost:5000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || "Login failed");
+            } else {
+                console.log("Login successful!", data);
+                navigate("/mainmenu"); // Redirect to the main menu on success
+            }
+        } catch (error) {
+            setError("Network error. Please try again.");
+        }
     };
 
     return (

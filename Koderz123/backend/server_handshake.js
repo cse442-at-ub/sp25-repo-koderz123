@@ -1,7 +1,7 @@
-const express = require("express");
-const mysql = require("mysql2");
-const bcrypt = require("bcrypt");
-const cors = require("cors");
+import express from "express";
+import mysql from "mysql2";
+import bcrypt from "bcrypt";
+import cors from "cors";
 
 const app = express();
 app.use(express.json());
@@ -61,7 +61,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-// 🚀 Start the backend server
-app.listen(5000, () => {
-    console.log("✅ Server running on port 5000");
+// 🚀 Start the backend server on a different port (e.g., 5002)
+app.listen(3000, () => {
+    console.log("✅ Server running on port 5002");
 });

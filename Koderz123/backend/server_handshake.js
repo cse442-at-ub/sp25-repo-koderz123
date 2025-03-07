@@ -23,7 +23,7 @@ db.connect(err => {
     console.log("✅ Connected to MySQL");
 });
 
-// 🔑 SIGNUP (New User Registration)
+//  SIGNUP (New User Registration)
 app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
 
@@ -64,7 +64,7 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-// 🔐 LOGIN (Authenticate User)
+//  LOGIN (Authenticate User)
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
@@ -93,7 +93,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-// 🚀 Start the backend server
+//  Start the backend server
 const PORT = 3100;
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);

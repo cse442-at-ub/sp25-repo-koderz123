@@ -62,6 +62,6 @@ app.post('/login', (req, res) => {
 });
 
 // 🚀 Start the backend server on a different port (e.g., 5002)
-app.listen(3000, () => {
+app.listen(3100, () => {
     console.log("✅ Server running on port 5002");
 });

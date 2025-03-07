@@ -94,7 +94,7 @@ app.post('/login', (req, res) => {
 });
 
 //  Start the backend server
-const PORT = 3100;
+const PORT = 3306;
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
 });

@@ -1,5 +1,5 @@
-import React, { useState, MouseEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, MouseEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import "./LoginScreen.css";
 
 const LoginScreen: React.FC = () => {
@@ -8,34 +8,34 @@ const LoginScreen: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
 
-    const clickBack = () => { // Navigate back to the main menu
+    const clickBack = () => { 
         navigate('/mainmenu');
     };
 
-    const hovering = (e: MouseEvent<HTMLElement>) => { // Mouse over BACK button
+    const hovering = (e: MouseEvent<HTMLElement>) => { 
         (e.target as HTMLElement).style.fontSize = '31pt';
         e.currentTarget.style.cursor = 'pointer';
     };
 
-    const nothovering = (e: MouseEvent<HTMLElement>) => { // Mouse leaves BACK button
+    const nothovering = (e: MouseEvent<HTMLElement>) => { 
         (e.target as HTMLElement).style.fontSize = '28pt';
         e.currentTarget.style.cursor = 'default';
     };
 
-    // Handle form submission
+    // Handle login or signup form submission
     const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault(); // Prevent page refresh
+        event.preventDefault();
         
-        // Validate password length
         if (password.length < 8) {
             setError("Password must be at least 8 characters long.");
             return;
         }
 
         try {
-            // Send login request to backend
-            const response = await fetch("http://localhost:3100/login", {
+            const endpoint = isLogin ? "http://localhost:3100/login" : "http://localhost:3100/signup";
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
@@ -44,20 +44,25 @@ const LoginScreen: React.FC = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.error || "Login failed");
+                setError(data.error || (isLogin ? "Login failed" : "Signup failed"));
             } else {
-                console.log("Login successful!", data);
-                navigate("/mainmenu"); // Redirect to the main menu on success
+                console.log(`✅ ${isLogin ? "Login" : "Signup"} successful!`, data);
+                if (isLogin) {
+                    navigate("/mainmenu");
+                } else {
+                    setIsLogin(true); // Switch back to login after successful signup
+                    setError("✅ Account created! You can now log in.");
+                }
             }
         } catch (error) {
-            setError("Network error. Please try again.");
+            setError("⚠️ Network error. Please try again.");
         }
     };
 
     return (
         <div id="background">
             <div id="login">
-                <h1>LOGIN</h1>
+                <h1>{isLogin ? "LOGIN" : "SIGN UP"}</h1>
                 <div id="frame">
                     <form id="form" onSubmit={handleSubmit}>
                         <div className="input">
@@ -82,10 +87,19 @@ const LoginScreen: React.FC = () => {
                         </div>
                         {error && <p style={{ color: 'red' }}>{error}</p>}
                         <div id="submit-button">
-                            <button type="submit">Sign in</button>
+                            <button type="submit">{isLogin ? "Sign in" : "Sign up"}</button>
                         </div>
                     </form>
                 </div>
+
+                {/* Toggle between Login and Signup */}
+                <p 
+                    style={{ cursor: "pointer", color: "lightblue", textAlign: "center", marginTop: "10px" }} 
+                    onClick={() => { setIsLogin(!isLogin); setError(""); }}
+                >
+                    {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
+                </p>
+
                 <div id="backbutton" onClick={clickBack} onMouseEnter={hovering} onMouseLeave={nothovering}>
                     <h2>BACK</h2>
                 </div>

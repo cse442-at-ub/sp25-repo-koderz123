@@ -44,6 +44,10 @@ const MainMenu: React.FC = () => {
         navigate("/login");
     };
 
+    const clickTutorial = () => {
+        navigate("/tutorial");
+    };
+
     const hovering = (e: React.MouseEvent<HTMLElement>) => {
         (e.target as HTMLElement).style.fontSize = "38px";
         e.currentTarget.style.cursor = "pointer";
@@ -80,6 +84,14 @@ const MainMenu: React.FC = () => {
                 onMouseLeave={notHovering}
             >
                 OPTIONS
+            </div>
+            <div 
+                className="menu-item" 
+                onClick={clickTutorial} 
+                onMouseEnter={hovering} 
+                onMouseLeave={notHovering}
+            >
+                TUTORIAL
             </div>
             <div 
                 className="menu-item" 

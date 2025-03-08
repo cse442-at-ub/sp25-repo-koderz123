@@ -1,0 +1,42 @@
+#background {
+    background-image: url("../assets/menu-background-image.png");
+    font-family: 'Kiwi Maru';
+    caret-color: transparent;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
+}
+
+#form {
+    height: 260px;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    padding-top: 50px;
+}
+
+#frame {
+    height: fit-content;
+    width: fit-content;
+    border-radius: 10px;
+    background-color: #d2cdcd;
+    margin: auto;
+
+}
+
+.input {
+    display: flex;
+    padding: 20px;
+    div[data-lastpass-icon-root] {
+        display: none;
+      }
+}
+
+#submit-button {
+    display: flex;
+    margin-top: 30px;
+    justify-content: center;
+}

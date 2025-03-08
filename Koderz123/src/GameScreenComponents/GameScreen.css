@@ -1,0 +1,49 @@
+/* GameScreen.css */
+
+/* Outer container to cover full screen */
+.game-screen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #4d5667;
+}
+
+/* Full-screen image with cover fit */
+.game-image {
+    width: 95vw;
+    height: 95vh;
+    object-fit: contain;
+    object-position: center;
+}
+
+/* Exit Button */
+.exit-button {
+    position: absolute;  /* Positioned relative to .game-screen */
+    top: 10%;
+    right: 90%;
+    padding: 8px 16px;
+    background-color: #4d5667;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover and Active states */
+.exit-button:hover {
+    background-color: #30558c;
+    transform: scale(1.05);
+}
+
+.exit-button:active {
+    background-color: #4031a4;
+    transform: scale(0.95);
+}
+

@@ -1,0 +1,71 @@
+/* ExitModal.css */
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #4d5667;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+}
+
+/* Title */
+.modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.yes-button {
+    background-color: green;
+    color: white;
+}
+
+.yes-button:hover {
+    background-color: #28a745;  /* Lighter green */
+    transform: scale(1.05);    /* Slight zoom */
+}
+
+.yes-button:active {
+    background-color: #218838; /* Darker green */
+    transform: scale(0.95);    /* Slight shrink when clicked */
+}
+
+.no-button {
+    background-color: gray;
+    color: white;
+}
+
+.no-button:hover {
+    background-color: #6c757d; /* Lighter gray */
+    transform: scale(1.05);    /* Slight zoom */
+}
+
+.no-button:active {
+    background-color: #5a6268; /* Darker gray */
+    transform: scale(0.95);    /* Slight shrink when clicked */
+}

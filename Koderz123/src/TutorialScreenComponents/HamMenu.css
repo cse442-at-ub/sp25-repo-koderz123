@@ -1,0 +1,76 @@
+/* HamburgerMenu.css */
+
+/* Outer Container */
+.hamburger-menu {
+    position: fixed;
+    bottom: 4%;
+    left: 4%;
+    z-index: 1000;
+}
+
+/* Hamburger Button */
+.hamburger-button {
+    padding: 12px 16px;
+    background-color: #4d5667;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.hamburger-button:hover {
+    background-color: #30558c;
+    transform: scale(1.05);
+}
+
+/* Bottom Image Modal */
+.menu-image-container {
+    position: fixed;
+    bottom: -50%;  /* Hidden off-screen by default */
+    left: 10vw;
+    width: 80%;
+    height: 20%;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: bottom 0.4s ease;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    overflow: hidden;
+}
+
+/* Open State */
+.menu-image-container.open {
+    bottom: 0;  /* Slide into view */
+}
+
+/* Image */
+.menu-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    padding: 8px 12px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+    background-color: darkred;
+}

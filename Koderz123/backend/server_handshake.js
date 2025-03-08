@@ -12,7 +12,7 @@ const db = mysql.createConnection({
     host: "localhost",
     user: "mashfiqu",  
     password: "50380344",  
-    database: "cse442_2025_spring_team_p_db"
+    database: "global_players_db"
 });
 
 db.connect(err => {

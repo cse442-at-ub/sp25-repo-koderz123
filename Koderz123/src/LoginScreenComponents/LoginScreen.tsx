@@ -31,15 +31,15 @@ const LoginScreen: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         
-        
         if (password.length < 11) {
             setError("Password must be at least 11 characters long.");
             return;
         }
 
-
         try {
-            const endpoint = isLogin ? "http://localhost:3100/login" : "http://localhost:3100/signup";
+            const endpoint = isLogin 
+                ? "http://cattle.cse.buffalo.edu/data/web/CSE442/2025-Spring/cse-442p/backend/auth.php?action=login" 
+                : "http://cattle.cse.buffalo.edu/data/web/CSE442/2025-Spring/cse-442p/backend/auth.php?action=signup";
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -71,7 +71,7 @@ const LoginScreen: React.FC = () => {
                 <div id="frame">
                     <form id="form" onSubmit={handleSubmit}>
                         <div className="input">
-                            <label htmlFor="username">Username:&nbsp;</label>
+                            <label htmlFor="username">Username: </label>
                             <input
                                 type="text"
                                 id="username"
@@ -81,7 +81,7 @@ const LoginScreen: React.FC = () => {
                             />
                         </div>
                         <div className="input">
-                            <label htmlFor="password">Password:&nbsp;</label>
+                            <label htmlFor="password">Password: </label>
                             <input
                                 type="password"
                                 id="password"

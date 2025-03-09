@@ -3,6 +3,8 @@ import React, { useState, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginScreen.css";
 
+const API_URL = "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/api.php"; // ✅ PHP backend URL
+
 const LoginScreen: React.FC = () => {
     const navigate = useNavigate();
 
@@ -31,15 +33,14 @@ const LoginScreen: React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         
-        
         if (password.length < 11) {
-            setError("Password must be at least 11 characters long.");
+            setError("⚠️ Password must be at least 11 characters long.");
             return;
         }
 
-
         try {
-            const endpoint = isLogin ? "http://localhost:3100/login" : "http://localhost:3100/signup";
+            // ✅ Use PHP API for login/signup
+            const endpoint = isLogin ? `${API_URL}?action=login` : `${API_URL}?action=signup`;
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -49,13 +50,14 @@ const LoginScreen: React.FC = () => {
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.error || (isLogin ? "Login failed" : "Signup failed"));
+                setError(data.error || (isLogin ? "⚠️ Login failed" : "⚠️ Signup failed"));
             } else {
                 console.log(`✅ ${isLogin ? "Login" : "Signup"} successful!`, data);
                 if (isLogin) {
+                    localStorage.setItem("user_id", data.user_id); // ✅ Store session data
                     navigate("/mainmenu");
                 } else {
-                    setIsLogin(true); // Switch back to login after successful signup
+                    setIsLogin(true);
                     setError("✅ Account created! You can now log in.");
                 }
             }

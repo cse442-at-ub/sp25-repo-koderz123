@@ -2,14 +2,17 @@ import express from "express";
 import mysql from "mysql2";
 import bcrypt from "bcrypt";
 import cors from "cors";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Database Connection (XAMPP)
+// ✅ MySQL Database Connection (CSE442 Server)
 const db = mysql.createConnection({
-    host: "localhost",
+    host: "localhost",  // Change if MySQL is remote
     user: "mashfiqu",  
     password: "50380344",  
     database: "global_players_db"
@@ -18,22 +21,23 @@ const db = mysql.createConnection({
 db.connect(err => {
     if (err) {
         console.error("❌ Database connection failed:", err);
-        process.exit(1); // Stop server if DB fails to connect
+        process.exit(1);
     }
-    console.log("✅ Connected to MySQL");
+    console.log("✅ Connected to MySQL (global_players_db)");
 });
 
-//  SIGNUP (New User Registration)
+// ✅ JWT Secret Key
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+
+// ✅ REGISTER (Signup)
 app.post('/signup', async (req, res) => {
     const { username, password } = req.body;
-
     if (!username || !password) {
         return res.status(400).json({ error: "Username and password are required." });
     }
 
     try {
-        // Check if username already exists
-        db.query("SELECT * FROM global_players_db WHERE playerName = ?", [username], async (err, results) => {
+        db.query("SELECT * FROM players WHERE playerName = ?", [username], async (err, results) => {
             if (err) {
                 console.error("❌ Database error (checking user):", err);
                 return res.status(500).json({ error: "Database error." });
@@ -42,12 +46,9 @@ app.post('/signup', async (req, res) => {
                 return res.status(400).json({ error: "Username already taken." });
             }
 
-            // Hash password before storing
             const hashedPassword = await bcrypt.hash(password, 10);
-
-            // Insert new player into database
-            db.query("INSERT INTO global_players_db (playerName, playerPassword, playerAccountLvl) VALUES (?, ?, ?)", 
-                [username, hashedPassword, 1], // Default account level is 1
+            db.query("INSERT INTO players (playerName, playerPassword, playerAccountLvl) VALUES (?, ?, ?)", 
+                [username, hashedPassword, 1],  // Default account level 1
                 (err, result) => {
                     if (err) {
                         console.error("❌ Error inserting user:", err);
@@ -64,15 +65,14 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-//  LOGIN (Authenticate User)
+// ✅ LOGIN (Authenticate User & Return JWT)
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-
     if (!username || !password) {
         return res.status(400).json({ error: "Username and password are required." });
     }
 
-    db.query("SELECT * FROM global_players_db WHERE playerName = ?", [username], async (err, results) => {
+    db.query("SELECT * FROM players WHERE playerName = ?", [username], async (err, results) => {
         if (err) {
             console.error("❌ Database error (login):", err);
             return res.status(500).json({ error: "Database error." });
@@ -82,19 +82,31 @@ app.post('/login', (req, res) => {
         }
 
         const user = results[0];
-
-        // Compare password with stored hash
         const isMatch = await bcrypt.compare(password, user.playerPassword);
         if (!isMatch) {
             return res.status(400).json({ error: "Invalid password." });
         }
 
-        res.json({ message: "Login successful!" });
+        // ✅ Generate JWT Token
+        const token = jwt.sign({ id: user.playerID, username: user.playerName }, JWT_SECRET, { expiresIn: "1h" });
+
+        res.json({ message: "Login successful!", token });
     });
 });
 
-//  Start the backend server
-const PORT = 3306;
+// ✅ PROTECTED ROUTE (Example)
+app.get("/protected", (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Access denied" });
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(403).json({ message: "Invalid token" });
+        res.json({ message: "You accessed a protected route!", user: decoded });
+    });
+});
+
+// ✅ Start Backend Server
+const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
 });

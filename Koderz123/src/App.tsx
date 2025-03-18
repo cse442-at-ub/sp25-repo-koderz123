@@ -7,12 +7,9 @@ import LandingPage from './Landing page components/LandingPage';
 import LoginScreen from './LoginScreenComponents/LoginScreen';
 import { MusicProvider } from './MusicContext';
 import PhaserHelloWorld from './PhaserHelloWorld/PhaserHelloWorldComponent';
-<<<<<<< Updated upstream
 import InitialGame from './PhaserGameFiles/InitialGame';
-
-=======
 import TutorialScreen from './TutorialScreenComponents/TutorialScreen';
->>>>>>> Stashed changes
+
 const App: React.FC = () => {
     return (
         <MusicProvider>

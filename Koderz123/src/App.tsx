@@ -9,6 +9,7 @@ import { MusicProvider } from './MusicContext';
 import PhaserHelloWorld from './PhaserHelloWorld/PhaserHelloWorldComponent';
 import InitialGame from './PhaserGameFiles/InitialGame';
 import TutorialScreen from './TutorialScreenComponents/TutorialScreen';
+import Leaderboard from './LeaderboardComponents/Leaderboard';
 
 const App: React.FC = () => {
     return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
                         <Route path="/login" element={<LoginScreen/>} />
                         <Route path="/PhaserHelloWorld" element={<PhaserHelloWorld/>} />
                         <Route path="/tutorial" element={<TutorialScreen />} />
+                        <Route path="/leaderboard" element={<Leaderboard />} />
                         <Route path="*" element={<div>404 - Not Found</div>} /> {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
                     </Routes>
                 </div>

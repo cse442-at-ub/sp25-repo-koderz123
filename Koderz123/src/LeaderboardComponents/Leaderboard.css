@@ -1,0 +1,87 @@
+/* Leaderboard screen (full-page background) */
+.leaderboard-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4d5667;
+  overflow: hidden;
+}
+
+/* Container */
+.game-container {
+  width: 94vw;
+  height: 95vh;
+  background-color: #3a3f4a;
+  border-radius: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Background image */
+.space-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+  z-index: 0;
+}
+
+/* Title */
+.leaderboard-title {
+  font-size: 40px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+  z-index: 2;
+  text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Scrollable leaderboard */
+.leaderboard-list {
+  width: 80%;
+  max-height: 60vh; /* Allows scrolling */
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 20px;
+  z-index: 2;
+}
+
+/* Placeholder text */
+.placeholder-text {
+  font-size: 20px;
+  color: white;
+  opacity: 0.7;
+}
+
+/* Back button */
+.back-button {
+  position: absolute;
+  bottom: 5%;
+  width: 10%;
+  max-width: 125px;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s ease-in-out;
+  z-index: 2;
+}
+
+.back-button:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.back-button:active {
+  transform: scale(0.95);
+  filter: brightness(0.9);
+}
+
+  

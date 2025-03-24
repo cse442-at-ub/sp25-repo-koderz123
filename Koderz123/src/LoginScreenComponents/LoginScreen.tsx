@@ -53,6 +53,7 @@ const LoginScreen: React.FC = () => {
       } else {
         console.log(`✅ ${isLogin ? "Login" : "Signup"} successful!`, data);
         if (isLogin) {
+          localStorage.setItem("loggedInUsername", username);
           navigate("/mainmenu");
         } else {
           setIsLogin(true); // Switch back to login after successful signup

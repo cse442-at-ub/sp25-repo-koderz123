@@ -1,28 +1,40 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 header("Content-Type: application/json");
 
-$config = json_decode(file_get_contents("./config.json"));
+$config_path = __DIR__ . "/config.json";
+if (!file_exists($config_path)) {
+    die(json_encode(["status" => "failed", "message" => "Config file not found"]));
+}
 
-$connection = new mysqli("localhost", $config->username, $config->password, $config->db_name);
+$config = json_decode(file_get_contents($config_path), true);
+if (!$config || !isset($config["username"], $config["password"], $config["db_name"])) {
+    die(json_encode(["status" => "failed", "message" => "Invalid config file"]));
+}
 
+$username = $config["username"];
+$password = $config["password"];
+$db_name = $config["db_name"];
+
+$connection = new mysqli("localhost", $username, $password, $db_name);
 if ($connection->connect_error) {
-    http_response_code(500);
-    die(json_encode(["status" => 500, "message" => "Database connection failed"]));
+    die(json_encode(["status" => "failed", "message" => "Database connection failed: " . $connection->connect_error]));
 }
 
 $json = json_decode(file_get_contents("php://input"), true);
-
 if (!isset($json["username"]) || !isset($json["password"])) {
     http_response_code(400);
-    die(json_encode(["status" => 400, "message" => "Missing required fields"]));
+    die(json_encode(["status" => "failed", "message" => "Missing required fields"]));
 }
 
 $signup_name = $json["username"];
 $signup_pass = password_hash($json["password"], PASSWORD_DEFAULT);
+$default_level = 1; // ✅ Set default player level
 
-// ✅ Use a prepared statement to prevent SQL injection
-$stmt = $connection->prepare("INSERT INTO global_players_db (username, password) VALUES (?, ?)");
-$stmt->bind_param("ss", $signup_name, $signup_pass);
+// ✅ Ensure the query matches the bind_param() statement
+$stmt = $connection->prepare("INSERT INTO global_players_db (playerName, playerPassword, playerAccountLvl) VALUES (?, ?, ?)");
+$stmt->bind_param("ssi", $signup_name, $signup_pass, $default_level);
 
 if ($stmt->execute()) {
     http_response_code(201);

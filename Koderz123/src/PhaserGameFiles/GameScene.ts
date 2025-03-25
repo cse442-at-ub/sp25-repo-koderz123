@@ -46,6 +46,8 @@ class GameScene extends Phaser.Scene {
     this.path.lineTo(1000, 180);
 
     graphics.lineStyle(3, 0xffffff, 1);
+   // this.path.draw(graphics);
+    //this.path.setDepth(1);
 
     // ✅ Create the "Start Wave" button using StartWaveButton class
     this.startWaveButton = new StartWaveButton(

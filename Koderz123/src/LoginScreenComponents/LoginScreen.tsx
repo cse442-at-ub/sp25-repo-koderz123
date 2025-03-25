@@ -37,6 +37,7 @@ const LoginScreen: React.FC = () => {
         }
 
         try {
+
             // ✅ Use PHP API for login/signup
             const endpoint = isLogin ? `${API_BASE_URL}login.php` : `${API_BASE_URL}signup.php`;
             const response = await fetch(endpoint, {
@@ -73,7 +74,7 @@ const LoginScreen: React.FC = () => {
                 <div id="frame">
                     <form id="form" onSubmit={handleSubmit}>
                         <div className="input">
-                            <label htmlFor="username">Username:&nbsp;</label>
+                            <label htmlFor="username">Username: </label>
                             <input
                                 type="text"
                                 id="username"
@@ -83,7 +84,7 @@ const LoginScreen: React.FC = () => {
                             />
                         </div>
                         <div className="input">
-                            <label htmlFor="password">Password:&nbsp;</label>
+                            <label htmlFor="password">Password: </label>
                             <input
                                 type="password"
                                 id="password"

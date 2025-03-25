@@ -1,16 +1,29 @@
 <?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 header("Content-Type: application/json");
-$config = json_decode(file_get_contents("../config.json"));
 
-$connection = new mysqli("localhost", $config->username, $config->password, $config->db_name);
+$config_path = __DIR__ . "/config.json";
+if (!file_exists($config_path)) {
+    die(json_encode(["status" => "failed", "message" => "Config file not found"]));
+}
 
+$config = json_decode(file_get_contents($config_path), true);
+if (!$config || !isset($config["username"], $config["password"], $config["db_name"])) {
+    die(json_encode(["status" => "failed", "message" => "Invalid config file"]));
+}
+
+$username = $config["username"];
+$password = $config["password"];
+$db_name = $config["db_name"];
+
+$connection = new mysqli("localhost", $username, $password, $db_name);
 if ($connection->connect_error) {
-    http_response_code(500);
-    die(json_encode(["status" => "failed", "message" => "Database connection failed"]));
+    die(json_encode(["status" => "failed", "message" => "Database connection failed: " . $connection->connect_error]));
 }
 
 $json = json_decode(file_get_contents("php://input"), true);
-
 if (!isset($json["username"]) || !isset($json["password"])) {
     http_response_code(400);
     die(json_encode(["status" => "failed", "message" => "Missing username or password"]));
@@ -19,58 +32,26 @@ if (!isset($json["username"]) || !isset($json["password"])) {
 $login_username = $json["username"];
 $login_password = $json["password"];
 
-// ✅ Secure query to prevent SQL injection
-$stmt = $connection->prepare("SELECT user_id, password FROM users WHERE username = ?");
+// ✅ Ensure correct table name: global_players_db
+$stmt = $connection->prepare("SELECT playerPassword FROM global_players_db WHERE playerName = ?");
 $stmt->bind_param("s", $login_username);
 $stmt->execute();
 $stmt->store_result();
 
-if ($stmt->num_rows === 1) {
-    $stmt->bind_result($user_id, $hashed_password);
+if ($stmt->num_rows > 0) {
+    $stmt->bind_result($hashed_password);
     $stmt->fetch();
 
-    // ✅ Verify password
     if (password_verify($login_password, $hashed_password)) {
-        // Generate Secure Token
-        $token = bin2hex(random_bytes(32)); // Secure random token
-        $hashed_token = hash("sha256", $token);
-
-        // ✅ Remove any existing active session for the user
-        $stmt_delete = $connection->prepare("DELETE FROM active_users WHERE user_id = ?");
-        $stmt_delete->bind_param("i", $user_id);
-        $stmt_delete->execute();
-        $stmt_delete->close();
-
-        // ✅ Insert new active session
-        $stmt_insert = $connection->prepare("INSERT INTO active_users (user_id, token) VALUES (?, ?)");
-        $stmt_insert->bind_param("is", $user_id, $hashed_token);
-        $stmt_insert->execute();
-        $stmt_insert->close();
-
-        // ✅ Set secure cookies
-        setcookie("username", htmlspecialchars($login_username, ENT_QUOTES, 'UTF-8'), [
-            "expires" => time() + 3600,
-            "path" => "/",
-            "httponly" => true,
-            "samesite" => "Strict"
-        ]);
-
-        setcookie("token", $token, [
-            "expires" => time() + 3600,
-            "path" => "/",
-            "httponly" => true,
-            "samesite" => "Strict"
-        ]);
-
         http_response_code(200);
-        die(json_encode(["status" => "valid", "message" => "Login successful"]));
+        echo json_encode(["status" => 200, "message" => "Login successful"]);
     } else {
         http_response_code(401);
-        die(json_encode(["status" => "failed", "message" => "Incorrect credentials"]));
+        echo json_encode(["status" => "failed", "message" => "Incorrect credentials"]);
     }
 } else {
-    http_response_code(401);
-    die(json_encode(["status" => "failed", "message" => "Incorrect credentials"]));
+    http_response_code(404);
+    echo json_encode(["status" => "failed", "message" => "User not found"]);
 }
 
 $stmt->close();

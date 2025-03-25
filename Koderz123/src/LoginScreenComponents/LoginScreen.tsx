@@ -3,10 +3,10 @@ import React, { useState, MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginScreen.css";
 
+const API_BASE_URL = "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
+
 const LoginScreen: React.FC = () => {
     const navigate = useNavigate();
-
-    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
     
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -32,30 +32,33 @@ const LoginScreen: React.FC = () => {
         event.preventDefault();
         
         if (password.length < 11) {
-            setError("Password must be at least 11 characters long.");
+            setError("⚠️ Password must be at least 11 characters long.");
             return;
         }
 
         try {
-            const endpoint = isLogin 
-                ? "http://cattle.cse.buffalo.edu/data/web/CSE442/2025-Spring/cse-442p/backend/auth.php?action=login" 
-                : "http://cattle.cse.buffalo.edu/data/web/CSE442/2025-Spring/cse-442p/backend/auth.php?action=signup";
+
+            // ✅ Use PHP API for login/signup
+            const endpoint = isLogin ? `${API_BASE_URL}login.php` : `${API_BASE_URL}signup.php`;
             const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
+                credentials: "include", // Ensures cookies are sent/received
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.error || (isLogin ? "Login failed" : "Signup failed"));
+                setError(data.message || (isLogin ? "⚠️ Login failed" : "⚠️ Signup failed"));
             } else {
                 console.log(`✅ ${isLogin ? "Login" : "Signup"} successful!`, data);
+
                 if (isLogin) {
+                    localStorage.setItem("user_id", data.user_id); // ✅ Store user ID
                     navigate("/mainmenu");
                 } else {
-                    setIsLogin(true); // Switch back to login after successful signup
+                    setIsLogin(true);
                     setError("✅ Account created! You can now log in.");
                 }
             }

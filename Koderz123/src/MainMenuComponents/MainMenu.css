@@ -11,6 +11,17 @@
   flex-direction: column;
 }
 
+#MainMenupage h1 {
+  width: 50vw;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-size: 56px;
+  color: white;
+  margin-top: 50px;
+  margin-bottom: 40px;
+}
+
 h1 {
   text-align: center;
   margin: 0;
@@ -35,13 +46,13 @@ h1 {
 }
 
 .menu-item {
-  width: 600px;
-  padding: 30px;
+  width: 270px;
+  padding: 20px;
   font-size: 30px;
   color: black;
   margin: 20px auto;
   background-color: #d2cdcd;
-  border-radius: 25px;
+  border-radius: 30px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -65,7 +76,9 @@ h1 {
 }
 
 #username-text {
+  color: white;
   position: absolute;
   bottom: 0;
   left: 0;
+  margin-left: 20px;
 }

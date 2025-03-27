@@ -52,12 +52,12 @@ const MainMenu: React.FC = () => {
   };
 
   const hovering = (e: React.MouseEvent<HTMLElement>) => {
-    (e.target as HTMLElement).style.fontSize = "38px";
+    (e.target as HTMLElement).style.fontSize = "32px";
     e.currentTarget.style.cursor = "pointer";
   };
 
   const notHovering = (e: React.MouseEvent<HTMLElement>) => {
-    (e.target as HTMLElement).style.fontSize = "36px";
+    (e.target as HTMLElement).style.fontSize = "30px";
     e.currentTarget.style.cursor = "default";
   };
 
@@ -73,7 +73,7 @@ const MainMenu: React.FC = () => {
   const logout = () => {
     localStorage.removeItem("user_id");
     localStorage.removeItem("loggedInUsername");
-    window.location.href = "/login";
+    navigate("/login");
   };
 
   return (

@@ -11,7 +11,7 @@ const ProtectedRoute = () => {
       alert("Please login first");
     }, []);
 
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 };
 

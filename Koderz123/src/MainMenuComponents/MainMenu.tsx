@@ -73,7 +73,7 @@ const MainMenu: React.FC = () => {
   const logout = () => {
     localStorage.removeItem("user_id");
     localStorage.removeItem("loggedInUsername");
-    window.location.href = "/";
+    window.location.href = "/login";
   };
 
   return (

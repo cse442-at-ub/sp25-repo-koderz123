@@ -60,6 +60,7 @@ const LoginScreen: React.FC = () => {
 
         if (isLogin) {
           localStorage.setItem("user_id", data.user_id); // ✅ Store user ID
+          localStorage.setItem("loggedInUsername", username);
           navigate("/mainmenu");
         } else {
           setIsLogin(true);

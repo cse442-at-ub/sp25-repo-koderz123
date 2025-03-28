@@ -33,6 +33,11 @@ class GameScene extends Phaser.Scene {
   private justSelectedTower = false;
   private exitButton!: ExitButton;
 
+  private selectedTower: Tower | null = null;
+  private upgradeButton: Phaser.GameObjects.Text | null = null;
+  private towerClicked = false;
+  private resources = 1000; // Initialize number of resources
+  private resourceText: Phaser.GameObjects.Text;
 
   
 
@@ -156,6 +161,17 @@ class GameScene extends Phaser.Scene {
     // Create enemies group
     this.enemies = this.add.group({ classType: Enemy, runChildUpdate: true });
     this.nextEnemy = 0;
+
+    // Create resource text
+    this.resourceText = this.add.text(width - 200,height - 50, `Coins: ${this.resources}`, {
+      fontSize: "24px",
+      color: "#ffffff",
+    });
+
+    this.updateResourceText(); // Display initial resources
+  
+    this.input.on("gameobjectdown", this.handleTowerClick, this); // Listen for tower clicks
+    this.input.on("pointerdown", this.handleSceneClick, this); // Listen for other clicks
   }
 
   update(time: number, delta: number) {
@@ -171,6 +187,75 @@ class GameScene extends Phaser.Scene {
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
       }
     }
+  }
+
+  handleTowerClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+    if (gameObject instanceof Tower && gameObject.isPlaced) {
+      console.log("Tower clicked!");
+        this.selectedTower = gameObject;
+        this.showUpgradeButton();
+        this.towerClicked = true;
+    }
+  }
+
+  handleSceneClick(pointer: Phaser.Input.Pointer) {
+
+    if (!this.towerClicked){
+      console.log("Scene clicked!");
+      if(this.upgradeButton){
+        this.upgradeButton.destroy();
+        this.upgradeButton = null;
+        this.selectedTower = null;
+      }
+    }
+    this.towerClicked = false;
+}
+
+  showUpgradeButton() {
+      if (this.upgradeButton) {
+          this.upgradeButton.destroy();
+      }
+
+      if (this.selectedTower) {
+          this.upgradeButton = this.add
+              .text(this.selectedTower.x, this.selectedTower.y - 50, `Upgrade (${this.selectedTower.upgradeCost})`, {
+                  fontSize: "16px",
+                  color: "#ffffff",
+                  backgroundColor: "#555",
+                  padding: { left: 10, right: 10, top: 5, bottom: 5 },
+              })
+              .setOrigin(0.5)
+              .setInteractive()
+              .on("pointerdown", () => {
+                  this.upgradeSelectedTower();
+              });
+      }
+  }
+
+  upgradeSelectedTower() {
+      if (this.selectedTower) {
+          if (this.hasEnoughResources(this.selectedTower.upgradeCost)) {
+              this.removeResources(this.selectedTower.upgradeCost);
+              this.selectedTower.upgrade();
+              this.showUpgradeButton();
+              this.updateResourceText();
+          } else {
+              console.log("Not enough resources to upgrade.");
+          }
+      }
+  }
+
+  hasEnoughResources(cost: number): boolean {
+    return this.resources >= cost;
+  }
+
+  removeResources(cost: number) {
+      this.resources -= cost;
+      console.log(`Removed ${cost} resources.`);
+  }
+
+  updateResourceText() {
+    this.resourceText.setText(`Coins: ${this.resources}`);
   }
 
   private isValidTowerPlacement(x: number, y: number): boolean {

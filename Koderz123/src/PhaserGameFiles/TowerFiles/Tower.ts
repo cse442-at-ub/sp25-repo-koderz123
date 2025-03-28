@@ -11,6 +11,8 @@ class Tower extends Phaser.GameObjects.Image {
     this.range = 100;
     this.cost = 100;
     this.isPlaced = false;
+    this.level = 1; // Initialize level
+    this.upgradeCost = 50; // Initialize upgrade cost
 
     this.setInteractive();
 
@@ -35,6 +37,15 @@ class Tower extends Phaser.GameObjects.Image {
     g.lineStyle(2, 0x00ff00, 0.5);
     g.strokeCircle(this.x, this.y, this.range);
     g.setDepth(-1);
+  }
+
+  upgrade() {
+    this.level++;
+    this.range += 20; // Example upgrade: increase range
+    this.upgradeCost += 50; // Example upgrade: increase upgrade cost
+
+    // Update visual representation (e.g., change texture or add effects)
+    console.log(`Tower upgraded to level ${this.level}`);
   }
 
   update(time: number, delta: number) {

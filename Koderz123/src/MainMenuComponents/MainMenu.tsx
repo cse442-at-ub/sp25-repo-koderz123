@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainMenu.css";
-import music from "../assets/menu_music.mp3";
+import music from "../assets/menu_music.mp3"; 
+import { FaTrophy } from "react-icons/fa";
+
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +32,7 @@ const MainMenu: React.FC = () => {
         };
     }, []);
     */
-
+  
   const clickNewGame = () => {
     navigate("/levelselect");
   };
@@ -117,6 +119,10 @@ const MainMenu: React.FC = () => {
         ) : (
           <p>User not logged in.</p>
         )}
+      </div>
+      <div id="leaderboard-button" 
+        onClick={clickLeaderboard}>
+        <FaTrophy size={30} color="black" />
       </div>
     </div>
   );

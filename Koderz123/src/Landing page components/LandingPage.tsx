@@ -10,7 +10,7 @@ const LandingPage: React.FC = () => {
 
   const click = () => {
     //Used when back button is clicked to navigate back to the main menu
-    navigate("/mainmenu");
+    navigate("/login");
     playMusic();
   };
 

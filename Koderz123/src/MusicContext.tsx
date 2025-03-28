@@ -57,7 +57,7 @@ export const MusicProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <MusicContext.Provider value={value}>{children}</MusicContext.Provider>
+    <MusicContext.Provider value={ value }>{children}</MusicContext.Provider>
   );
 };
 

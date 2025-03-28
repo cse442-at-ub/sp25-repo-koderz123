@@ -1,3 +1,4 @@
+
 // TowerMenu.ts
 import Phaser from "phaser";
 
@@ -23,6 +24,7 @@ class TowerMenu {
   constructor(scene: Phaser.Scene, onTowerSelect: (type: string) => void) {
     this.scene = scene;
     this.onTowerSelect = onTowerSelect;
+
 
     const { width, height } = scene.scale;
 
@@ -57,10 +59,12 @@ class TowerMenu {
     this.drawButton(0x2d2c2b);
 
     this.buttonText = scene.add.text(0, 0, "☰", {
+
       fontSize: "24px",
       fontFamily: "Arial",
       color: "#ffffff",
       fontStyle: "bold",
+
     }).setOrigin(0.5).setDepth(1);
 
     this.hamburgerButton = scene.add.container(hamburgerX, hamburgerY, [this.buttonBg, this.buttonText]);
@@ -82,12 +86,14 @@ class TowerMenu {
   }
 
   private drawButton(color: number) {
+
     this.buttonBg.clear();
     this.buttonBg.lineStyle(2, 0xffffff, 1);
     this.buttonBg.strokeRoundedRect(-30, -30, 60, 60, 10);
     this.buttonBg.fillStyle(color, 1);
     this.buttonBg.fillRoundedRect(-30, -30, 60, 60, 10);
   }
+
 
   private toggleMenu() {
     const { height } = this.scene.scale;
@@ -97,7 +103,9 @@ class TowerMenu {
     if (!this.open) {
       this.container.setVisible(true);
       this.container.y = hiddenY;
+
       this.scene.tweens.add({ targets: this.container, y: targetY, duration: 300, ease: "Back.easeOut" });
+
     } else {
       this.scene.tweens.add({
         targets: this.container,
@@ -113,11 +121,13 @@ class TowerMenu {
 
 
 
+
   public setVisibleAllUI(visible: boolean) {
     this.container.setVisible(visible);
     this.hamburgerButton.setVisible(visible);
   }
   
+
 }
 
 export default TowerMenu;

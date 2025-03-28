@@ -6,6 +6,7 @@ import TowerMenu from "./TowerFiles/TowerMenu";
 import ExitButton from "./ExitButton";
 import Tower from "./TowerFiles/Tower";
 
+
 class GameScene extends Phaser.Scene {
   private enemies!: Phaser.GameObjects.Group;
   private nextEnemy!: number;
@@ -25,12 +26,12 @@ class GameScene extends Phaser.Scene {
   private countdownText!: Phaser.GameObjects.Text;
   private countdownSeconds = 60; // Initial countdown time in seconds
   private towerMenu!: TowerMenu;
+
   private selectedTowerType: string | null = null;
   private towerPreview?: Tower;
   private placementRadius = 80;
   private justSelectedTower = false;
   private exitButton!: ExitButton;
-
 
 
   
@@ -110,7 +111,6 @@ class GameScene extends Phaser.Scene {
       }
     });
     
-
 
     const graphics = this.add.graphics();
     this.path = new Phaser.Curves.Path(-32, 140);

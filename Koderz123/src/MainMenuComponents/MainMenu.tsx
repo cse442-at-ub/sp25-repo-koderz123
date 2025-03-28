@@ -3,11 +3,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainMenu.css";
 import music from "../assets/menu_music.mp3"; 
+import { FaTrophy } from "react-icons/fa";
+
 
 const MainMenu: React.FC = () => {
-    const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-    /*
+  const loggedInUsername = localStorage.getItem("loggedInUsername");
+
+  /*
     const [, setAudio] = useState<HTMLAudioElement | null>(null); 
 
     // Play music as soon as the page loads
@@ -28,88 +32,104 @@ const MainMenu: React.FC = () => {
         };
     }, []);
     */
+  
+  const clickNewGame = () => {
+    navigate("/levelselect");
+  };
 
-    const clickNewGame = () => {
-        navigate("/levelselect");
-    };
+  const clickOptions = () => {
+    navigate("/options");
+  };
 
-    const clickOptions = () => {
-        navigate("/options");
-    };
+  const clickExit = () => {
+    navigate("/");
+  };
 
-    const clickExit = () => {
-        navigate("/");
-    };
+  const clickLogin = () => {
+    navigate("/login");
+  };
 
-    const clickLogin = () => {
-        navigate("/login");
-    };
+  const clickTutorial = () => {
+    navigate("/tutorial");
+  };
 
-    const clickTutorial = () => {
-        navigate("/tutorial");
-    };
+  const clickLeaderboard = () => {
+    navigate("/leaderboard");
+  };
 
-    const hovering = (e: React.MouseEvent<HTMLElement>) => {
-        (e.target as HTMLElement).style.fontSize = "38px";
-        e.currentTarget.style.cursor = "pointer";
-    };
+  const hovering = (e: React.MouseEvent<HTMLElement>) => {
+    (e.target as HTMLElement).style.fontSize = "32px";
+    e.currentTarget.style.cursor = "pointer";
+  };
 
-    const notHovering = (e: React.MouseEvent<HTMLElement>) => {
-        (e.target as HTMLElement).style.fontSize = "36px";
-        e.currentTarget.style.cursor = "default";
-    };
+  const notHovering = (e: React.MouseEvent<HTMLElement>) => {
+    (e.target as HTMLElement).style.fontSize = "30px";
+    e.currentTarget.style.cursor = "default";
+  };
 
-    const hoverMouse = (e: React.MouseEvent<HTMLElement>) => {
-        e.currentTarget.style.cursor = "pointer";
-    };
+  const hoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.cursor = "pointer";
+  };
 
-    const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
-        e.currentTarget.style.cursor = "default";
-    };
+  const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.cursor = "default";
+  };
 
-    return (
-        <div id="MainMenupage">
-            <h1>GALACTIC TOWER DEFENSE</h1>
-            <div 
-                className="menu-item" 
-                onClick={clickNewGame} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                NEW GAME
-            </div>
-            <div 
-                className="menu-item" 
-                onClick={clickOptions} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                OPTIONS
-            </div>
-            <div 
-                className="menu-item" 
-                onClick={clickTutorial} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                TUTORIAL
-            </div>
-            <div 
-                className="menu-item" 
-                onClick={clickExit} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                EXIT
-            </div>
-            <div id="login-button" 
-                 onClick={clickLogin}
-                 onMouseEnter={hoverMouse} 
-                 onMouseLeave={nothoverMouse}>
-                LOGIN
-            </div>
-        </div>
-    );
+  //logout function only removes local storage variables
+  const logout = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("loggedInUsername");
+    navigate("/login");
+  };
+
+  return (
+    <div id="MainMenupage">
+      <h1>GALACTIC TOWER DEFENSE</h1>
+      <div
+        className="menu-item"
+        onClick={clickNewGame}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        NEW GAME
+      </div>
+      <div
+        className="menu-item"
+        onClick={clickOptions}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        OPTIONS
+      </div>
+      <div
+        className="menu-item"
+        onClick={clickTutorial}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        TUTORIAL
+      </div>
+      <div
+        id="logout-button"
+        onClick={logout}
+        onMouseEnter={hoverMouse}
+        onMouseLeave={nothoverMouse}
+      >
+        Logout
+      </div>
+      <div id="username-text">
+        {loggedInUsername ? (
+          <p>Logged in as: {loggedInUsername}</p>
+        ) : (
+          <p>User not logged in.</p>
+        )}
+      </div>
+      <div id="leaderboard-button" 
+        onClick={clickLeaderboard}>
+        <FaTrophy size={30} color="black" />
+      </div>
+    </div>
+  );
 };
 
 export default MainMenu;

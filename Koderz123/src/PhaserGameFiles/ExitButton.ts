@@ -171,6 +171,11 @@ class ExitButton {
 
     return container;
   }
+
+  public setVisible(visible: boolean) {
+    this.buttonContainer.setVisible(visible);
+  }
+  
 }
 
 export default ExitButton;

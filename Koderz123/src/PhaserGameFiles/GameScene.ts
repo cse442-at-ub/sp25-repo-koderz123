@@ -4,6 +4,7 @@ import Enemy from "./Enemy"; // Import the Enemy class
 import StartWaveButton from "./StartWaveButton"; // ✅ Import new button class
 import TowerMenu from "./TowerFiles/TowerMenu";
 import ExitButton from "./ExitButton";
+import Tower from "./TowerFiles/Tower";
 
 class GameScene extends Phaser.Scene {
   private enemies!: Phaser.GameObjects.Group;
@@ -24,6 +25,13 @@ class GameScene extends Phaser.Scene {
   private countdownText!: Phaser.GameObjects.Text;
   private countdownSeconds = 60; // Initial countdown time in seconds
   private towerMenu!: TowerMenu;
+  private selectedTowerType: string | null = null;
+  private towerPreview?: Tower;
+  private placementRadius = 80;
+  private justSelectedTower = false;
+  private exitButton!: ExitButton;
+
+
 
   
 
@@ -31,6 +39,8 @@ class GameScene extends Phaser.Scene {
   preload() {
     this.load.image("background", "assets/GameScreenBackground.png");
     this.load.image("enemy", "assets/enemy.png");
+    this.load.image("default-tower", "assets/towers/default-tower.png");
+
   }
 
   create() {
@@ -40,12 +50,67 @@ class GameScene extends Phaser.Scene {
     background.setDisplaySize(width, height);
     background.setDepth(-1);
 
+    this.exitButton = new ExitButton(this);
+    this.exitButton.setVisible(true); // ✅ make sure it's visible at start
+
+    
+
     this.towerMenu = new TowerMenu(this, (type) => {
       this.selectedTowerType = type;
-      console.log("Selected tower type:", type);
+    
+      if (this.towerPreview) {
+        this.towerPreview.destroy();
+      }
+    
+      this.towerPreview = new Tower(this, 0, 0, "default-tower");
+      this.towerPreview.setAlpha(0.5);
+    
+      this.towerMenu.setVisibleAllUI(false);   // 🔻 Hide menu + hamburger
+      this.startWaveButton.setVisible(false);  // 🔻 Hide start wave
+      this.exitButton.setVisible(false);       // 🔻 Hide exit
+      this.justSelectedTower = true;
     });
     
-    const exitButton = new ExitButton(this);
+    
+
+
+    this.input.on("pointermove", (pointer) => {
+      if (this.towerPreview && !this.towerPreview.isPlaced) {
+        this.towerPreview.setPosition(pointer.worldX, pointer.worldY);
+    
+        const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
+        this.towerPreview.setValidPlacement(isValid);
+      }
+    });
+    
+
+    this.input.on("pointerdown", (pointer) => {
+      if (this.justSelectedTower) {
+        this.justSelectedTower = false; // 🚫 Consume the first click
+        return;
+      }
+    
+      if (this.towerPreview && this.selectedTowerType) {
+        const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
+        if (isValid) {
+          this.towerPreview.place(pointer.worldX, pointer.worldY);
+          this.towerPreview = undefined;
+          this.selectedTowerType = null;
+          this.restoreUI(); // ✅ restore buttons
+        }
+      }
+    });
+
+    this.input.keyboard.on("keydown-ESC", () => {
+      if (this.towerPreview) {
+        this.towerPreview.destroy();
+        this.towerPreview = undefined;
+        this.selectedTowerType = null;
+        this.restoreUI(); // ✅ restore buttons
+      }
+    });
+    
+
 
     const graphics = this.add.graphics();
     this.path = new Phaser.Curves.Path(-32, 140);
@@ -72,6 +137,7 @@ class GameScene extends Phaser.Scene {
         this.startWave();
       }
     );
+    this.startWaveButton.setVisible(true);
 
     // Create the timer text
     this.countdownText = this.add.text(
@@ -105,6 +171,19 @@ class GameScene extends Phaser.Scene {
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
       }
     }
+  }
+
+  private isValidTowerPlacement(x: number, y: number): boolean {
+    const precision = 50;
+    for (let t = 0; t <= 1; t += 1 / precision) {
+      const point = new Phaser.Math.Vector2();
+      this.path.getPoint(t, point);
+      const dist = Phaser.Math.Distance.Between(x, y, point.x, point.y);
+      if (dist < this.placementRadius) {
+        return false;
+      }
+    }
+    return true;
   }
 
   endCountDown() {
@@ -177,6 +256,14 @@ class GameScene extends Phaser.Scene {
       this.endCountDown();
     }
   }
+
+  restoreUI() {
+    this.towerMenu.setVisibleAllUI(true);
+    this.startWaveButton.setVisible(true);
+    this.exitButton.setVisible(true);
+  }
 }
+
+
 
 export default GameScene;

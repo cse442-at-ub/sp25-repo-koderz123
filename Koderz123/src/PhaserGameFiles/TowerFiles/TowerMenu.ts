@@ -1,25 +1,21 @@
+// TowerMenu.ts
 import Phaser from "phaser";
 
 class TowerMenu {
-  // === Config ===
-  private readonly menuHeight = 60;
-  private readonly menuPadding = 20;
-  private readonly bottomPadding = 10;
-  private readonly leftPadding = 20;
-  private readonly buttonSize = 60;
-  private readonly towerSpacing = 140;
-
-  // === Towers ===
-  private readonly towerTypes = ["Frost", "Flamethrower"];
-
-  // === State ===
-  private open = false;
-
-  // === Scene + UI ===
   private scene: Phaser.Scene;
+  private container: Phaser.GameObjects.Container;
+  private background: Phaser.GameObjects.Graphics;
+  private open = false;
   private onTowerSelect: (type: string) => void;
-  private container!: Phaser.GameObjects.Container;
-  private background!: Phaser.GameObjects.Graphics;
+
+  private menuHeight = 60;
+  private menuPadding = 20;
+  private buttonHeight = 60;
+  private bottomPadding = 10;
+  private leftPadding = 10;
+  private towerTypes = ["Frost", "Flamethrower"];
+  private buttonList: Phaser.GameObjects.Text[] = [];
+
   private hamburgerButton!: Phaser.GameObjects.Container;
   private buttonBg!: Phaser.GameObjects.Graphics;
   private buttonText!: Phaser.GameObjects.Text;
@@ -28,140 +24,70 @@ class TowerMenu {
     this.scene = scene;
     this.onTowerSelect = onTowerSelect;
 
-    this.createHotbar();
-    this.createTowerButtons();
-    this.createHamburgerButton();
-  }
+    const { width, height } = scene.scale;
 
-  // === UI Creation ===
+    this.background = scene.add.graphics();
+    this.drawMenuBackground(width, this.menuHeight);
 
-  private createHotbar() {
-    const { width, height } = this.scene.scale;
-
-    this.background = this.scene.add.graphics();
-    this.drawHotbarBackground(width);
-
-    this.container = this.scene.add
-      .container(this.menuPadding, height + this.bottomPadding)
-      .setDepth(9)
-      .setVisible(false);
-
+    this.container = scene.add.container(this.menuPadding, height + this.bottomPadding).setDepth(9).setVisible(false);
     this.container.add(this.background);
-  }
 
-  private createTowerButtons() {
+    // Tower buttons
     this.towerTypes.forEach((type, index) => {
-      const btn = this.scene.add.text(
-        10 + index * this.towerSpacing,
-        10,
-        `* ${type}`,
-        {
-          fontSize: "20px",
-          color: "#ffffff",
-          backgroundColor: "#555",
-          padding: { left: 10, right: 10, top: 6, bottom: 6 },
-        }
-      )
-        .setInteractive()
-        .on("pointerdown", () => this.selectTower(type));
+      const btn = scene.add.text(10 + index * 140, 10, `🛡️ ${type}`, {
+        fontSize: "20px",
+        color: "#ffffff",
+        backgroundColor: "#555",
+        padding: { left: 10, right: 10, top: 6, bottom: 6 },
+      })
+      .setInteractive()
+      .on("pointerdown", () => {
+        this.onTowerSelect(type);
+      });
 
       this.container.add(btn);
+      this.buttonList.push(btn);
     });
-  }
 
-  private createHamburgerButton() {
-    const { height } = this.scene.scale;
-    const x = this.menuPadding + this.leftPadding;
-    const y = height - this.menuHeight - this.buttonSize - this.bottomPadding;
+    // Hamburger
+    const hamburgerX = this.menuPadding + this.leftPadding;
+    const hamburgerY = height - this.menuHeight - this.buttonHeight - this.bottomPadding;
 
-    this.buttonBg = this.scene.add.graphics();
-    this.drawHamburgerBackground(0x2d2c2b);
+    this.buttonBg = scene.add.graphics();
+    this.drawButton(0x2d2c2b);
 
-    this.buttonText = this.scene.add.text(0, 0, "☰", {
+    this.buttonText = scene.add.text(0, 0, "☰", {
       fontSize: "24px",
       fontFamily: "Arial",
       color: "#ffffff",
       fontStyle: "bold",
-    })
-      .setOrigin(0.5)
-      .setDepth(1);
+    }).setOrigin(0.5).setDepth(1);
 
-    this.hamburgerButton = this.scene.add
-      .container(x, y, [this.buttonBg, this.buttonText])
-      .setSize(this.buttonSize, this.buttonSize)
-      .setDepth(10);
+    this.hamburgerButton = scene.add.container(hamburgerX, hamburgerY, [this.buttonBg, this.buttonText]);
+    this.hamburgerButton.setSize(60, 60).setDepth(10);
 
-    const hitArea = this.scene.add.rectangle(0, 0, this.buttonSize, this.buttonSize).setOrigin(0.5);
+    const hitArea = scene.add.rectangle(0, 0, 60, 60).setOrigin(0.5);
     this.hamburgerButton.add(hitArea);
     hitArea.setInteractive({ cursor: "pointer" });
-
-    hitArea.on("pointerover", this.onHover, this);
-    hitArea.on("pointerout", this.onHoverOut, this);
-    hitArea.on("pointerdown", this.onPress, this);
-    hitArea.on("pointerup", this.onRelease, this);
+    hitArea.on("pointerup", () => this.toggleMenu());
   }
 
-  // === Drawing ===
-
-  private drawHotbarBackground(screenWidth: number) {
-    const paddedWidth = screenWidth - this.menuPadding * 2;
+  private drawMenuBackground(width: number, height: number) {
+    const paddedWidth = width - this.menuPadding * 2;
     this.background.clear();
     this.background.fillStyle(0x222222, 0.95);
     this.background.lineStyle(2, 0xffffff, 1);
-    this.background.strokeRoundedRect(0, 0, paddedWidth, this.menuHeight, 15);
-    this.background.fillRoundedRect(0, 0, paddedWidth, this.menuHeight, 15);
+    this.background.strokeRoundedRect(0, 0, paddedWidth, height, 15);
+    this.background.fillRoundedRect(0, 0, paddedWidth, height, 15);
   }
 
-  private drawHamburgerBackground(color: number) {
+  private drawButton(color: number) {
     this.buttonBg.clear();
     this.buttonBg.lineStyle(2, 0xffffff, 1);
     this.buttonBg.strokeRoundedRect(-30, -30, 60, 60, 10);
     this.buttonBg.fillStyle(color, 1);
     this.buttonBg.fillRoundedRect(-30, -30, 60, 60, 10);
   }
-
-  // === Animations & Effects ===
-
-  private onHover() {
-    this.drawHamburgerBackground(0x1e1e1e);
-    this.scene.tweens.add({
-      targets: this.hamburgerButton,
-      scaleX: 1.05,
-      scaleY: 1.05,
-      duration: 100,
-    });
-  }
-
-  private onHoverOut() {
-    this.drawHamburgerBackground(0x2d2c2b);
-    this.scene.tweens.add({
-      targets: this.hamburgerButton,
-      scaleX: 1,
-      scaleY: 1,
-      duration: 100,
-    });
-  }
-
-  private onPress() {
-    this.scene.tweens.add({
-      targets: this.hamburgerButton,
-      scaleX: 0.9,
-      scaleY: 0.9,
-      duration: 80,
-    });
-  }
-
-  private onRelease() {
-    this.scene.tweens.add({
-      targets: this.hamburgerButton,
-      scaleX: 1,
-      scaleY: 1,
-      duration: 80,
-    });
-    this.toggleMenu();
-  }
-
-  // === Menu Open/Close ===
 
   private toggleMenu() {
     const { height } = this.scene.scale;
@@ -171,12 +97,7 @@ class TowerMenu {
     if (!this.open) {
       this.container.setVisible(true);
       this.container.y = hiddenY;
-      this.scene.tweens.add({
-        targets: this.container,
-        y: targetY,
-        duration: 300,
-        ease: "Back.easeOut",
-      });
+      this.scene.tweens.add({ targets: this.container, y: targetY, duration: 300, ease: "Back.easeOut" });
     } else {
       this.scene.tweens.add({
         targets: this.container,
@@ -190,21 +111,13 @@ class TowerMenu {
     this.open = !this.open;
   }
 
-  private selectTower(type: string) {
-    this.onTowerSelect(type);
-    this.open = false;
 
-    const { height } = this.scene.scale;
-    const hiddenY = height + this.bottomPadding;
 
-    this.scene.tweens.add({
-      targets: this.container,
-      y: hiddenY,
-      duration: 200,
-      ease: "Back.easeIn",
-      onComplete: () => this.container.setVisible(false),
-    });
+  public setVisibleAllUI(visible: boolean) {
+    this.container.setVisible(visible);
+    this.hamburgerButton.setVisible(visible);
   }
+  
 }
 
 export default TowerMenu;

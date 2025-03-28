@@ -13,7 +13,7 @@ class Tower extends Phaser.GameObjects.Image {
     this.isPlaced = false;
 
     this.setInteractive();
-    this.setScale(0.5);
+    this.setScale(0.275);
     scene.add.existing(this);
   }
 
@@ -22,6 +22,11 @@ class Tower extends Phaser.GameObjects.Image {
     this.isPlaced = true;
     this.setAlpha(1);
   }
+
+  public setValidPlacement(isValid: boolean) {
+    this.setTint(isValid ? 0xffffff : 0xff4444); // red if invalid
+  }
+  
 
   showRange() {
     const g = this.scene.add.graphics();

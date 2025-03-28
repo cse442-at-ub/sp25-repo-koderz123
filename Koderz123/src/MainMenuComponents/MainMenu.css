@@ -1,89 +1,105 @@
-
 #MainMenupage {
-    background-image: url("../assets/menu-background-image.png");
-    background-size: cover;         
-    font-family: 'Kiwi Maru';
-    caret-color: transparent;
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    align-items: center;             
-    justify-content: center; 
-    flex-direction: column;
+  background-image: url("../assets/menu-background-image.png");
+  background-size: cover;
+  font-family: "Kiwi Maru";
+  caret-color: transparent;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
 
-  }
-  
-  h1 {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    font-size: 56px;               
-    color: white;
-    margin-bottom: 40px;
-  }
-  .title-tem {
-    width: 1200px;                   
-    padding: 30px;
-    font-size: 30px;
-    color:black;
-    margin: 20px auto;
-    background-color: #d2cdcd;
-    border-radius: 25px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s; 
-  }
-  
-  .menu-item {
-    width: 600px;                   
-    padding: 30px;
-    font-size: 30px;
-    color:black;
-    margin: 20px auto;
-    background-color: #d2cdcd;
-    border-radius: 25px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-  }
+#MainMenupage h1 {
+  width: 50vw;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-size: 56px;
+  color: white;
+  margin-top: 50px;
+  margin-bottom: 40px;
+}
 
-  .menu-item:hover {
-    background-color: #c0bbbb;
-    cursor: pointer;
-  }
+h1 {
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  font-size: 56px;
+  color: white;
+  margin-bottom: 40px;
+}
+.title-tem {
+  width: 1200px;
+  padding: 30px;
+  font-size: 30px;
+  color: black;
+  margin: 20px auto;
+  background-color: #d2cdcd;
+  border-radius: 25px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
 
-  #login-button {
-    position: absolute;
-    background-color: #c0bbbb;
-    color: black;
-    border-radius: 5px;
-    padding: 15px;
-    bottom: 0;
-    right: 0;
-  }
+.menu-item {
+  width: 270px;
+  padding: 20px;
+  font-size: 30px;
+  color: black;
+  margin: 20px auto;
+  background-color: #d2cdcd;
+  border-radius: 30px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
 
+.menu-item:hover {
+  background-color: #c0bbbb;
+  cursor: pointer;
+}
 
-  #leaderboard-button {
-    position: absolute;
-    background-color: #c0bbbb;
-    color: black;
-    border-radius: 5px;
-    padding: 10px; 
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    bottom: 20px;
-    left: 20px;
-    width: 50px; 
-    height: 50px; 
+#logout-button {
+  position: absolute;
+  background-color: #c0bbbb;
+  color: black;
+  border-radius: 5px;
+  padding: 15px;
+  bottom: 0;
+  right: 0;
+}
+
+#leaderboard-button {
+  position: absolute;
+  background-color: #c0bbbb;
+  color: black;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
 }
 
 #leaderboard-button:hover {
-    background-color: #a9a5a5; 
-    transform: scale(1.1); 
-    transition: transform 0.2s ease-in-out;
+  background-color: #a9a5a5;
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+#username-text {
+  color: white;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin-left: 20px;
 }

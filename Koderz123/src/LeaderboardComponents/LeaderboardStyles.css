@@ -1,0 +1,36 @@
+/* Base rank colors */
+.top-rank-1 {
+    background-color: rgba(255, 215, 0, 0.4); /* bright gold */
+  }
+  
+  .top-rank-2 {
+    background-color: rgba(192, 192, 192, 0.4); /* bright silver */
+  }
+  
+  .top-rank-3 {
+    background-color: rgba(205, 127, 50, 0.4); /* bright bronze */
+  }
+  
+  /* Hover effect */
+  .hovered {
+    background-color: rgba(83, 83, 252, 0.216); /* light blue hover */
+  }
+  
+  /* Selected state for all ranks */
+  .selected {
+    background-color: blue; /* Selected color for non-top ranks */
+  }
+  
+  /* Selected states for top ranks, darker versions of their colors */
+  .top-rank-1-selected {
+    background-color: rgba(255, 215, 0, 0.6); /* Darker gold */
+  }
+  
+  .top-rank-2-selected {
+    background-color: rgba(192, 192, 192, 0.6); /* Darker silver */
+  }
+  
+  .top-rank-3-selected {
+    background-color: rgba(205, 127, 50, 0.6); /* Darker bronze */
+  }
+  

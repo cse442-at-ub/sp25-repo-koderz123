@@ -75,6 +75,27 @@ h1 {
   right: 0;
 }
 
+#leaderboard-button {
+  position: absolute;
+  background-color: #c0bbbb;
+  color: black;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+}
+
+#leaderboard-button:hover {
+  background-color: #a9a5a5;
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
 #username-text {
   color: white;
   position: absolute;

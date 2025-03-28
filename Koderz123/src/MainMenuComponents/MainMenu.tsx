@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainMenu.css";
 import music from "../assets/menu_music.mp3"; 
+import { FaTrophy } from "react-icons/fa";
 
 const MainMenu: React.FC = () => {
     const navigate = useNavigate(); 
@@ -47,6 +48,10 @@ const MainMenu: React.FC = () => {
 
     const clickTutorial = () => {
         navigate("/tutorial");
+    };
+
+    const clickLeaderboard = () => {
+        navigate("/leaderboard");
     };
 
     const hovering = (e: React.MouseEvent<HTMLElement>) => {
@@ -108,6 +113,10 @@ const MainMenu: React.FC = () => {
                  onMouseLeave={nothoverMouse}>
                 LOGIN
             </div>
+            <div id="leaderboard-button" 
+                 onClick={clickLeaderboard}>
+                 <FaTrophy size={30} color="black" />
+            </div>     
         </div>
     );
 };

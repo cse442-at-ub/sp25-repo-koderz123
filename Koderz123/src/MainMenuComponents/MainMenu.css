@@ -99,7 +99,7 @@ h1 {
 #username-text {
   color: white;
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   margin-left: 20px;
 }

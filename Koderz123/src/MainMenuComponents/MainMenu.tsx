@@ -53,6 +53,10 @@ const MainMenu: React.FC = () => {
     navigate("/tutorial");
   };
 
+  const clickLeaderboard = () => {
+    navigate("/leaderboard");
+  };
+
   const hovering = (e: React.MouseEvent<HTMLElement>) => {
     (e.target as HTMLElement).style.fontSize = "32px";
     e.currentTarget.style.cursor = "pointer";

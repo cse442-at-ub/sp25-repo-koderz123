@@ -2,6 +2,8 @@
 import Phaser from "phaser";
 import Enemy from "./Enemy"; // Import the Enemy class
 import StartWaveButton from "./StartWaveButton"; // ✅ Import new button class
+import TowerMenu from "./TowerFiles/TowerMenu";
+import ExitButton from "./ExitButton";
 
 class GameScene extends Phaser.Scene {
   private enemies!: Phaser.GameObjects.Group;
@@ -21,6 +23,10 @@ class GameScene extends Phaser.Scene {
   private countdownTimer!: Phaser.Time.TimerEvent; // For countdown timers
   private countdownText!: Phaser.GameObjects.Text;
   private countdownSeconds = 60; // Initial countdown time in seconds
+  private towerMenu!: TowerMenu;
+
+  
+
 
   preload() {
     this.load.image("background", "assets/GameScreenBackground.png");
@@ -33,6 +39,13 @@ class GameScene extends Phaser.Scene {
     background.setOrigin(0.5, 0.5);
     background.setDisplaySize(width, height);
     background.setDepth(-1);
+
+    this.towerMenu = new TowerMenu(this, (type) => {
+      this.selectedTowerType = type;
+      console.log("Selected tower type:", type);
+    });
+    
+    const exitButton = new ExitButton(this);
 
     const graphics = this.add.graphics();
     this.path = new Phaser.Curves.Path(-32, 140);
@@ -52,8 +65,8 @@ class GameScene extends Phaser.Scene {
     // ✅ Create the "Start Wave" button using StartWaveButton class
     this.startWaveButton = new StartWaveButton(
       this,
-      150,
-      475,
+      850,
+      75,
       `Start Wave ${this.WAVE_NUMBER}`,
       () => {
         this.startWave();

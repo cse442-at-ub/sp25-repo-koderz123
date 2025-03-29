@@ -28,27 +28,13 @@ const LoginScreen: React.FC = () => {
     e.currentTarget.style.cursor = "default";
   };
 
-  // Add logout function
-  const handleLogout = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}logout.php`, {
-        method: "POST",
-        credentials: "include"
-      });
-      
-      if (response.ok) {
-        localStorage.removeItem("user_id");
-        localStorage.removeItem("loggedInUsername");
-        navigate("/login");
-      }
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+  const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.cursor = "default";
   };
 
   // Handle login or signup form submission
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     if (password.length < 11) {
       setError("⚠️ Password must be at least 11 characters long.");

@@ -96,10 +96,17 @@ const MainMenu: React.FC = () => {
       console.error("⚠️ Network error during logout:", error);
       alert("Network error during logout. You have been logged out locally.");
     } finally {
-      // Clear local storage and redirect regardless of server response
+      // Clear local storage
       localStorage.removeItem("user_id");
       localStorage.removeItem("loggedInUsername");
-      navigate("/login");
+      
+      // Show logout message first
+      alert("You have been logged out!");
+      
+      // Then navigate after the alert is closed
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
   };
 

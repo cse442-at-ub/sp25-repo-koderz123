@@ -5,6 +5,7 @@ class Tower extends Phaser.GameObjects.Image {
   public range: number;
   public cost: number;
   public isPlaced: boolean;
+  public upgradeCost: number; // Cost to upgrade the tower
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower") {
     super(scene, x, y, texture);

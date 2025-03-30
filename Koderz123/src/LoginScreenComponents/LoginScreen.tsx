@@ -28,9 +28,13 @@ const LoginScreen: React.FC = () => {
     e.currentTarget.style.cursor = "default";
   };
 
+  const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.cursor = "default";
+  };
+
   // Handle login or signup form submission
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     if (password.length < 11) {
       setError("⚠️ Password must be at least 11 characters long.");

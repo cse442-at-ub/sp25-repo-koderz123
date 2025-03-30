@@ -5,6 +5,7 @@ import "./MainMenu.css";
 import music from "../assets/menu_music.mp3"; 
 import { FaTrophy } from "react-icons/fa";
 
+const API_BASE_URL = "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -75,11 +76,31 @@ const MainMenu: React.FC = () => {
     e.currentTarget.style.cursor = "default";
   };
 
-  //logout function only removes local storage variables
-  const logout = () => {
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("loggedInUsername");
-    navigate("/login");
+  const logout = async () => {
+    try {
+      // Call server to clear session
+      const response = await fetch(`${API_BASE_URL}logout.php`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("✅ Logout successful:", data);
+      } else {
+        console.error("⚠️ Logout failed:", data.message);
+        alert("Failed to log out on the server. You have been logged out locally.");
+      }
+    } catch (error) {
+      console.error("⚠️ Network error during logout:", error);
+      alert("Network error during logout. You have been logged out locally.");
+    } finally {
+      // Clear local storage and redirect regardless of server response
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("loggedInUsername");
+      navigate("/login");
+    }
   };
 
   return (

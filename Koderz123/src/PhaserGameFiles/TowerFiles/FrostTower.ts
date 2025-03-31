@@ -8,7 +8,7 @@ class FrostTower extends Tower {
     // Call base class constructor with frost-specific texture
     super(scene, x, y, "frost-tower");
 
-    this.range = 80;
+    this.range = 120;
     this.cost = 125;
     this.upgradeCost = 75;
 

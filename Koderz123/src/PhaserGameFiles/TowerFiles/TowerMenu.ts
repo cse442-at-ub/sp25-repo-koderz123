@@ -13,7 +13,7 @@ class TowerMenu {
   private menuPadding = 20;
   private buttonHeight = 60;
   private bottomPadding = 10;
-  private leftPadding = 10;
+  private leftPadding = 30;
   private towerTypes = ["Frost", "Flamethrower"];
   private buttonList: Phaser.GameObjects.Text[] = [];
 

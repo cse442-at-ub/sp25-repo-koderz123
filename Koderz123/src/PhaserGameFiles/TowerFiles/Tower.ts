@@ -6,6 +6,8 @@ class Tower extends Phaser.GameObjects.Image {
   public cost: number;
   public isPlaced: boolean;
   public upgradeCost: number; // Cost to upgrade the tower
+  public fireRate: number; // Added fire rate property
+  public nextFire: number; // Time until next fire
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower") {
     super(scene, x, y, texture);
@@ -18,6 +20,9 @@ class Tower extends Phaser.GameObjects.Image {
     this.setInteractive();
 
     this.setScale(0.275);
+
+    this.fireRate = 1000; // Initial fire rate (milliseconds per fire)
+    this.nextFire = 0;
 
     scene.add.existing(this);
   }

@@ -6,6 +6,7 @@ import TowerMenu from "./TowerFiles/TowerMenu";
 import ExitButton from "./ExitButton";
 import Tower from "./TowerFiles/Tower";
 import FrostTower from "./TowerFiles/FrostTower";
+import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
 
 
 class GameScene extends Phaser.Scene {
@@ -43,6 +44,9 @@ class GameScene extends Phaser.Scene {
   private resources = 1000; // Initialize number of resources
   private resourceText: Phaser.GameObjects.Text;
 
+  private baseHealth = 100; // Add base health
+  private baseHealthText: Phaser.GameObjects.Text;
+
   
 
 
@@ -51,6 +55,7 @@ class GameScene extends Phaser.Scene {
     this.load.image("enemy", "assets/enemy.png");
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
+    this.load.image("flamethrower-tower", "assets/towers/default-tower.png")
 
   }
 
@@ -78,11 +83,15 @@ class GameScene extends Phaser.Scene {
       // 🔽 Choose the correct tower class and texture
       let previewTexture = "default-tower";
       if (type === "Frost") previewTexture = "frost-tower";
+      if (type === "Flamethrower") previewTexture = "flamethrower-tower";
     
       this.towerPreview = new Tower(this, 0, 0, previewTexture);
       this.towerPreview.setAlpha(0.5);
       if(type=="Frost"){
-      this.towerPreview.setScale(0.18); // Adjust scale for preview
+        this.towerPreview.setScale(0.18); // Adjust scale for preview
+      }
+      if(type=="Flamethrower"){
+        this.towerPreview.setScale(0.30); // Adjust scale for preview
       }
       this.towerMenu.setVisibleAllUI(false);
       this.startWaveButton.setVisible(false);
@@ -119,7 +128,12 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
 
-          } else {
+          } 
+          else if (this.selectedTowerType === "Flamethrower") {
+            towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
+            this.towersGroup.add(towerToPlace);
+          }
+          else {
             towerToPlace = new Tower(this, pointer.worldX, pointer.worldY, "default-tower");
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
 
@@ -204,6 +218,11 @@ class GameScene extends Phaser.Scene {
   
     this.input.on("gameobjectdown", this.handleTowerClick, this); // Listen for tower clicks
     this.input.on("pointerdown", this.handleSceneClick, this); // Listen for other clicks
+
+    this.baseHealthText = this.add.text(width - 150, 300, `HP: ${this.baseHealth}`, {
+      fontSize: "24px",
+      color: "#ffffff",
+    });
   }
 
   update(time: number, delta: number) {
@@ -216,6 +235,7 @@ class GameScene extends Phaser.Scene {
       if (enemy) {
         enemy.startOnPath();
         this.enemiesSpawned++;
+        this.enemiesAlive++;
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
       }
     }
@@ -225,7 +245,9 @@ class GameScene extends Phaser.Scene {
         tower.update(time, delta);
       }
     });
-    
+
+    this.checkEnemyBaseAttacks();
+    this.checkWaveEnd();
   }
 
   handleTowerClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
@@ -403,10 +425,8 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  enemyDied() {
-    this.enemiesAlive--;
-
-    if (this.enemiesAlive === 0) {
+  checkWaveEnd() {
+    if (this.waveActive && this.enemiesAlive === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
       this.waveActive = false;
       this.WAVE_NUMBER += 1;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
@@ -420,6 +440,25 @@ class GameScene extends Phaser.Scene {
       this.startWaveButton.setVisible(true);
       this.endCountDown();
     }
+  }
+
+  enemyDied() {
+    this.enemiesAlive--;
+    this.checkWaveEnd();
+  }
+
+  checkEnemyBaseAttacks() {
+    this.enemies.getChildren().forEach((enemy) => {
+      if (enemy instanceof Enemy && enemy.isAtEnd) {
+        this.baseHealth -= enemy.damage;
+        this.baseHealthText.setText(`HP: ${this.baseHealth}`);
+        enemy.destroy();
+        this.enemiesAlive--;
+        if (this.baseHealth <= 0) {
+          this.gameOver();
+        }
+      }
+    });
   }
 
   restoreUI() {

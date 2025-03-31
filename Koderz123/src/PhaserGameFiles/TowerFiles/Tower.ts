@@ -5,6 +5,7 @@ class Tower extends Phaser.GameObjects.Image {
   public range: number;
   public cost: number;
   public isPlaced: boolean;
+  public upgradeCost: number; // Cost to upgrade the tower
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower") {
     super(scene, x, y, texture);
@@ -33,10 +34,19 @@ class Tower extends Phaser.GameObjects.Image {
   }
 
   showRange() {
-    const g = this.scene.add.graphics();
-    g.lineStyle(2, 0x00ff00, 0.5);
-    g.strokeCircle(this.x, this.y, this.range);
-    g.setDepth(-1);
+    if (!this.rangeCircle) {
+      this.rangeCircle = this.scene.add.graphics();
+      this.rangeCircle.fillStyle(0x00ffff, 0.2); // semi-opaque cyan
+      this.rangeCircle.fillCircle(this.x, this.y, this.range);
+      this.rangeCircle.setDepth(-1); // behind tower
+    }
+  }
+
+  hideRange() {
+    if (this.rangeCircle) {
+      this.rangeCircle.destroy();
+      this.rangeCircle = undefined;
+    }
   }
 
   upgrade() {

@@ -35,7 +35,7 @@ const App: React.FC = () => {
               <Route path="/PhaserHelloWorld" element={<PhaserHelloWorld />} />
               <Route path="/tutorial" element={<TutorialScreen />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
-            </Route>
+            </Route> 
             <Route path="*" element={<div>404 - Not Found</div>} />{" "}
             {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
           </Routes>

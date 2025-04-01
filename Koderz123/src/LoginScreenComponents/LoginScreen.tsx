@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import "./LoginScreen.css";
 
 const API_BASE_URL = 
-  "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
+  "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/"; 
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
-  const [password, setPassword] = gituseState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
 

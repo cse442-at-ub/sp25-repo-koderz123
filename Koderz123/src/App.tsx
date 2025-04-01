@@ -21,7 +21,7 @@ const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />{" "}
             {/* replace the html code with landing page component*/}
             <Route path="/login" element={<LoginScreen />} />
-            {/* Any links that should be protected and only accessible via login should be placed inside
+            {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
             <Route element={<ProtectedRoute />}>
               <Route path="/levelselect" element={<LevelSelect />} />{" "}

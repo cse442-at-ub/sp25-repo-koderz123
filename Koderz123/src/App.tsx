@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import LevelSelect from "./DifficultyScreenComponents/DifficultyScreen";
 import OptionScreen from "./OptionScreenComponents/OptionScreen";
@@ -13,6 +13,14 @@ import Leaderboard from "./LeaderboardComponents/Leaderboard";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 
 const App: React.FC = () => {
+  useEffect(() => {
+    // Comment out login check to bypass authentication
+    // const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    // if (!isLoggedIn) {
+    //   navigate("/");
+    // }
+  }, []);
+
   return (
     <MusicProvider>
       <Router basename="">

@@ -55,8 +55,10 @@ class GameScene extends Phaser.Scene {
     this.load.image("enemy", "assets/enemy.png");
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
-    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
-
+    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png");
+    // Add projectile textures
+    this.load.image("frost-projectile", "assets/projectiles/frost-projectile.png");
+    this.load.image("flame-projectile", "assets/projectiles/flame-projectile.png");
   }
 
   create() {

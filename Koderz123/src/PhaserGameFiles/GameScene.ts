@@ -139,6 +139,8 @@ class GameScene extends Phaser.Scene {
           }
 
           towerToPlace.place(pointer.worldX, pointer.worldY);
+          this.resources -= towerToPlace.cost;
+          this.updateResourceText();
           this.towerPreview.destroy(); // destroy the preview
           this.towerPreview = undefined;
           this.selectedTowerType = null;
@@ -451,6 +453,34 @@ class GameScene extends Phaser.Scene {
           this.gameOver();
         }
       }
+    });
+  }
+
+  gameOver() {
+    this.scene.pause();
+    const { width, height } = this.scale;
+    const gameOverText = this.add.text(width / 2, height / 2 - 50, "Game Over", {
+      fontSize: "48px",
+      color: "#ff0000",
+      align: "center",
+    }).setOrigin(0.5);
+
+    const restartButton = this.add.text(width / 2, height / 2 + 20, "Restart", {
+      fontSize: "24px",
+      color: "#ffffff",
+      backgroundColor: "#444",
+      padding: { left: 20, right: 20, top: 10, bottom: 10 },
+    }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
+      this.scene.restart();
+    });
+
+    const mainMenuButton = this.add.text(width / 2, height / 2 + 70, "Main Menu", {
+      fontSize: "24px",
+      color: "#ffffff",
+      backgroundColor: "#444",
+      padding: { left: 20, right: 20, top: 10, bottom: 10 },
+    }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
+      window.open('/mainmenu', '_self');
     });
   }
 

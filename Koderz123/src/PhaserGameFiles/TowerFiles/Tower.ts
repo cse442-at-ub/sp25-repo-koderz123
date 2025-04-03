@@ -1,5 +1,6 @@
 //@ts-nocheck
 import Phaser from "phaser";
+import GameScene from "../GameScene";
 
 class Tower extends Phaser.GameObjects.Image {
   public range: number;
@@ -11,6 +12,7 @@ class Tower extends Phaser.GameObjects.Image {
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower") {
     super(scene, x, y, texture);
+    this.scene = scene;
     this.range = 100;
     this.cost = 100;
     this.isPlaced = false;

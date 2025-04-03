@@ -61,7 +61,6 @@ class Enemy extends Phaser.GameObjects.Image {
       console.log(`Enemy health text updated: ${currentHealth}`);
       if (this.getData("health") <= 0) {
         this.scene.resources += this.value;
-        console.log("Number of coins: ",this.scene.resources);
         this.scene.updateResourceText();
         this.destroy();
         this.scene.checkWaveEnd();

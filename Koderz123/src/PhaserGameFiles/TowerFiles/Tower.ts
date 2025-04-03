@@ -9,8 +9,12 @@ class Tower extends Phaser.GameObjects.Image {
   public fireRate: number; // Added fire rate property
   public nextFire: number; // Time until next fire
   public type: string;
+  public damage: number; // Base damage for the tower
+  public level: number; // Tower level
+  public slowFactor: number;
+  public slowDuration: number;
+  public projectileSpeed: number;
   private projectiles: Phaser.GameObjects.Group;
-  private projectileSpeed: number;
   private rangeCircle: Phaser.GameObjects.Graphics | undefined;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower", type: string = "default") {
@@ -18,27 +22,37 @@ class Tower extends Phaser.GameObjects.Image {
     this.range = 100;
     this.cost = 100;
     this.isPlaced = false;
-    this.level = 1; // Initialize level
-    this.upgradeCost = 50; // Initialize upgrade cost
+    this.level = 1;
+    this.upgradeCost = 50;
     this.type = type;
-    this.projectiles = scene.add.group();
+    this.damage = 25;
+    this.slowFactor = 0.5;
+    this.slowDuration = 1000;
+    
+    // Create projectiles group with explicit scene reference
+    this.projectiles = scene.add.group({
+      classType: Phaser.GameObjects.Image,
+      maxSize: 30,
+      runChildUpdate: true
+    });
+    console.log(`Created projectiles group for ${type} tower`);
 
     // Set fire rate and projectile speed based on tower type
     switch(type) {
       case "Frost":
-        this.fireRate = 3000; // 3 seconds between shots (slower)
-        this.projectileSpeed = 1.5; // Slower projectile speed
-        console.log("Created Frost Tower");
+        this.fireRate = 3000;
+        this.projectileSpeed = 10; // Increased speed significantly
+        console.log("Created Frost Tower with speed", this.projectileSpeed);
         break;
       case "Flamethrower":
-        this.fireRate = 300; // 0.3 seconds between shots (faster)
-        this.projectileSpeed = 3; // Faster projectile speed
-        console.log("Created Flamethrower Tower");
+        this.fireRate = 300;
+        this.projectileSpeed = 12;
+        console.log("Created Flamethrower Tower with speed", this.projectileSpeed);
         break;
       default:
-        this.fireRate = 1000; // 1 second between shots
-        this.projectileSpeed = 2;
-        console.log("Created Default Tower");
+        this.fireRate = 1000;
+        this.projectileSpeed = 8;
+        console.log("Created Default Tower with speed", this.projectileSpeed);
     }
 
     this.nextFire = 0;
@@ -90,17 +104,47 @@ class Tower extends Phaser.GameObjects.Image {
 
     // Check if enough time has passed since last shot
     if (time - this.nextFire >= this.fireRate) {
-      // Fire at target
-      this.fire();
-      this.nextFire = time;
-      console.log(`${this.type} Tower fired at time ${time}`);
+      const target = this.findTarget();
+      if (target) {
+        console.log(`${this.type} Tower found target at (${target.x}, ${target.y})`);
+        this.fire();
+        this.nextFire = time;
+      }
     }
 
     // Update projectiles
-    this.projectiles.children.each((projectile: Phaser.GameObjects.Image) => {
-      // Move projectile
-      projectile.x += projectile.speed * delta;
-      projectile.y += projectile.speed * delta;
+    this.projectiles.children.each((projectile: any) => {
+      if (!projectile.active) return;
+
+      // Move projectile in straight line
+      projectile.x += projectile.dx;
+      projectile.y += projectile.dy;
+
+      // Debug log projectile position
+      console.log(`Projectile at (${projectile.x}, ${projectile.y})`);
+
+      // Check for collisions with enemies
+      const enemies = (this.scene as any).enemies.getChildren();
+      enemies.forEach((enemy: any) => {
+        if (enemy.active && enemy.getData("isEnemy")) {
+          const distance = Phaser.Math.Distance.Between(
+            projectile.x,
+            projectile.y,
+            enemy.x,
+            enemy.y
+          );
+          
+          if (distance < 30) {
+            if (this.type === "Frost") {
+              enemy.applySlow(this.slowFactor, this.slowDuration);
+              console.log("Frost projectile hit enemy");
+            }
+            
+            projectile.destroy();
+            console.log(`Projectile hit enemy at (${projectile.x}, ${projectile.y})`);
+          }
+        }
+      });
 
       // Check if projectile is out of range
       const distance = Phaser.Math.Distance.Between(
@@ -112,46 +156,101 @@ class Tower extends Phaser.GameObjects.Image {
 
       if (distance > this.range) {
         projectile.destroy();
+        console.log(`Projectile went out of range at (${projectile.x}, ${projectile.y})`);
       }
     });
   }
 
+  private createProjectile(texture: string, color: number) {
+    console.log(`Creating projectile with texture: ${texture}`);
+    
+    // Create a new projectile directly
+    const projectile = this.scene.add.image(this.x, this.y, texture);
+    
+    if (!projectile) {
+      console.error('Failed to create projectile!');
+      return;
+    }
+
+    // Set projectile properties
+    projectile.setScale(0.3); // Further reduced scale for better size
+    projectile.setAlpha(1);
+    projectile.setBlendMode(Phaser.BlendModes.NORMAL);
+    projectile.setDepth(1);
+    
+    // Calculate initial angle to target
+    const target = this.findTarget();
+    if (target) {
+      const angle = Phaser.Math.Angle.Between(
+        this.x,
+        this.y,
+        target.x,
+        target.y
+      );
+      
+      projectile.setRotation(angle);
+      projectile.speed = this.projectileSpeed;
+      projectile.dx = Math.cos(angle) * projectile.speed;
+      projectile.dy = Math.sin(angle) * projectile.speed;
+      
+      // Add to projectiles group
+      this.projectiles.add(projectile);
+      
+      console.log(`Created ${this.type} projectile at (${this.x}, ${this.y}) with speed ${projectile.speed}`);
+      console.log(`Projectile direction: dx=${projectile.dx}, dy=${projectile.dy}`);
+    }
+  }
+
   private fire() {
+    console.log(`${this.type} Tower firing at time ${this.scene.time.now}`);
+    
     // Create a visual effect based on tower type
     const graphics = this.scene.add.graphics();
     
     switch(this.type) {
       case "Frost":
-        graphics.lineStyle(2, 0x00ffff, 0.5); // Cyan color for frost
+        graphics.lineStyle(2, 0x00ffff, 0.5);
         graphics.strokeCircle(this.x, this.y, this.range);
-        this.createProjectile("frost-projectile", 0x00ffff);
+        this.createProjectile("Frost_Projectile", 0x00ffff);
         break;
       case "Flamethrower":
-        graphics.lineStyle(2, 0xff6600, 0.5); // Orange color for flamethrower
+        graphics.lineStyle(2, 0xff6600, 0.5);
         graphics.strokeCircle(this.x, this.y, this.range);
-        this.createProjectile("flame-projectile", 0xff6600);
         break;
       default:
         graphics.lineStyle(2, 0xffffff, 0.5);
         graphics.strokeCircle(this.x, this.y, this.range);
+        this.createProjectile("Frost_Projectile", 0xffffff); // Add projectile for default tower
     }
 
     graphics.setDepth(-1);
     
-    // Remove the effect after a short delay
     this.scene.time.delayedCall(200, () => {
       graphics.destroy();
     });
   }
 
-  private createProjectile(texture: string, tint: number) {
-    const projectile = this.scene.add.image(this.x, this.y, texture);
-    projectile.setScale(1.0); // Increased scale to make projectiles more visible
-    projectile.setTint(tint);
-    projectile.speed = this.projectileSpeed;
-    projectile.setDepth(2); // Increased depth to ensure visibility
-    this.projectiles.add(projectile);
-    console.log(`Created ${texture} projectile`);
+  private findTarget() {
+    const enemies = (this.scene as any).enemies.getChildren();
+    let closestEnemy = null;
+    let closestDistance = this.range;
+
+    enemies.forEach((enemy: any) => {
+      if (enemy.active && enemy.getData("isEnemy")) {
+        const distance = Phaser.Math.Distance.Between(
+          this.x,
+          this.y,
+          enemy.x,
+          enemy.y
+        );
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestEnemy = enemy;
+        }
+      }
+    });
+
+    return closestEnemy;
   }
 
   destroy() {

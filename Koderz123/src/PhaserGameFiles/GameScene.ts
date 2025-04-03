@@ -51,24 +51,35 @@ class GameScene extends Phaser.Scene {
 
 
   preload() {
+    console.log('Starting to load assets...');
+    
     this.load.image("background", "assets/GameScreenBackground.png");
     this.load.image("enemy", "assets/enemy.png");
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
     this.load.image("flamethrower-tower", "assets/towers/flame-tower.png");
-    // Add projectile textures
-    this.load.image("frost-projectile", "assets/projectiles/frost-projectile.png");
-    this.load.image("flame-projectile", "assets/projectiles/flame-projectile.png");
+    
+    // Load projectile textures with error handling
+    this.load.image("Frost_Projectile", "assets/projectiles/Frost_Projectile.png")
+      .on('complete', () => console.log('Frost projectile loaded successfully'))
+      .on('error', (file) => console.error('Error loading Frost projectile:', file));
+      
+    this.load.image("Flame_Projectile", "assets/projectiles/Flame_Projectile.png")
+      .on('complete', () => console.log('Flame projectile loaded successfully'))
+      .on('error', (file) => console.error('Error loading Flame projectile:', file));
+      
+    console.log('Finished loading assets');
   }
 
   create() {
+    console.log('Starting game scene creation...');
     const { width, height } = this.scale;
     const background = this.add.image(width / 2, height / 2, "background");
     background.setOrigin(0.5, 0.5);
     background.setDisplaySize(width, height);
     background.setDepth(-1);
     this.towersGroup = this.add.group();
-
+    console.log('Game scene created successfully');
 
     this.exitButton = new ExitButton(this);
     this.exitButton.setVisible(true); // ✅ make sure it's visible at start
@@ -242,9 +253,12 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    // Update all towers and their projectiles
     this.towersGroup.getChildren().forEach((tower: any) => {
       if (tower.update) {
         tower.update(time, delta);
+        // Debug log for tower updates
+        console.log(`Updating tower of type: ${tower.type}`);
       }
     });
 

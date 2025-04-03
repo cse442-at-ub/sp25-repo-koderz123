@@ -7,6 +7,7 @@ import ExitButton from "./ExitButton";
 import Tower from "./TowerFiles/Tower";
 import FrostTower from "./TowerFiles/FrostTower";
 import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
+import FireTower from "./TowerFiles/FireTower";
 
 
 class GameScene extends Phaser.Scene {
@@ -19,6 +20,7 @@ class GameScene extends Phaser.Scene {
   public ENEMY_SPEED = 1 / 5000; // Adjust speed
   private const_speed_multiplier = 1.1;
   private multiplier = (1).toFixed(2);
+  private MIN_SPEED_MULTIPLIER = 0.5; // Minimum speed multiplier
   private waveActive = false;
   private enemiesSpawned = 0;
   public SPAWN_DELAY = 200;
@@ -144,6 +146,10 @@ class GameScene extends Phaser.Scene {
           } 
           else if (this.selectedTowerType === "Flamethrower") {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
+            this.towersGroup.add(towerToPlace);
+          }
+          else if (this.selectedTowerType === "Fire") {
+            towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
           else {
@@ -442,19 +448,28 @@ class GameScene extends Phaser.Scene {
   }
 
   checkWaveEnd() {
-    if (this.waveActive && this.enemiesAlive === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
+    if (this.waveActive && this.enemiesAlive === 0 && this.enemiesSpawned >= this.WAVE_SIZE) {
+      console.log("Wave completed!");
       this.waveActive = false;
-      this.WAVE_NUMBER += 1;
+      this.WAVE_NUMBER++;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
-      this.ENEMY_SPEED *= this.const_speed_multiplier;
-      this.multiplier = (this.multiplier * this.const_speed_multiplier).toFixed(
-        2
-      );
-
-      // ✅ Update button text and make it visible again
+      this.enemiesSpawned = 0;
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
-      this.endCountDown();
+      
+      // Calculate new multiplier while respecting minimum speed
+      const newMultiplier = parseFloat(this.multiplier) * this.const_speed_multiplier;
+      this.multiplier = Math.max(newMultiplier, this.MIN_SPEED_MULTIPLIER).toFixed(2);
+      
+      this.countdownSeconds = 60;
+      this.countdownText.setText(`Time: ${this.countdownSeconds}     x${this.multiplier}`);
+      
+      // Stop the current timer
+      if (this.countdownTimer) {
+        this.countdownTimer.remove();
+      }
+      
+      // Don't start a new timer until the next wave begins
     }
   }
 

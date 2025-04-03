@@ -13,7 +13,7 @@ class FrostTower extends Tower {
     this.range = 120;
     this.cost = 125;
     this.upgradeCost = 75;
-    this.damage = 15;
+    this.damage = 15; // Base damage for Frost Tower
     this.slowFactor = 0.5;
     this.slowDuration = 1000;
 

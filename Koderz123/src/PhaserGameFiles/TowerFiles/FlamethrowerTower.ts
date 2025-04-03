@@ -48,7 +48,7 @@ class FlamethrowerTower extends Tower {
           console.log(`Flamethrower AOE dealt damage to enemy at (${enemy.x}, ${enemy.y})`);
         }
       });
-      this.nextFire = time + this.fireRate;
+      this.nextFire = time + this.fireRate; // Restore original timing
     }
   }
 }

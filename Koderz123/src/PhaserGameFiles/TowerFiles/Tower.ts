@@ -14,7 +14,7 @@ class Tower extends Phaser.GameObjects.Image {
   public slowFactor: number;
   public slowDuration: number;
   public projectileSpeed: number;
-  private projectiles: Phaser.GameObjects.Group;
+  protected projectiles: Phaser.GameObjects.Group;
   private rangeCircle: Phaser.GameObjects.Graphics | undefined;
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower", type: string = "default") {
@@ -40,8 +40,8 @@ class Tower extends Phaser.GameObjects.Image {
     // Set fire rate and projectile speed based on tower type
     switch(type) {
       case "Frost":
-        this.fireRate = 3000;
-        this.projectileSpeed = 10; // Increased speed significantly
+        this.fireRate = 3000 * 0.75;
+        this.projectileSpeed = 10;
         console.log("Created Frost Tower with speed", this.projectileSpeed);
         break;
       case "Flamethrower":
@@ -139,7 +139,6 @@ class Tower extends Phaser.GameObjects.Image {
               enemy.applySlow(this.slowFactor, this.slowDuration);
               console.log("Frost projectile hit enemy");
             }
-            
             projectile.destroy();
             console.log(`Projectile hit enemy at (${projectile.x}, ${projectile.y})`);
           }
@@ -161,7 +160,7 @@ class Tower extends Phaser.GameObjects.Image {
     });
   }
 
-  private createProjectile(texture: string, color: number) {
+  protected createProjectile(texture: string, color: number) {
     console.log(`Creating projectile with texture: ${texture}`);
     
     // Create a new projectile directly
@@ -173,7 +172,7 @@ class Tower extends Phaser.GameObjects.Image {
     }
 
     // Set projectile properties
-    projectile.setScale(0.3); // Further reduced scale for better size
+    projectile.setScale(0.21);
     projectile.setAlpha(1);
     projectile.setBlendMode(Phaser.BlendModes.NORMAL);
     projectile.setDepth(1);
@@ -230,7 +229,7 @@ class Tower extends Phaser.GameObjects.Image {
     });
   }
 
-  private findTarget() {
+  protected findTarget() {
     const enemies = (this.scene as any).enemies.getChildren();
     let closestEnemy = null;
     let closestDistance = this.range;

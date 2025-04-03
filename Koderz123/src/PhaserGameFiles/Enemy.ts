@@ -11,6 +11,7 @@ class Enemy extends Phaser.GameObjects.Image {
 
   private health: number;
   damage: number;
+  value: number;
   isAtEnd: boolean;
   healthText: Phaser.GameObjects.Text;
 
@@ -21,6 +22,7 @@ class Enemy extends Phaser.GameObjects.Image {
     this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     this.health = 100;
     this.damage = 5;
+    this.value = 15;
     this.isAtEnd = false;
     scene.add.existing(this);
 
@@ -58,14 +60,16 @@ class Enemy extends Phaser.GameObjects.Image {
       this.healthText.setText(`${currentHealth}`);
       console.log(`Enemy health text updated: ${currentHealth}`);
       if (this.getData("health") <= 0) {
-        this.healthText.destroy();
+        this.scene.resources += this.value;
+        console.log("Number of coins: ",this.scene.resources);
+        this.scene.updateResourceText();
         this.destroy();
-        this.scene.enemyDied();
+        this.scene.checkWaveEnd();
       }
     } else {
       this.setActive(false);
       this.setVisible(false);
-      this.scene.enemyDied();
+      this.scene.checkWaveEnd();
       this.healthText.destroy();
       this.isAtEnd = true;
     }

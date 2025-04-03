@@ -22,9 +22,6 @@ class FlamethrowerTower extends Tower {
       enemy.setData("health", enemy.getData("health") - 20);
       console.log(`Tower dealt 20 damage to enemy.`);
       console.log(`Enemy health after damage: ${enemy.getData("health")}`);
-      if(enemy.getData('health') <= 0){
-        enemy.destroy();
-      }
     }
   }
 
@@ -41,6 +38,12 @@ class FlamethrowerTower extends Tower {
             console.log("Checking each enemy!");
         if (enemy.active && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range) {
             this.dealDamage(enemy)
+            if(enemy.getData('health') <= 0){
+              gameScene.resources += enemy.value;
+              console.log("Resources now after health <= 0: ", gameScene.resources);
+              gameScene.updateResourceText();
+              enemy.destroy();
+            }
         }
         });
         this.nextFire = time + this.fireRate;

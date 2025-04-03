@@ -22,7 +22,6 @@ class GameScene extends Phaser.Scene {
   private waveActive = false;
   private enemiesSpawned = 0;
   public SPAWN_DELAY = 200;
-  public enemiesAlive = 0; // Track active enemies
   private startWaveButton!: StartWaveButton; // ✅ Use StartWaveButton class
   private countdownTimer!: Phaser.Time.TimerEvent; // For countdown timers
   private countdownText!: Phaser.GameObjects.Text;
@@ -41,7 +40,7 @@ class GameScene extends Phaser.Scene {
   private upgradeButton: Phaser.GameObjects.Text | null = null;
   private removeButton: Phaser.GameObjects.Text | null = null;
   private towerClicked = false;
-  private resources = 1000; // Initialize number of resources
+  public resources = 1000; // Initialize number of resources
   private resourceText: Phaser.GameObjects.Text;
 
   private baseHealth = 100; // Add base health
@@ -209,7 +208,7 @@ class GameScene extends Phaser.Scene {
     this.nextEnemy = 0;
 
     // Create resource text
-    this.resourceText = this.add.text(width - 200,height - 50, `Coins: ${this.resources}`, {
+    this.resourceText = this.add.text(width - 170,height - 150, `Coins: ${this.resources}`, {
       fontSize: "24px",
       color: "#ffffff",
     });
@@ -235,7 +234,6 @@ class GameScene extends Phaser.Scene {
       if (enemy) {
         enemy.startOnPath();
         this.enemiesSpawned++;
-        this.enemiesAlive++;
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
       }
     }
@@ -417,7 +415,6 @@ class GameScene extends Phaser.Scene {
     if (!this.waveActive) {
       this.waveActive = true;
       this.enemiesSpawned = 0;
-      this.enemiesAlive = 0;
 
       // ✅ Hide button when wave starts
       this.startWaveButton.setVisible(false);
@@ -426,7 +423,7 @@ class GameScene extends Phaser.Scene {
   }
 
   checkWaveEnd() {
-    if (this.waveActive && this.enemiesAlive === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
+    if (this.waveActive && this.enemies.getLength() === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
       this.waveActive = false;
       this.WAVE_NUMBER += 1;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
@@ -434,17 +431,13 @@ class GameScene extends Phaser.Scene {
       this.multiplier = (this.multiplier * this.const_speed_multiplier).toFixed(
         2
       );
+      this.enemiesSpawned = 0;
 
       // ✅ Update button text and make it visible again
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
       this.endCountDown();
     }
-  }
-
-  enemyDied() {
-    this.enemiesAlive--;
-    this.checkWaveEnd();
   }
 
   checkEnemyBaseAttacks() {

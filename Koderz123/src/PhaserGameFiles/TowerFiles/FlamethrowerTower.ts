@@ -11,7 +11,8 @@ class FlamethrowerTower extends Tower {
     this.range = 100;
     this.cost = 150;
     this.upgradeCost = 200;
-    this.fireRate = 250;
+    this.fireRate = 250; // Faster AOE damage rate
+    this.damage = 20; // Base damage
 
     // Optionally, adjust scale or add visuals for effect
     this.setScale(0.30);
@@ -19,31 +20,35 @@ class FlamethrowerTower extends Tower {
 
   dealDamage(enemy: Phaser.GameObjects.GameObject) {
     if (enemy.getData("health")) {
-      enemy.setData("health", enemy.getData("health") - 20);
-      console.log(`Tower dealt 20 damage to enemy.`);
-      console.log(`Enemy health after damage: ${enemy.getData("health")}`);
+      enemy.setData("health", enemy.getData("health") - this.damage);
+      console.log(`Flamethrower AOE dealt ${this.damage} damage. Enemy health: ${enemy.getData("health")}`);
       if(enemy.getData('health') <= 0){
         enemy.destroy();
       }
     }
   }
 
-  // Later: You can override update() for slowing effect
+  upgrade() {
+    super.upgrade(); // Call base class upgrade
+    this.damage += 10; // Increase damage by 10
+    this.fireRate *= 0.9; // Increase fire rate by 10%
+    console.log(`Flamethrower upgraded to level ${this.level}. Damage: ${this.damage}, Fire Rate: ${this.fireRate}`);
+  }
+
   update(time: number, delta: number) {
-    super.update(time, delta);
     if (!this.isPlaced) return;
   
     const gameScene = this.scene as GameScene;
     const enemies = gameScene.enemies.getChildren() as any[];
     
     if (time > this.nextFire){
-        enemies.forEach((enemy) => {
-            console.log("Checking each enemy!");
+      enemies.forEach((enemy) => {
         if (enemy.active && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range) {
-            this.dealDamage(enemy)
+          this.dealDamage(enemy);
+          console.log(`Flamethrower AOE dealt damage to enemy at (${enemy.x}, ${enemy.y})`);
         }
-        });
-        this.nextFire = time + this.fireRate;
+      });
+      this.nextFire = time + this.fireRate; // Restore original timing
     }
   }
 }

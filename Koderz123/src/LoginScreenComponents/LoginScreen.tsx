@@ -10,7 +10,7 @@ const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
-  const [password, setPassword] = gituseState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
 

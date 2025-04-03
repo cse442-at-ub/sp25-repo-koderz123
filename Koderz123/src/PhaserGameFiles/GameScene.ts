@@ -7,7 +7,7 @@ import ExitButton from "./ExitButton";
 import Tower from "./TowerFiles/Tower";
 import FrostTower from "./TowerFiles/FrostTower";
 import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
-
+import BombTower from "./TowerFiles/BombTower";
 
 class GameScene extends Phaser.Scene {
   public enemies!: Phaser.GameObjects.Group;
@@ -56,6 +56,7 @@ class GameScene extends Phaser.Scene {
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
     this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
+    this.load.image("bomb-tower", "assets/towers/bomb-tower.png");
 
   }
 
@@ -85,12 +86,17 @@ class GameScene extends Phaser.Scene {
       if (type === "Frost") previewTexture = "frost-tower";
       if (type === "Flamethrower") previewTexture = "flamethrower-tower";
     
+      if (type === "Bomb") previewTexture = "bomb-tower";
       this.towerPreview = new Tower(this, 0, 0, previewTexture);
       this.towerPreview.setAlpha(0.5);
       if(type=="Frost"){
         this.towerPreview.setScale(0.18); // Adjust scale for preview
       }
       if(type=="Flamethrower"){
+        this.towerPreview.setScale(0.30); // Adjust scale for preview
+      }
+
+      if(type=="Bomb"){
         this.towerPreview.setScale(0.30); // Adjust scale for preview
       }
       this.towerMenu.setVisibleAllUI(false);
@@ -133,11 +139,17 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
+          else if (this.selectedTowerType === "Bomb") {
+            towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
+            this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
+          }
           else {
             towerToPlace = new Tower(this, pointer.worldX, pointer.worldY, "default-tower");
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
 
           }
+
+          
 
           towerToPlace.place(pointer.worldX, pointer.worldY);
           this.towerPreview.destroy(); // destroy the preview

@@ -1,58 +1,42 @@
 #landingpage {
-  background-image: url("../assets/menu-background-image.png");
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-image: none;
+  background-size: cover;
+  background-position: center;
   font-family: 'Kiwi Maru';
   caret-color: transparent;
   display: block;
-  height: 100vh;
-  width: 100vw;
   margin: 0 auto;
   text-align: center;
   padding-top: 100px;
+  overflow: hidden; /* makes sure animations don't overflow */
 }
 
-#h2 {
+#clickprompt {
   width: fit-content;
   margin: auto;
 }
 
-.stars, .twinkling, .planets {
+.sparkle-overlay {
   position: absolute;
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
-  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(white 1px, transparent 1px) 0 0,
+              radial-gradient(white 1px, transparent 1px) 10px 10px;
+  background-size: 20px 20px;
+  opacity: 0.15;
+  animation: sparkle 2s infinite ease-in-out alternate;
+  z-index: 0;
 }
 
-.stars {
-  background: url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/img/stars.png') repeat;
-  animation: moveStars 200s linear infinite;
-}
-
-.twinkling {
-  background: url('https://raw.githubusercontent.com/VincentGarreau/particles.js/master/demo/img/twinkling.png') repeat;
-  animation: moveTwinkling 300s linear infinite;
-}
-
-.planets {
-  background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Planet_icon.svg/1024px-Planet_icon.svg.png') no-repeat center;
-  background-size: 10%;
-  animation: floatPlanet 20s ease-in-out infinite;
-}
-
-@keyframes moveStars {
-  from { background-position: 0 0; }
-  to { background-position: -10000px 5000px; }
-}
-
-@keyframes moveTwinkling {
-  from { background-position: 0 0; }
-  to { background-position: 10000px 5000px; }
-}
-
-@keyframes floatPlanet {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+@keyframes sparkle {
+  0% { opacity: 0.1; transform: scale(1); }
+  100% { opacity: 0.3; transform: scale(1.05); }
 }
 
   

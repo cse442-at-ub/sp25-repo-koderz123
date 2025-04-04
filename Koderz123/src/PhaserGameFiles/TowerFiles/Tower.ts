@@ -1,5 +1,6 @@
 //@ts-nocheck
 import Phaser from "phaser";
+import GameScene from "../GameScene";
 
 class Tower extends Phaser.GameObjects.Image {
   public range: number;
@@ -8,6 +9,9 @@ class Tower extends Phaser.GameObjects.Image {
   public upgradeCost: number; // Cost to upgrade the tower
   public fireRate: number; // Added fire rate property
   public nextFire: number; // Time until next fire
+
+  public costText?: Phaser.GameObjects.Text;
+
   public type: string;
   public damage: number; // Base damage for the tower
   public level: number; // Tower level
@@ -17,8 +21,10 @@ class Tower extends Phaser.GameObjects.Image {
   protected projectiles: Phaser.GameObjects.Group;
   private rangeCircle: Phaser.GameObjects.Graphics | undefined;
 
+
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower", type: string = "default") {
     super(scene, x, y, texture);
+    this.scene = scene;
     this.range = 100;
     this.cost = 100;
     this.isPlaced = false;
@@ -65,7 +71,16 @@ class Tower extends Phaser.GameObjects.Image {
     this.setPosition(x, y);
     this.isPlaced = true;
     this.setAlpha(1);
+
+    console.log(this.costText);
+    if (this.costText) {
+      console.log("Destroying costText in place()");
+      this.costText.destroy(); // Remove cost text when placed
+      this.costText = undefined;
+    }
+
     console.log(`Tower placed at (${x}, ${y})`);
+
   }
 
   public setValidPlacement(isValid: boolean) {
@@ -259,6 +274,23 @@ class Tower extends Phaser.GameObjects.Image {
       this.rangeCircle.destroy();
     }
     super.destroy();
+  }
+
+  displayCost(x: number, y: number) {
+    if (this.costText) {
+      // Update existing costText
+      this.costText.setPosition(x, y + this.displayHeight / 2);
+    } else {
+      // Create new costText
+      console.log("Creating new costText");
+      this.costText = this.scene.add.text(x, y + this.displayHeight / 2, `Cost: ${this.cost}`, {
+        fontSize: "16px",
+        color: "#ffffff",
+        backgroundColor: "#333",
+        padding: { left: 5, right: 5, top: 2, bottom: 2 },
+      }).setOrigin(0.5);
+      console.log(this.costText);
+    }
   }
 }
 

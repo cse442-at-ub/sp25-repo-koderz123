@@ -24,7 +24,6 @@ class GameScene extends Phaser.Scene {
   private waveActive = false;
   private enemiesSpawned = 0;
   public SPAWN_DELAY = 200;
-  public enemiesAlive = 0; // Track active enemies
   private startWaveButton!: StartWaveButton; // ✅ Use StartWaveButton class
   private countdownTimer!: Phaser.Time.TimerEvent; // For countdown timers
   private countdownText!: Phaser.GameObjects.Text;
@@ -43,7 +42,7 @@ class GameScene extends Phaser.Scene {
   private upgradeButton: Phaser.GameObjects.Text | null = null;
   private removeButton: Phaser.GameObjects.Text | null = null;
   private towerClicked = false;
-  private resources = 1000; // Initialize number of resources
+  public resources = 1000; // Initialize number of resources
   private resourceText: Phaser.GameObjects.Text;
 
   private baseHealth = 100; // Add base health
@@ -104,10 +103,15 @@ class GameScene extends Phaser.Scene {
       this.towerPreview.setAlpha(0.5);
       if(type=="Frost"){
         this.towerPreview.setScale(0.18); // Adjust scale for preview
+        this.towerPreview.cost = 125;
       }
       if(type=="Flamethrower"){
         this.towerPreview.setScale(0.30); // Adjust scale for preview
+        this.towerPreview.cost = 150;
       }
+
+      console.log(this.towerPreview);
+      this.towerPreview.displayCost(this.towerPreview.x, this.towerPreview.y);
       this.towerMenu.setVisibleAllUI(false);
       this.startWaveButton.setVisible(false);
       this.exitButton.setVisible(false);
@@ -121,6 +125,7 @@ class GameScene extends Phaser.Scene {
     this.input.on("pointermove", (pointer) => {
       if (this.towerPreview && !this.towerPreview.isPlaced) {
         this.towerPreview.setPosition(pointer.worldX, pointer.worldY);
+        this.towerPreview.displayCost(pointer.worldX, pointer.worldY);
     
         const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
         this.towerPreview.setValidPlacement(isValid);
@@ -136,15 +141,19 @@ class GameScene extends Phaser.Scene {
     
       if (this.towerPreview && this.selectedTowerType) {
         const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
-        if (isValid) {
+        const enoughMoneyFrost = this.hasEnoughResources(125);
+        const enoughMoneyFlame = this.hasEnoughResources(150);
+        if (isValid && (enoughMoneyFrost || enoughMoneyFlame)) {
           let towerToPlace: Tower;
+          this.towerPreview.costText.destroy();
+          this.towerPreview.costText = undefined;
 
-          if (this.selectedTowerType === "Frost") {
+          if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
 
           } 
-          else if (this.selectedTowerType === "Flamethrower") {
+          else if (this.selectedTowerType === "Flamethrower" && enoughMoneyFlame) {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
@@ -159,11 +168,16 @@ class GameScene extends Phaser.Scene {
           }
 
           towerToPlace.place(pointer.worldX, pointer.worldY);
+          this.resources -= towerToPlace.cost;
+          this.updateResourceText();
           this.towerPreview.destroy(); // destroy the preview
           this.towerPreview = undefined;
           this.selectedTowerType = null;
           this.restoreUI();
-
+        }
+        else{
+          this.blinkResourceText(this.resourceText, 2000);
+          this.towerPreview.destroy();
           this.towerPreview = undefined;
           this.selectedTowerType = null;
           this.restoreUI();
@@ -228,7 +242,7 @@ class GameScene extends Phaser.Scene {
     this.nextEnemy = 0;
 
     // Create resource text
-    this.resourceText = this.add.text(width - 200,height - 50, `Coins: ${this.resources}`, {
+    this.resourceText = this.add.text(width - 170,height - 150, `Coins: ${this.resources}`, {
       fontSize: "24px",
       color: "#ffffff",
     });
@@ -254,7 +268,6 @@ class GameScene extends Phaser.Scene {
       if (enemy) {
         enemy.startOnPath();
         this.enemiesSpawned++;
-        this.enemiesAlive++;
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
       }
     }
@@ -339,6 +352,8 @@ class GameScene extends Phaser.Scene {
         .setInteractive()
         .on("pointerdown", (pointer) => {
           if (this.selectedTower) {
+            this.resources += Math.floor(this.selectedTower.cost / 2);
+            this.resourceText.setText(`Coins: ${this.resources}`);
             this.selectedTower.hideRange();      // ✅ Hide the range circle
             this.selectedTower.destroy();        // ✅ Destroy the tower image
           }
@@ -365,6 +380,7 @@ class GameScene extends Phaser.Scene {
               this.updateResourceText();
           } else {
               console.log("Not enough resources to upgrade.");
+              this.blinkResourceText(this.resourceText,2000);
           }
       }
   }
@@ -439,7 +455,6 @@ class GameScene extends Phaser.Scene {
     if (!this.waveActive) {
       this.waveActive = true;
       this.enemiesSpawned = 0;
-      this.enemiesAlive = 0;
 
       // ✅ Hide button when wave starts
       this.startWaveButton.setVisible(false);
@@ -448,12 +463,18 @@ class GameScene extends Phaser.Scene {
   }
 
   checkWaveEnd() {
-    if (this.waveActive && this.enemiesAlive === 0 && this.enemiesSpawned >= this.WAVE_SIZE) {
-      console.log("Wave completed!");
+    if (this.waveActive && this.enemies.getLength() === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
       this.waveActive = false;
       this.WAVE_NUMBER++;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
+
+      this.ENEMY_SPEED *= this.const_speed_multiplier;
+      this.multiplier = (this.multiplier * this.const_speed_multiplier).toFixed(
+        2
+      );
       this.enemiesSpawned = 0;
+
+      // ✅ Update button text and make it visible again
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
       
@@ -473,11 +494,6 @@ class GameScene extends Phaser.Scene {
     }
   }
 
-  enemyDied() {
-    this.enemiesAlive--;
-    this.checkWaveEnd();
-  }
-
   checkEnemyBaseAttacks() {
     this.enemies.getChildren().forEach((enemy) => {
       if (enemy instanceof Enemy && enemy.isAtEnd) {
@@ -490,6 +506,61 @@ class GameScene extends Phaser.Scene {
         }
       }
     });
+  }
+
+  gameOver() {
+    this.scene.pause();
+    const { width, height } = this.scale;
+    const gameOverText = this.add.text(width / 2, height / 2 - 50, "Game Over", {
+      fontSize: "48px",
+      color: "#ff0000",
+      align: "center",
+    }).setOrigin(0.5);
+
+    const restartButton = this.add.text(width / 2, height / 2 + 20, "Restart", {
+      fontSize: "24px",
+      color: "#ffffff",
+      backgroundColor: "#444",
+      padding: { left: 20, right: 20, top: 10, bottom: 10 },
+    }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
+      this.scene.restart();
+    });
+
+    const mainMenuButton = this.add.text(width / 2, height / 2 + 70, "Main Menu", {
+      fontSize: "24px",
+      color: "#ffffff",
+      backgroundColor: "#444",
+      padding: { left: 20, right: 20, top: 10, bottom: 10 },
+    }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
+      window.open('/mainmenu', '_self');
+    });
+  }
+
+  blinkResourceText(resourceText, duration = 3000) { // Default duration: 3 seconds
+    let isRed = false;
+    const originalColor = resourceText.style.color; // Store the original color
+    let elapsedTime = 0;
+  
+    function toggleColor(time, delta) {
+      elapsedTime += delta;
+      if (elapsedTime >= duration) {
+        resourceText.setColor(originalColor);
+        resourceText.scene.events.off('update', toggleColor); // Remove the listener
+        return;
+      }
+  
+      if (elapsedTime % 500 < delta) { // Toggle roughly every 500ms
+          if (isRed) {
+            resourceText.setColor(originalColor);
+          } else {
+            resourceText.setColor("#ff0000"); // Red color
+          }
+          isRed = !isRed;
+      }
+    }
+  
+    // Add an 'update' event listener to the scene
+    resourceText.scene.events.on('update', toggleColor);
   }
 
   restoreUI() {

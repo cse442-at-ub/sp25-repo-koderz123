@@ -22,8 +22,6 @@ class FlamethrowerTower extends Tower {
     if (enemy.getData("health")) {
       enemy.setData("health", enemy.getData("health") - this.damage);
       console.log(`Flamethrower AOE dealt ${this.damage} damage. Enemy health: ${enemy.getData("health")}`);
-      if(enemy.getData('health') <= 0){
-        enemy.destroy();
       }
     }
   }
@@ -44,13 +42,22 @@ class FlamethrowerTower extends Tower {
     if (time > this.nextFire){
       enemies.forEach((enemy) => {
         if (enemy.active && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range) {
-          this.dealDamage(enemy);
-          console.log(`Flamethrower AOE dealt damage to enemy at (${enemy.x}, ${enemy.y})`);
+            this.dealDamage(enemy);
+            console.log(`Flamethrower AOE dealt damage to enemy at (${enemy.x}, ${enemy.y})`);
+            if(enemy.getData('health') <= 0){
+              gameScene.resources += enemy.value;
+              console.log("Resources now after health <= 0: ", gameScene.resources);
+              gameScene.updateResourceText();
+              enemy.destroy();
+            }
+
         }
       });
       this.nextFire = time + this.fireRate; // Restore original timing
     }
   }
+
+
 }
 
 export default FlamethrowerTower;

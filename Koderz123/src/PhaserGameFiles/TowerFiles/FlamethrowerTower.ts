@@ -49,6 +49,8 @@ class FlamethrowerTower extends Tower {
         this.nextFire = time + this.fireRate;
     }
   }
+
+
 }
 
 export default FlamethrowerTower;

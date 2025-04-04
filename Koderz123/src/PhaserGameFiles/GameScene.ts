@@ -88,10 +88,15 @@ class GameScene extends Phaser.Scene {
       this.towerPreview.setAlpha(0.5);
       if(type=="Frost"){
         this.towerPreview.setScale(0.18); // Adjust scale for preview
+        this.towerPreview.cost = 125;
       }
       if(type=="Flamethrower"){
         this.towerPreview.setScale(0.30); // Adjust scale for preview
+        this.towerPreview.cost = 150;
       }
+
+      console.log(this.towerPreview);
+      this.towerPreview.displayCost(this.towerPreview.x, this.towerPreview.y);
       this.towerMenu.setVisibleAllUI(false);
       this.startWaveButton.setVisible(false);
       this.exitButton.setVisible(false);
@@ -105,6 +110,7 @@ class GameScene extends Phaser.Scene {
     this.input.on("pointermove", (pointer) => {
       if (this.towerPreview && !this.towerPreview.isPlaced) {
         this.towerPreview.setPosition(pointer.worldX, pointer.worldY);
+        this.towerPreview.displayCost(pointer.worldX, pointer.worldY);
     
         const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
         this.towerPreview.setValidPlacement(isValid);
@@ -124,6 +130,8 @@ class GameScene extends Phaser.Scene {
         const enoughMoneyFlame = this.hasEnoughResources(150);
         if (isValid && (enoughMoneyFrost || enoughMoneyFlame)) {
           let towerToPlace: Tower;
+          this.towerPreview.costText.destroy();
+          this.towerPreview.costText = undefined;
 
           if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
@@ -322,6 +330,8 @@ class GameScene extends Phaser.Scene {
         .setInteractive()
         .on("pointerdown", (pointer) => {
           if (this.selectedTower) {
+            this.resources += Math.floor(this.selectedTower.cost / 2);
+            this.resourceText.setText(`Coins: ${this.resources}`);
             this.selectedTower.hideRange();      // ✅ Hide the range circle
             this.selectedTower.destroy();        // ✅ Destroy the tower image
           }

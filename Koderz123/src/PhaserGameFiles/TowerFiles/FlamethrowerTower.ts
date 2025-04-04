@@ -22,7 +22,6 @@ class FlamethrowerTower extends Tower {
     if (enemy.getData("health")) {
       enemy.setData("health", enemy.getData("health") - this.damage);
       console.log(`Flamethrower AOE dealt ${this.damage} damage. Enemy health: ${enemy.getData("health")}`);
-      }
     }
   }
 

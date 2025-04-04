@@ -32,7 +32,7 @@ class FlamethrowerTower extends Tower {
     console.log(`Flamethrower upgraded to level ${this.level}. Damage: ${this.damage}, Fire Rate: ${this.fireRate}`);
   }
 
-  update(time: number, delta: number) {
+  update(time: number) {
     if (!this.isPlaced) return;
   
     const gameScene = this.scene as GameScene;

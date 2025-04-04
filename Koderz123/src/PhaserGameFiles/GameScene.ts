@@ -7,6 +7,7 @@ import ExitButton from "./ExitButton";
 import Tower from "./TowerFiles/Tower";
 import FrostTower from "./TowerFiles/FrostTower";
 import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
+import FireTower from "./TowerFiles/FireTower";
 
 
 class GameScene extends Phaser.Scene {
@@ -19,6 +20,7 @@ class GameScene extends Phaser.Scene {
   public ENEMY_SPEED = 1 / 5000; // Adjust speed
   private const_speed_multiplier = 1.1;
   private multiplier = (1).toFixed(2);
+  private MIN_SPEED_MULTIPLIER = 0.5; // Minimum speed multiplier
   private waveActive = false;
   private enemiesSpawned = 0;
   public SPAWN_DELAY = 200;
@@ -50,22 +52,35 @@ class GameScene extends Phaser.Scene {
 
 
   preload() {
+    console.log('Starting to load assets...');
+    
     this.load.image("background", "assets/GameScreenBackground.png");
     this.load.image("enemy", "assets/enemy.png");
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
-    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
-
+    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png");
+    
+    // Load projectile textures with error handling
+    this.load.image("Frost_Projectile", "assets/projectiles/Frost_Projectile.png")
+      .on('complete', () => console.log('Frost projectile loaded successfully'))
+      .on('error', (file) => console.error('Error loading Frost projectile:', file));
+      
+    this.load.image("Flame_Projectile", "assets/projectiles/Flame_Projectile.png")
+      .on('complete', () => console.log('Flame projectile loaded successfully'))
+      .on('error', (file) => console.error('Error loading Flame projectile:', file));
+      
+    console.log('Finished loading assets');
   }
 
   create() {
+    console.log('Starting game scene creation...');
     const { width, height } = this.scale;
     const background = this.add.image(width / 2, height / 2, "background");
     background.setOrigin(0.5, 0.5);
     background.setDisplaySize(width, height);
     background.setDepth(-1);
     this.towersGroup = this.add.group();
-
+    console.log('Game scene created successfully');
 
     this.exitButton = new ExitButton(this);
     this.exitButton.setVisible(true); // ✅ make sure it's visible at start
@@ -140,6 +155,10 @@ class GameScene extends Phaser.Scene {
           } 
           else if (this.selectedTowerType === "Flamethrower" && enoughMoneyFlame) {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
+            this.towersGroup.add(towerToPlace);
+          }
+          else if (this.selectedTowerType === "Fire") {
+            towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
           else {
@@ -253,9 +272,12 @@ class GameScene extends Phaser.Scene {
       }
     }
 
+    // Update all towers and their projectiles
     this.towersGroup.getChildren().forEach((tower: any) => {
       if (tower.update) {
         tower.update(time, delta);
+        // Debug log for tower updates
+        console.log(`Updating tower of type: ${tower.type}`);
       }
     });
 
@@ -443,8 +465,9 @@ class GameScene extends Phaser.Scene {
   checkWaveEnd() {
     if (this.waveActive && this.enemies.getLength() === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
       this.waveActive = false;
-      this.WAVE_NUMBER += 1;
+      this.WAVE_NUMBER++;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
+
       this.ENEMY_SPEED *= this.const_speed_multiplier;
       this.multiplier = (this.multiplier * this.const_speed_multiplier).toFixed(
         2
@@ -454,7 +477,20 @@ class GameScene extends Phaser.Scene {
       // ✅ Update button text and make it visible again
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
-      this.endCountDown();
+      
+      // Calculate new multiplier while respecting minimum speed
+      const newMultiplier = parseFloat(this.multiplier) * this.const_speed_multiplier;
+      this.multiplier = Math.max(newMultiplier, this.MIN_SPEED_MULTIPLIER).toFixed(2);
+      
+      this.countdownSeconds = 60;
+      this.countdownText.setText(`Time: ${this.countdownSeconds}     x${this.multiplier}`);
+      
+      // Stop the current timer
+      if (this.countdownTimer) {
+        this.countdownTimer.remove();
+      }
+      
+      // Don't start a new timer until the next wave begins
     }
   }
 

@@ -24,7 +24,7 @@ class FrostTower extends Tower {
   upgrade() {
     // Instead of normal upgrade, show upgrade options
     const gameScene = this.scene as GameScene;
-    gameScene.showUpgradeOptions(this);
+    gameScene.showUpgradeButton();
   }
 
   // Method to upgrade to Fast Frost Tower

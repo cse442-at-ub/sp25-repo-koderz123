@@ -97,7 +97,7 @@ class GameScene extends Phaser.Scene {
       }
 
       if(type=="Bomb"){
-        this.towerPreview.setScale(0.30); // Adjust scale for preview
+        this.towerPreview.setScale(0.18); // Adjust scale for preview
       }
       this.towerMenu.setVisibleAllUI(false);
       this.startWaveButton.setVisible(false);
@@ -142,6 +142,7 @@ class GameScene extends Phaser.Scene {
           else if (this.selectedTowerType === "Bomb") {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
+            towerToPlace.setScale(0.2); //changed size of bombTower image was too big
           }
           else {
             towerToPlace = new Tower(this, pointer.worldX, pointer.worldY, "default-tower");

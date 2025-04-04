@@ -153,8 +153,11 @@ const MainMenu: React.FC = () => {
         )}
       </div>
       <div id="leaderboard-button" 
-        onClick={clickLeaderboard}>
+        onClick={clickLeaderboard}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}>
         <FaTrophy size={30} color="black" />
+        <span className="tooltip">Leaderboard</span>
       </div>
     </div>
   );

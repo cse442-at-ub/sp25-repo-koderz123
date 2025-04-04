@@ -16,6 +16,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <div id="landingpage" onClick={click}>
+      <div className="sparkle-overlay"></div>
       <h1 id="gametitle">Galactic Tower Defense</h1>
       <h2 id="clickprompt">Click anywhere to start</h2>
     </div>
@@ -23,3 +24,4 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+

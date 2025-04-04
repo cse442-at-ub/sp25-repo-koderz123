@@ -1,5 +1,4 @@
 import Tower from "./Tower";
-import GameScene from "../GameScene";
 
 class FireTower extends Tower {
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -35,24 +34,20 @@ class FireTower extends Tower {
     }
   }
 
-  private fire() {
-    console.log(`FireTower firing at time ${this.scene.time.now}`);
-    this.createProjectile();
-  }
-
-  update(time: number, delta: number) {
+  update(time: number) {
     if (!this.isPlaced) return;
 
     if (time > this.nextFire) {
       const target = this.findTarget();
       if (target) {
-        this.fire();
+        console.log(`FireTower firing at time ${this.scene.time.now}`);
+        this.createProjectile();
         this.nextFire = time + this.fireRate;
       }
     }
 
     this.projectiles.children.each((projectile: any) => {
-      if (!projectile.active) return;
+      if (!projectile.active) return null;
 
       projectile.x += projectile.dx;
       projectile.y += projectile.dy;
@@ -74,6 +69,8 @@ class FireTower extends Tower {
       if (distance > this.range) {
         projectile.destroy();
       }
+
+      return null;
     });
   }
 }

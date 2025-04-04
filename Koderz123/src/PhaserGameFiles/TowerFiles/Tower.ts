@@ -246,7 +246,7 @@ class Tower extends Phaser.GameObjects.Image {
 
   protected findTarget() {
     const enemies = (this.scene as any).enemies.getChildren();
-    let closestEnemy = null;
+    let closestEnemy: Enemy | null;
     let closestDistance = this.range;
 
     enemies.forEach((enemy: any) => {

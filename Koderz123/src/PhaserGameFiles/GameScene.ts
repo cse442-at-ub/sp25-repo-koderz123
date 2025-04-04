@@ -120,15 +120,17 @@ class GameScene extends Phaser.Scene {
     
       if (this.towerPreview && this.selectedTowerType) {
         const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
-        if (isValid) {
+        const enoughMoneyFrost = this.hasEnoughResources(125);
+        const enoughMoneyFlame = this.hasEnoughResources(150);
+        if (isValid && (enoughMoneyFrost || enoughMoneyFlame)) {
           let towerToPlace: Tower;
 
-          if (this.selectedTowerType === "Frost") {
+          if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
 
           } 
-          else if (this.selectedTowerType === "Flamethrower") {
+          else if (this.selectedTowerType === "Flamethrower" && enoughMoneyFlame) {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
@@ -145,7 +147,10 @@ class GameScene extends Phaser.Scene {
           this.towerPreview = undefined;
           this.selectedTowerType = null;
           this.restoreUI();
-
+        }
+        else{
+          this.blinkResourceText(this.resourceText, 2000);
+          this.towerPreview.destroy();
           this.towerPreview = undefined;
           this.selectedTowerType = null;
           this.restoreUI();
@@ -343,6 +348,7 @@ class GameScene extends Phaser.Scene {
               this.updateResourceText();
           } else {
               console.log("Not enough resources to upgrade.");
+              this.blinkResourceText(this.resourceText,2000);
           }
       }
   }
@@ -482,6 +488,33 @@ class GameScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
       window.open('/mainmenu', '_self');
     });
+  }
+
+  blinkResourceText(resourceText, duration = 3000) { // Default duration: 3 seconds
+    let isRed = false;
+    const originalColor = resourceText.style.color; // Store the original color
+    let elapsedTime = 0;
+  
+    function toggleColor(time, delta) {
+      elapsedTime += delta;
+      if (elapsedTime >= duration) {
+        resourceText.setColor(originalColor);
+        resourceText.scene.events.off('update', toggleColor); // Remove the listener
+        return;
+      }
+  
+      if (elapsedTime % 500 < delta) { // Toggle roughly every 500ms
+          if (isRed) {
+            resourceText.setColor(originalColor);
+          } else {
+            resourceText.setColor("#ff0000"); // Red color
+          }
+          isRed = !isRed;
+      }
+    }
+  
+    // Add an 'update' event listener to the scene
+    resourceText.scene.events.on('update', toggleColor);
   }
 
   restoreUI() {

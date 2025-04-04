@@ -62,8 +62,8 @@ class Enemy extends Phaser.GameObjects.Image {
       if (this.getData("health") <= 0) {
         this.scene.resources += this.value;
         this.scene.updateResourceText();
-        this.destroy();
         this.scene.checkWaveEnd();
+        this.destroy();
       }
     } else {
       this.setActive(false);

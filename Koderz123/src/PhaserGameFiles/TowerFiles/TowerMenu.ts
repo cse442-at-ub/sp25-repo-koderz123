@@ -1,4 +1,3 @@
-
 // TowerMenu.ts
 import Phaser from "phaser";
 
@@ -14,7 +13,8 @@ class TowerMenu {
   private buttonHeight = 60;
   private bottomPadding = 10;
   private leftPadding = 30;
-  private towerTypes = ["Frost", "Flamethrower", "Bomb"];
+  private towerTypes = ["Frost", "Flamethrower", "Bomb", "Fire"];
+
   private buttonList: Phaser.GameObjects.Text[] = [];
 
   private hamburgerButton!: Phaser.GameObjects.Container;
@@ -36,11 +36,12 @@ class TowerMenu {
 
     // Tower buttons
     this.towerTypes.forEach((type, index) => {
-      const btn = scene.add.text(10 + index * 140, 10, `🛡️ ${type}`, {
+      const xOffset = type === "Fire" ? 220 : 160;
+      const btn = scene.add.text(10 + index * xOffset, 20, `🛡️ ${type}`, {
         fontSize: "20px",
         color: "#ffffff",
         backgroundColor: "#555",
-        padding: { left: 10, right: 10, top: 6, bottom: 6 },
+        padding: { left: 10, right: 20, top: 6, bottom: 6 },
       })
       .setInteractive()
       .on("pointerdown", () => {

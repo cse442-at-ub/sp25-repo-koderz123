@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./LoginScreen.css";
 
 const API_BASE_URL = 
-  "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
+  "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/"; 
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();

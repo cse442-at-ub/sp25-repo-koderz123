@@ -143,10 +143,11 @@ class GameScene extends Phaser.Scene {
         const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
         const enoughMoneyFrost = this.hasEnoughResources(125);
         const enoughMoneyFlame = this.hasEnoughResources(150);
-        if (isValid && (enoughMoneyFrost || enoughMoneyFlame)) {
+        const enoughMoneyFire = this.hasEnoughResources(150);
+        this.towerPreview.costText.destroy();
+        this.towerPreview.costText = undefined;
+        if (isValid && (enoughMoneyFrost || enoughMoneyFlame || enoughMoneyFire)) {
           let towerToPlace: Tower;
-          this.towerPreview.costText.destroy();
-          this.towerPreview.costText = undefined;
 
           if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
@@ -157,7 +158,7 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
-          else if (this.selectedTowerType === "Fire") {
+          else if (this.selectedTowerType === "Fire" && enoughMoneyFire) {
             towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }

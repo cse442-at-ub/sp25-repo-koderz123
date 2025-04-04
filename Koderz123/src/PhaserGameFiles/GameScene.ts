@@ -162,7 +162,6 @@ class GameScene extends Phaser.Scene {
           if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-
           } 
           else if (this.selectedTowerType === "Flamethrower" && enoughMoneyFlame) {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
@@ -172,6 +171,7 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
             towerToPlace.setScale(0.2); //changed size of bombTower image was too big
+          }
           else if (this.selectedTowerType === "Fire" && enoughMoneyFire) {
             towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);

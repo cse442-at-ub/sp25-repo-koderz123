@@ -16,6 +16,9 @@ const LandingPage: React.FC = () => {
 
   return (
     <div id="landingpage" onClick={click}>
+      <div className="stars"></div>
+      <div className="twinkling"></div>
+      <div className="planets"></div>
       <h1 id="gametitle">Galactic Tower Defense</h1>
       <h2 id="clickprompt">Click anywhere to start</h2>
     </div>
@@ -23,3 +26,4 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+

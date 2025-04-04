@@ -1,18 +1,23 @@
 #landingpage {
-  position: absolute;
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
   height: 100vh;
   background-image: url("../assets/menu-background-image.png");
   background-size: cover;
   background-position: center;
   font-family: 'Kiwi Maru';
   caret-color: transparent;
-  display: block;
-  margin: 0 auto;
+  overflow: hidden;
+  display: flex;                 /* 🔥 FLEX CENTERING */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding-top: 100px;
-  overflow: hidden; /* makes sure animations don't overflow */
+  z-index: 1;
 }
+
 
 html, body {
   margin: 0;

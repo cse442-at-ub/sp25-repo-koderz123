@@ -1,5 +1,5 @@
 #landingpage {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100vh;
   background-image: url("../assets/menu-background-image.png");
@@ -14,13 +14,20 @@
   overflow: hidden; /* makes sure animations don't overflow */
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* ✅ disables scrollbars */
+}
+
 #clickprompt {
   width: fit-content;
   margin: auto;
 }
 
 .sparkle-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;

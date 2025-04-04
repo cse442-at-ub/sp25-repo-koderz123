@@ -26,7 +26,7 @@ class Tower extends Phaser.GameObjects.Image {
     super(scene, x, y, texture);
     this.scene = scene;
     this.range = 100;
-    this.cost = 100;
+    this.cost = 150;
     this.isPlaced = false;
     this.level = 1;
     this.upgradeCost = 50;

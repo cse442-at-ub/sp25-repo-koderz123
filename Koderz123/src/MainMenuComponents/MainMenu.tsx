@@ -3,11 +3,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainMenu.css";
 import music from "../assets/menu_music.mp3"; 
+import { FaTrophy } from "react-icons/fa";
+
+const API_BASE_URL = "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
 
 const MainMenu: React.FC = () => {
-    const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
-    /*
+  const loggedInUsername = localStorage.getItem("loggedInUsername");
+
+  /*
     const [, setAudio] = useState<HTMLAudioElement | null>(null); 
 
     // Play music as soon as the page loads
@@ -28,88 +33,134 @@ const MainMenu: React.FC = () => {
         };
     }, []);
     */
+  
+  const clickNewGame = () => {
+    navigate("/levelselect");
+  };
 
-    const clickNewGame = () => {
-        navigate("/levelselect");
-    };
+  const clickOptions = () => {
+    navigate("/options");
+  };
 
-    const clickOptions = () => {
-        navigate("/options");
-    };
+  const clickExit = () => {
+    navigate("/");
+  };
 
-    const clickExit = () => {
+  const clickLogin = () => {
+    navigate("/login");
+  };
+
+  const clickTutorial = () => {
+    navigate("/tutorial");
+  };
+
+  const clickLeaderboard = () => {
+    navigate("/leaderboard");
+  };
+
+  const hovering = (e: React.MouseEvent<HTMLElement>) => {
+    (e.target as HTMLElement).style.fontSize = "32px";
+    e.currentTarget.style.cursor = "pointer";
+  };
+
+  const notHovering = (e: React.MouseEvent<HTMLElement>) => {
+    (e.target as HTMLElement).style.fontSize = "30px";
+    e.currentTarget.style.cursor = "default";
+  };
+
+  const hoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.cursor = "pointer";
+  };
+
+  const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
+    e.currentTarget.style.cursor = "default";
+  };
+
+  const logout = async () => {
+    try {
+      // Call server to clear session
+      const response = await fetch(`${API_BASE_URL}logout.php`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("✅ Logout successful:", data);
+      } else {
+        console.error("⚠️ Logout failed:", data.message);
+        alert("Failed to log out on the server. You have been logged out locally.");
+      }
+    } catch (error) {
+      console.error("⚠️ Network error during logout:", error);
+      alert("Network error during logout. You have been logged out locally.");
+    } finally {
+      // Clear local storage
+      localStorage.removeItem("user_id");
+      localStorage.removeItem("loggedInUsername");
+      
+      // Show logout message first
+      alert("You have been logged out!");
+      
+      // Then navigate after the alert is closed
+      setTimeout(() => {
         navigate("/");
-    };
+      }, 1000);
+    }
+  };
 
-    const clickLogin = () => {
-        navigate("/login");
-    };
-
-    const clickTutorial = () => {
-        navigate("/tutorial");
-    };
-
-    const hovering = (e: React.MouseEvent<HTMLElement>) => {
-        (e.target as HTMLElement).style.fontSize = "38px";
-        e.currentTarget.style.cursor = "pointer";
-    };
-
-    const notHovering = (e: React.MouseEvent<HTMLElement>) => {
-        (e.target as HTMLElement).style.fontSize = "36px";
-        e.currentTarget.style.cursor = "default";
-    };
-
-    const hoverMouse = (e: React.MouseEvent<HTMLElement>) => {
-        e.currentTarget.style.cursor = "pointer";
-    };
-
-    const nothoverMouse = (e: React.MouseEvent<HTMLElement>) => {
-        e.currentTarget.style.cursor = "default";
-    };
-
-    return (
-        <div id="MainMenupage">
-            <h1>GALACTIC TOWER DEFENSE</h1>
-            <div 
-                className="menu-item" 
-                onClick={clickNewGame} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                NEW GAME
-            </div>
-            <div 
-                className="menu-item" 
-                onClick={clickOptions} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                OPTIONS
-            </div>
-            <div 
-                className="menu-item" 
-                onClick={clickTutorial} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                TUTORIAL
-            </div>
-            <div 
-                className="menu-item" 
-                onClick={clickExit} 
-                onMouseEnter={hovering} 
-                onMouseLeave={notHovering}
-            >
-                EXIT
-            </div>
-            <div id="login-button" 
-                 onClick={clickLogin}
-                 onMouseEnter={hoverMouse} 
-                 onMouseLeave={nothoverMouse}>
-                LOGIN
-            </div>
-        </div>
-    );
+  return (
+    <div id="MainMenupage">
+      <h1>GALACTIC TOWER DEFENSE</h1>
+      <div
+        className="menu-item"
+        onClick={clickNewGame}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        NEW GAME
+      </div>
+      <div
+        className="menu-item"
+        onClick={clickOptions}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        OPTIONS
+      </div>
+      <div
+        className="menu-item"
+        onClick={clickTutorial}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        TUTORIAL
+      </div>
+      <div
+        id="logout-button"
+        onClick={logout}
+        onMouseEnter={hoverMouse}
+        onMouseLeave={nothoverMouse}
+      >
+        Logout
+      </div>
+      <div id="username-text">
+        {loggedInUsername ? (
+          <p>Logged in as: {loggedInUsername}</p>
+        ) : (
+          <p>User not logged in.</p>
+        )}
+      </div>
+      <div id="leaderboard-button" 
+        onClick={clickLeaderboard}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}>
+        <FaTrophy size={30} color="black" />
+        <span className="tooltip">Leaderboard</span>
+      </div>
+    </div>
+  );
 };
 
 export default MainMenu;

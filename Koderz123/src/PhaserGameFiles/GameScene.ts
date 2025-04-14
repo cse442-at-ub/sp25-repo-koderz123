@@ -50,7 +50,10 @@ class GameScene extends Phaser.Scene {
   private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
-  
+  constructor() {
+    super({ key: "GameScene" });
+    this.isGamePaused = false; // Add pause flag
+  }
 
 
   preload() {
@@ -277,9 +280,44 @@ class GameScene extends Phaser.Scene {
       fontSize: "24px",
       color: "#ffffff",
     });
+
+    this.pauseButton = this.add.text(10, 160, 'Pause', {
+      fontSize: '24px',
+      color: '#ffffff',
+      backgroundColor: '#000000',
+      padding: { left: 10, right: 10, top: 5, bottom: 5 }
+    })
+    .setInteractive()
+    .on('pointerdown', () => {
+      if (!this.isGamePaused) {
+        this.pauseGame();
+      } else {
+        this.resumeGame();
+      }
+    });
+  }
+
+  pauseGame() {
+    this.isGamePaused = true;
+    if (this.countdownTimer) {
+      this.countdownTimer.paused = true;
+    }
+    this.pauseButton.setText('Resume');
+  }
+
+  resumeGame() {
+    this.isGamePaused = false;
+    if (this.countdownTimer) {
+      this.countdownTimer.paused = false;
+    }
+    this.pauseButton.setText('Pause');
   }
 
   update(time: number, delta: number) {
+    if (this.isGamePaused) {
+      // Skip simulation update while paused.
+      return;
+    }
     if (
       this.waveActive &&
       this.enemiesSpawned < this.WAVE_SIZE &&

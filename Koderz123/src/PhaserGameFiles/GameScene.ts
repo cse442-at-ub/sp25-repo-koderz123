@@ -50,6 +50,9 @@ class GameScene extends Phaser.Scene {
   private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
+  private playerScore = 0;
+
+
   
 
 
@@ -286,6 +289,9 @@ class GameScene extends Phaser.Scene {
         enemy.startOnPath();
         this.enemiesSpawned++;
         this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
+        enemy.once("destroy", () => {
+          this.playerScore += 10; // Or any value you want to award
+        });
       }
     }
 
@@ -527,13 +533,30 @@ class GameScene extends Phaser.Scene {
 
   gameOver() {
     this.scene.pause();
+  
+    // ✅ Send score to backend
+    const score = this.playerScore || 0; // replace with real score variable if needed
+  
+    fetch("https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/update_score.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      credentials: "include",
+      body: `score=${score}`
+    })
+      .then(res => res.json())
+      .then(data => console.log("Score submission result:", data))
+      .catch(err => console.error("Score submission error:", err));
+  
+    // ✅ Proceed with game over screen
     const { width, height } = this.scale;
     const gameOverText = this.add.text(width / 2, height / 2 - 50, "Game Over", {
       fontSize: "48px",
       color: "#ff0000",
       align: "center",
     }).setOrigin(0.5);
-
+  
     const restartButton = this.add.text(width / 2, height / 2 + 20, "Restart", {
       fontSize: "24px",
       color: "#ffffff",
@@ -542,7 +565,7 @@ class GameScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
       this.scene.restart();
     });
-
+  
     const mainMenuButton = this.add.text(width / 2, height / 2 + 70, "Main Menu", {
       fontSize: "24px",
       color: "#ffffff",
@@ -552,6 +575,7 @@ class GameScene extends Phaser.Scene {
       window.open('/mainmenu', '_self');
     });
   }
+  
 
   blinkResourceText(resourceText, duration = 3000) { // Default duration: 3 seconds
     let isRed = false;

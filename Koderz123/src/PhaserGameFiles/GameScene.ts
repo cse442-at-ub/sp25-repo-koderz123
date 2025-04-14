@@ -10,7 +10,7 @@ import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
 import BombTower from "./TowerFiles/BombTower";
 import FireTower from "./TowerFiles/FireTower";
 
-
+import PauseButton from "./PauseButton"; // Import the PauseButton class
 
 class GameScene extends Phaser.Scene {
   public enemies!: Phaser.GameObjects.Group;
@@ -281,20 +281,7 @@ class GameScene extends Phaser.Scene {
       color: "#ffffff",
     });
 
-    this.pauseButton = this.add.text(10, 160, 'Pause', {
-      fontSize: '24px',
-      color: '#ffffff',
-      backgroundColor: '#000000',
-      padding: { left: 10, right: 10, top: 5, bottom: 5 }
-    })
-    .setInteractive()
-    .on('pointerdown', () => {
-      if (!this.isGamePaused) {
-        this.pauseGame();
-      } else {
-        this.resumeGame();
-      }
-    });
+    this.pauseButton = new PauseButton(this, 170, 35);
   }
 
   pauseGame() {

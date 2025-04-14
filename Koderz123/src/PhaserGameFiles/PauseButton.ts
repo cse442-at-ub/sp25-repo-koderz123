@@ -2,61 +2,75 @@
 import Phaser from "phaser";
 
 export default class PauseButton extends Phaser.GameObjects.Text {
-  // We'll track the pause state both here and update the scene accordingly.
-  public isGamePaused: boolean = false;
   private sceneRef: Phaser.Scene;
+  private tooltip: Phaser.GameObjects.Text | null = null;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, "Pause", {
-      fontSize: "24px",
+    // Set the default text to the pause symbol because the game starts running.
+    super(scene, x, y, "⏸", {
+      fontSize: "32px",
       color: "#ffffff",
       backgroundColor: "#000000",
-      padding: { left: 10, right: 10, top: 5, bottom: 5 },
+      padding: { left: 10, right: 10, top: 5, bottom: 5 }
     });
-
     this.sceneRef = scene;
+
+    // Enable interactivity and add events.
     this.setInteractive({ useHandCursor: true });
     this.on("pointerdown", this.togglePause, this);
+    this.on("pointerover", this.onHover, this);
+    this.on("pointerout", this.onOut, this);
+
     scene.add.existing(this);
   }
 
-  // Toggle between pausing and resuming the game.
   private togglePause(): void {
-    if (!this.isGamePaused) {
-      this.pauseGame();
+    // Delegate pause/resume to GameScene's methods.
+    if (!(this.sceneRef as any).isGamePaused) {
+      (this.sceneRef as any).pauseGame();
+      // When paused, show the play/resume symbol.
+      this.setText("▶");
     } else {
-      this.resumeGame();
+      (this.sceneRef as any).resumeGame();
+      // When running, show the pause symbol.
+      this.setText("⏸");
     }
   }
 
-  // Pause the game: update the button text, pause timers and tweens,
-  // and set the scene's pause flag.
-  public pauseGame() {
-    this.isGamePaused = true;
-
-    // Access and pause the scene's countdown timer if it exists.
-    if ((this.sceneRef as any).countdownTimer) {
-      ((this.sceneRef as any).countdownTimer).paused = true;
-    }
-    // Pause any tweens running in the scene.
-    this.sceneRef.tweens.pauseAll();
-    this.setText("Resume");
-
-    // Also update a global pause flag on the scene so that enemy updates, etc., can check it.
-    (this.sceneRef as any).isGamePaused = true;
+  // Hover animation: slightly increase scale when hovered.
+  private onHover(): void {
+    this.sceneRef.tweens.add({
+      targets: this,
+      scale: 1.1,
+      duration: 150,
+      ease: "Power2"
+    });
+    // Determine tooltip text based on game state.
+    const tooltipText = (!(this.sceneRef as any).isGamePaused) ? "Pause" : "Resume";
+    // Add an x offset if the tooltip is leaning too far right.
+    const offsetX = 25; // Horizontal offset
+    const offsetY = 20; // Lower the tooltip less (i.e., closer to the button)
+    this.tooltip = this.sceneRef.add.text(this.x + offsetX, this.y - offsetY, tooltipText, {
+      fontSize: "16px",
+      color: "#ffffff",
+      backgroundColor: "#000000",
+      padding: { left: 5, right: 5, top: 2, bottom: 2 },
+      align: "center"
+    }).setOrigin(0.5);
   }
 
-  // Resume the game: update the button text, resume timers and tweens,
-  // and reset the scene's pause flag.
-  public resumeGame() {
-    this.isGamePaused = false;
-
-    if ((this.sceneRef as any).countdownTimer) {
-      ((this.sceneRef as any).countdownTimer).paused = false;
+  // When the pointer leaves, scale back to normal and remove the tooltip.
+  private onOut(): void {
+    this.sceneRef.tweens.add({
+      targets: this,
+      scale: 1.0,
+      duration: 150,
+      ease: "Power2"
+    });
+    if (this.tooltip) {
+      this.tooltip.destroy();
+      this.tooltip = null;
     }
-    this.sceneRef.tweens.resumeAll();
-    this.setText("Pause");
-
-    (this.sceneRef as any).isGamePaused = false;
   }
 }
+

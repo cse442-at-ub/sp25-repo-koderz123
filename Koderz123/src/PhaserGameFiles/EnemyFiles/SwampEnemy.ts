@@ -11,7 +11,7 @@ class SwampEnemy extends Enemy {
         this.health = 300; // Higher health value
         this.damage = 10; //Higher damage to base
         this.value = 30; // Higher resource value for killing (normal is +15)
-        this.baseSpeed = 0.7; // Example: Slower than normal
+        this.baseSpeed = 0.6; // Example: Slower than normal
         this.setData("health", this.health);
     }
 

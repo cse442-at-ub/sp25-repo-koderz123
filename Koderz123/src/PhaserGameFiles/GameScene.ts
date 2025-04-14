@@ -51,6 +51,12 @@ class GameScene extends Phaser.Scene {
   private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
+  private normalEnemyBaseSpeed: number = 1; // Store base speed for normal enemy
+  private swampEnemyBaseSpeed: number = 0.6; // Store base speed for swamp enemy (adjust as needed)
+
+  private normalEnemySpeedText: Phaser.GameObjects.Text | null = null;
+  private swampEnemySpeedText: Phaser.GameObjects.Text | null = null;
+
   
 
 
@@ -279,7 +285,35 @@ class GameScene extends Phaser.Scene {
       fontSize: "24px",
       color: "#ffffff",
     });
+
+    // Create text objects to display enemy speeds in the bottom left
+    const speedDisplayY = height - 50;
+    const speedDisplayX = 20;
+    const speedOffsetY = 20;
+
+    this.normalEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY, " Speed: N/A", {
+        fontSize: "16px",
+        color: "#ffffff",
+    });
+
+    this.swampEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY + speedOffsetY, "Swampo Speed: N/A", {
+        fontSize: "16px",
+        color: "#ffffff",
+    });
+
+    this.updateEnemySpeedDisplay();
   }
+
+  private updateEnemySpeedDisplay() {
+    if (this.normalEnemySpeedText) {
+        const normalSpeed = (this.ENEMY_SPEED * this.normalEnemyBaseSpeed * 5000).toFixed(2);
+        this.normalEnemySpeedText.setText(`Fast Enemy Speed: ${normalSpeed}`);
+    }
+    if (this.swampEnemySpeedText) {
+        const swampSpeed = (this.ENEMY_SPEED * this.swampEnemyBaseSpeed * 5000).toFixed(2);
+        this.swampEnemySpeedText.setText(`Slow Enemy Speed: ${swampSpeed}`);
+    }
+}
 
   update(time: number, delta: number) {
     if (
@@ -518,10 +552,6 @@ class GameScene extends Phaser.Scene {
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
       
-      // Calculate new multiplier while respecting minimum speed
-      const newMultiplier = parseFloat(this.multiplier) * this.const_speed_multiplier;
-      this.multiplier = Math.max(newMultiplier, this.MIN_SPEED_MULTIPLIER).toFixed(2);
-      
       this.countdownSeconds = 60;
       this.countdownText.setText(`Time: ${this.countdownSeconds}     x${this.multiplier}`);
       
@@ -529,6 +559,8 @@ class GameScene extends Phaser.Scene {
       if (this.countdownTimer) {
         this.countdownTimer.remove();
       }
+
+      this.updateEnemySpeedDisplay();
       
       // Don't start a new timer until the next wave begins
     }

@@ -1,6 +1,7 @@
 //@ts-nocheck
 import Phaser from "phaser";
-import Enemy from "./Enemy"; // Import the Enemy class
+import Enemy from "./EnemyFiles/Enemy"; // Import the Enemy class
+import SwampEnemy from "./EnemyFiles/SwampEnemy";
 import StartWaveButton from "./StartWaveButton"; // ✅ Import new button class
 import TowerMenu from "./TowerFiles/TowerMenu";
 import ExitButton from "./ExitButton";
@@ -57,7 +58,11 @@ class GameScene extends Phaser.Scene {
     console.log('Starting to load assets...');
     
     this.load.image("background", "assets/GameScreenBackground.png");
-    this.load.image("enemy", "assets/enemy.png");
+
+    //loading enemies
+    this.load.image("enemy", "assets/enemies/enemy.png");
+    this.load.image("swamp-enemy", "assets/enemies/swamp-enemy.png");
+
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
     this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
@@ -281,12 +286,9 @@ class GameScene extends Phaser.Scene {
       this.enemiesSpawned < this.WAVE_SIZE &&
       time > this.nextEnemy
     ) {
-      const enemy = this.enemies.get() as Enemy;
-      if (enemy) {
-        enemy.startOnPath();
-        this.enemiesSpawned++;
-        this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
-      }
+      this.spawnEnemy(); // Call a new function to handle enemy spawning
+      this.enemiesSpawned++;
+      this.nextEnemy = time + this.SPAWN_DELAY;
     }
 
     // Update all towers and their projectiles
@@ -300,6 +302,26 @@ class GameScene extends Phaser.Scene {
 
     this.checkEnemyBaseAttacks();
     this.checkWaveEnd();
+  }
+
+  spawnEnemy() {
+    const enemyType = Phaser.Math.RND.integerInRange(0, 1); // Randomly choose enemy type
+    let enemy: Enemy | SwampEnemy;
+
+    switch (enemyType) {
+        case 0:
+            enemy = new Enemy(this);
+            break;
+        case 1:
+            enemy = new SwampEnemy(this);
+            break;
+        default:
+            enemy = new Enemy(this); // Fallback
+            break;
+    }
+
+    this.enemies.add(enemy);
+    enemy.startOnPath();
   }
 
   handleTowerClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {

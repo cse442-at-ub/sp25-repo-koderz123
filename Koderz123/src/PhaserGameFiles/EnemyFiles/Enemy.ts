@@ -1,6 +1,6 @@
 //@ts-nocheck
 import Phaser from "phaser";
-import GameScene from "./GameScene"; // Updated import
+import GameScene from "../GameScene"; // Updated import
 
 class Enemy extends Phaser.GameObjects.Image {
   follower: { t: number; vec: Phaser.Math.Vector2 };

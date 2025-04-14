@@ -1,0 +1,63 @@
+/* LoadGameScreen.css */
+
+.load-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    background: url("../assets/menu-background-image.png") no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    width:100vw;
+    color: white;
+    font-family: "Orbitron", sans-serif;
+  }
+  
+  .load-screen h1 {
+    font-size: 48px;
+    margin-bottom: 30px;
+    color: #00ffff;
+    text-shadow: 2px 2px 6px black;
+  }
+  
+  .save-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 90%;
+    max-width: 600px;
+  }
+  
+  .save-list li {
+    background-color: rgba(0, 0, 0, 0.6);
+    margin: 10px 0;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #00ffff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .save-list li:hover {
+    background-color: rgba(0, 255, 255, 0.2);
+    transform: scale(1.02);
+  }
+  
+  .back-button {
+    margin-top: 40px;
+    padding: 12px 28px;
+    font-size: 18px;
+    color: white;
+    background-color: #333;
+    border: 2px solid #00ffff;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  
+  .back-button:hover {
+    background-color: #00ffff;
+    color: black;
+
+  }
+  

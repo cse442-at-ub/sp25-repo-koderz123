@@ -311,6 +311,11 @@ class GameScene extends Phaser.Scene {
     this.updateEnemySpeedDisplay();
 
     this.pauseButton = new PauseButton(this, 170, 35); //change size for pause button
+
+    window.addEventListener("beforeunload", () => {
+      this.saveGameToServer();
+    });
+    
   }
 
   pauseGame() {
@@ -419,6 +424,34 @@ class GameScene extends Phaser.Scene {
   
     this.towerClicked = false;
   }
+
+  saveGameToServer() {
+    const playerID = localStorage.getItem("user_id");
+    if (!playerID) return;
+  
+    // Build tower save data
+    const towersToSave = this.towersGroup.getChildren().map((tower: any) => ({
+      type: tower.constructor.name, // e.g., FrostTower, BombTower
+      x: tower.x,
+      y: tower.y
+    }));
+  
+    const saveData = {
+      playerID: parseInt(playerID),
+      money: this.resources,
+      wave: this.WAVE_NUMBER,
+      health: this.baseHealth,
+      towers: towersToSave
+    };
+  
+    fetch("https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/api.php?action=save-game", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(saveData),
+      keepalive: true // ✅ Ensures the request still completes if the tab closes
+    });
+  }
+  
   
 
   showUpgradeButton() {

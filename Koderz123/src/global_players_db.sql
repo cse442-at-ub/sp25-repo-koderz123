@@ -58,6 +58,34 @@ ALTER TABLE `global_players_db`
   ADD UNIQUE KEY `playerID` (`playerID`,`playerName`);
 COMMIT;
 
+
+-- --------------------------------------------------------
+
+-- Table structure for table `highscores`
+--
+
+CREATE TABLE `highscores` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `playerID` INT NOT NULL,
+  `score` INT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`playerID`) REFERENCES `global_players_db`(`playerID`) ON DELETE CASCADE
+);
+ALTER TABLE highscores ADD COLUMN mode VARCHAR(20) NOT NULL DEFAULT 'relaxed';
+
+CREATE TABLE saved_games (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  playerID INT NOT NULL,
+  money INT NOT NULL,
+  wave INT NOT NULL,
+  health INT NOT NULL,
+  towers TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (playerID) REFERENCES global_players_db(playerID) ON DELETE CASCADE
+);
+
+
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

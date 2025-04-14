@@ -511,6 +511,9 @@ class GameScene extends Phaser.Scene {
   }
 
   startWave() {
+    if (this.isGamePaused) {
+      return;
+    }
     if (!this.waveActive) {
       this.waveActive = true;
       this.enemiesSpawned = 0;

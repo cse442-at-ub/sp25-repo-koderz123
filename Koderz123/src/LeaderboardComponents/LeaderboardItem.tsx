@@ -4,9 +4,10 @@ interface LeaderboardItemProps {
   rank: number;
   player: string;
   score: number;
+  isCurrentUser?: boolean;
 }
 
-const LeaderboardItem: React.FC<LeaderboardItemProps> = ({ rank, player, score }) => {
+const LeaderboardItem: React.FC<LeaderboardItemProps> = ({ rank, player, score, isCurrentUser = false, }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -31,7 +32,7 @@ const LeaderboardItem: React.FC<LeaderboardItemProps> = ({ rank, player, score }
 
   return (
     <div
-      className={`leaderboard-item ${getRankClass()} ${isHovered ? "hovered" : ""} ${isSelected ? "selected" : ""}`}
+    className={`leaderboard-item ${getRankClass()} ${isHovered ? "hovered" : ""} ${isSelected ? "selected" : ""} ${isCurrentUser ? "highlighted-user" : ""}`}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

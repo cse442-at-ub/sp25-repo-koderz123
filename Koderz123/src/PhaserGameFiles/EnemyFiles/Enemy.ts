@@ -1,6 +1,6 @@
 //@ts-nocheck
 import Phaser from "phaser";
-import GameScene from "./GameScene"; // Updated import
+import GameScene from "../GameScene"; // Updated import
 
 class Enemy extends Phaser.GameObjects.Image {
   follower: { t: number; vec: Phaser.Math.Vector2 };
@@ -15,7 +15,7 @@ class Enemy extends Phaser.GameObjects.Image {
   isAtEnd: boolean;
   healthText: Phaser.GameObjects.Text;
 
-
+  
   constructor(scene: GameScene) {
     super(scene, 0, 0, "enemy");
     this.scene = scene;
@@ -52,7 +52,7 @@ class Enemy extends Phaser.GameObjects.Image {
     }
   
     if (this.follower.t < 1) {
-      const effectiveSpeed = this.scene.ENEMY_SPEED * this.slowFactor;
+      const effectiveSpeed = this.scene.ENEMY_SPEED * this.baseSpeed * this.slowFactor;
       this.follower.t += effectiveSpeed * delta;
   
       this.scene.path.getPoint(this.follower.t, this.follower.vec);

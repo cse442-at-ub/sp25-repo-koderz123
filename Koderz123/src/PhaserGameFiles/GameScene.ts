@@ -570,7 +570,7 @@ class GameScene extends Phaser.Scene {
     this.enemies.getChildren().forEach((enemy) => {
       if (enemy instanceof Enemy && enemy.isAtEnd) {
         this.baseHealth -= enemy.damage;
-        this.baseHealthText.setText(`HP: ${this.baseHealth}`);
+        this.baseHealthText.setText(`HP: ${Math.max(0, this.baseHealth)}`);
         enemy.destroy();
         this.enemiesAlive--;
         if (this.baseHealth <= 0) {

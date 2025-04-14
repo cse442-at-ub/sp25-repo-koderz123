@@ -1,6 +1,7 @@
 //@ts-nocheck
 import Phaser from "phaser";
-import Enemy from "./Enemy"; // Import the Enemy class
+import Enemy from "./EnemyFiles/Enemy"; // Import the Enemy class
+import SwampEnemy from "./EnemyFiles/SwampEnemy";
 import StartWaveButton from "./StartWaveButton"; // ✅ Import new button class
 import TowerMenu from "./TowerFiles/TowerMenu";
 import ExitButton from "./ExitButton";
@@ -50,6 +51,12 @@ class GameScene extends Phaser.Scene {
   private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
+  private normalEnemyBaseSpeed: number = 1; // Store base speed for normal enemy
+  private swampEnemyBaseSpeed: number = 0.6; // Store base speed for swamp enemy (adjust as needed)
+
+  private normalEnemySpeedText: Phaser.GameObjects.Text | null = null;
+  private swampEnemySpeedText: Phaser.GameObjects.Text | null = null;
+
   
 
 
@@ -57,7 +64,11 @@ class GameScene extends Phaser.Scene {
     console.log('Starting to load assets...');
     
     this.load.image("background", "assets/GameScreenBackground.png");
-    this.load.image("enemy", "assets/enemy.png");
+
+    //loading enemies
+    this.load.image("enemy", "assets/enemies/enemy.png");
+    this.load.image("swamp-enemy", "assets/enemies/swamp-enemy.png");
+
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
     this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
@@ -102,7 +113,6 @@ class GameScene extends Phaser.Scene {
       let previewTexture = "default-tower";
       if (type === "Frost") previewTexture = "frost-tower";
       if (type === "Flamethrower") previewTexture = "flamethrower-tower";
-    
       if (type === "Bomb") previewTexture = "bomb-tower";
       this.towerPreview = new Tower(this, 0, 0, previewTexture);
       this.towerPreview.setAlpha(0.5);
@@ -116,7 +126,8 @@ class GameScene extends Phaser.Scene {
       }
 
       if(type=="Bomb"){
-        this.towerPreview.setScale(0.18); // Adjust scale for preview
+        this.towerPreview.setScale(0.20); // Adjust scale for preview
+        this.towerPreview.cost = 200;
       }
 
       console.log(this.towerPreview);
@@ -154,6 +165,7 @@ class GameScene extends Phaser.Scene {
         const enoughMoneyFrost = this.hasEnoughResources(125);
         const enoughMoneyFlame = this.hasEnoughResources(150);
         const enoughMoneyFire = this.hasEnoughResources(150);
+        const enoughMoneyBomb = this.hasEnoughResources(200);
         this.towerPreview.costText.destroy();
         this.towerPreview.costText = undefined;
         if (isValid && (enoughMoneyFrost || enoughMoneyFlame || enoughMoneyFire)) {
@@ -167,7 +179,7 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
-          else if (this.selectedTowerType === "Bomb") {
+          else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
             towerToPlace.setScale(0.2); //changed size of bombTower image was too big
@@ -273,7 +285,35 @@ class GameScene extends Phaser.Scene {
       fontSize: "24px",
       color: "#ffffff",
     });
+
+    // Create text objects to display enemy speeds in the bottom left
+    const speedDisplayY = height - 50;
+    const speedDisplayX = 20;
+    const speedOffsetY = 20;
+
+    this.normalEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY, " Speed: N/A", {
+        fontSize: "16px",
+        color: "#ffffff",
+    });
+
+    this.swampEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY + speedOffsetY, "Swampo Speed: N/A", {
+        fontSize: "16px",
+        color: "#ffffff",
+    });
+
+    this.updateEnemySpeedDisplay();
   }
+
+  private updateEnemySpeedDisplay() {
+    if (this.normalEnemySpeedText) {
+        const normalSpeed = (this.ENEMY_SPEED * this.normalEnemyBaseSpeed * 5000).toFixed(2);
+        this.normalEnemySpeedText.setText(`Fast Enemy Speed: ${normalSpeed}`);
+    }
+    if (this.swampEnemySpeedText) {
+        const swampSpeed = (this.ENEMY_SPEED * this.swampEnemyBaseSpeed * 5000).toFixed(2);
+        this.swampEnemySpeedText.setText(`Slow Enemy Speed: ${swampSpeed}`);
+    }
+}
 
   update(time: number, delta: number) {
     if (
@@ -281,12 +321,9 @@ class GameScene extends Phaser.Scene {
       this.enemiesSpawned < this.WAVE_SIZE &&
       time > this.nextEnemy
     ) {
-      const enemy = this.enemies.get() as Enemy;
-      if (enemy) {
-        enemy.startOnPath();
-        this.enemiesSpawned++;
-        this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
-      }
+      this.spawnEnemy(); // Call a new function to handle enemy spawning
+      this.enemiesSpawned++;
+      this.nextEnemy = time + this.SPAWN_DELAY;
     }
 
     // Update all towers and their projectiles
@@ -300,6 +337,26 @@ class GameScene extends Phaser.Scene {
 
     this.checkEnemyBaseAttacks();
     this.checkWaveEnd();
+  }
+
+  spawnEnemy() {
+    const enemyType = Phaser.Math.RND.integerInRange(0, 1); // Randomly choose enemy type
+    let enemy: Enemy | SwampEnemy;
+
+    switch (enemyType) {
+        case 0:
+            enemy = new Enemy(this);
+            break;
+        case 1:
+            enemy = new SwampEnemy(this);
+            break;
+        default:
+            enemy = new Enemy(this); // Fallback
+            break;
+    }
+
+    this.enemies.add(enemy);
+    enemy.startOnPath();
   }
 
   handleTowerClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
@@ -495,10 +552,6 @@ class GameScene extends Phaser.Scene {
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
       
-      // Calculate new multiplier while respecting minimum speed
-      const newMultiplier = parseFloat(this.multiplier) * this.const_speed_multiplier;
-      this.multiplier = Math.max(newMultiplier, this.MIN_SPEED_MULTIPLIER).toFixed(2);
-      
       this.countdownSeconds = 60;
       this.countdownText.setText(`Time: ${this.countdownSeconds}     x${this.multiplier}`);
       
@@ -506,6 +559,8 @@ class GameScene extends Phaser.Scene {
       if (this.countdownTimer) {
         this.countdownTimer.remove();
       }
+
+      this.updateEnemySpeedDisplay();
       
       // Don't start a new timer until the next wave begins
     }

@@ -11,7 +11,7 @@ import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
 import BombTower from "./TowerFiles/BombTower";
 import FireTower from "./TowerFiles/FireTower";
 
-
+import PauseButton from "./PauseButton"; // Import the PauseButton class
 
 class GameScene extends Phaser.Scene {
   public enemies!: Phaser.GameObjects.Group;
@@ -57,8 +57,11 @@ class GameScene extends Phaser.Scene {
   private normalEnemySpeedText: Phaser.GameObjects.Text | null = null;
   private swampEnemySpeedText: Phaser.GameObjects.Text | null = null;
 
-  
 
+  constructor() {
+    super({ key: "GameScene" });
+    this.isGamePaused = false; // Add pause flag
+  }
 
   preload() {
     console.log('Starting to load assets...');
@@ -126,7 +129,10 @@ class GameScene extends Phaser.Scene {
       }
 
       if(type=="Bomb"){
-        this.towerPreview.setScale(0.20); // Adjust scale for preview
+        this.towerPreview.setScale(0.10); // Adjust scale for preview
+      }
+      if(type=="Fire"){
+        this.towerPreview.setScale(0.10); // Adjust scale for preview
         this.towerPreview.cost = 200;
       }
 
@@ -182,11 +188,12 @@ class GameScene extends Phaser.Scene {
           else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-            towerToPlace.setScale(0.2); //changed size of bombTower image was too big
+            towerToPlace.setScale(0.12); //changed size of bombTower image was too big
           }
           else if (this.selectedTowerType === "Fire" && enoughMoneyFire) {
             towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
+            towerToPlace.setScale(0.12);
           }
           else {
             towerToPlace = new Tower(this, pointer.worldX, pointer.worldY, "default-tower");
@@ -302,6 +309,24 @@ class GameScene extends Phaser.Scene {
     });
 
     this.updateEnemySpeedDisplay();
+
+    this.pauseButton = new PauseButton(this, 170, 35); //change size for pause button
+  }
+
+  pauseGame() {
+    this.isGamePaused = true;
+    if (this.countdownTimer) {
+      this.countdownTimer.paused = true;
+    }
+    this.pauseButton.setText('Resume');
+  }
+
+  resumeGame() {
+    this.isGamePaused = false;
+    if (this.countdownTimer) {
+      this.countdownTimer.paused = false;
+    }
+    this.pauseButton.setText('Pause');
   }
 
   private updateEnemySpeedDisplay() {
@@ -316,6 +341,10 @@ class GameScene extends Phaser.Scene {
 }
 
   update(time: number, delta: number) {
+    if (this.isGamePaused) {
+      // Skip simulation update while paused.
+      return;
+    }
     if (
       this.waveActive &&
       this.enemiesSpawned < this.WAVE_SIZE &&
@@ -526,6 +555,9 @@ class GameScene extends Phaser.Scene {
   }
 
   startWave() {
+    if (this.isGamePaused) {
+      return;
+    }
     if (!this.waveActive) {
       this.waveActive = true;
       this.enemiesSpawned = 0;

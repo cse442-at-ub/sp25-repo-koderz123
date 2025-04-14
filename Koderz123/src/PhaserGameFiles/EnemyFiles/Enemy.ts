@@ -39,6 +39,10 @@ class Enemy extends Phaser.GameObjects.Image {
   }
 
   update(time: number, delta: number) {
+    if (this.scene.isGamePaused) {
+      return;
+    }
+
     if (this.slowDuration > 0) {
       this.slowDuration -= delta;
       if (this.slowDuration <= 0) {

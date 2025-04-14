@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./DifficultyScreen.css";
 import SpaceBackground from "../assets/menu-background-image.png";
 import SelectDifficultyTitle from "../assets/SelectDifficultyTitle.png";
@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import RelaxedButton from "./RelaxedButton";
 import IntenseButton from "./IntenseButton"; 
 import BrutalButton from "./BrutalButton"; 
+
+
 
 
 

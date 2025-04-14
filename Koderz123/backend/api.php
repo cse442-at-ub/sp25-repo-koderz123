@@ -84,6 +84,70 @@ if ($action === "get-user-score") {
     exit;
 }
 
+// ✅ SAVE GAME STATE
+if ($action === "save-game") {
+    $json = json_decode(file_get_contents("php://input"), true);
+    $playerID = $json["playerID"] ?? null;
+    $money = $json["money"] ?? null;
+    $wave = $json["wave"] ?? null;
+    $health = $json["health"] ?? null;
+    $towers = json_encode($json["towers"] ?? []);
+
+    if (!$playerID || $money === null || $wave === null || $health === null) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing required fields"]);
+        exit;
+    }
+
+    $stmt = $conn->prepare("INSERT INTO saved_games (playerID, money, wave, health, towers) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("iiiis", $playerID, $money, $wave, $health, $towers);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "Game saved successfully"]);
+    } else {
+        http_response_code(500);
+        echo json_encode(["error" => "Failed to save game"]);
+    }
+
+    $stmt->close();
+    exit;
+}
+
+// ✅ LOAD SAVED GAME STATE
+if ($action === "load-game") {
+    $playerID = $_GET["playerID"] ?? null;
+
+    if (!$playerID) {
+        http_response_code(400);
+        echo json_encode(["error" => "Missing playerID"]);
+        exit;
+    }
+
+    $stmt = $conn->prepare("SELECT money, wave, health, towers FROM saved_games WHERE playerID = ? ORDER BY created_at DESC LIMIT 1");
+    $stmt->bind_param("i", $playerID);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows === 0) {
+        echo json_encode(["error" => "No saved game found"]);
+        exit;
+    }
+
+    $stmt->bind_result($money, $wave, $health, $towersJSON);
+    $stmt->fetch();
+
+    echo json_encode([
+        "money" => $money,
+        "wave" => $wave,
+        "health" => $health,
+        "towers" => json_decode($towersJSON)
+    ]);
+
+    $stmt->close();
+    exit;
+}
+
+// ❌ Fallback for unrecognized actions
 http_response_code(400);
 echo json_encode(["error" => "Invalid or missing action"]);
 $conn->close();

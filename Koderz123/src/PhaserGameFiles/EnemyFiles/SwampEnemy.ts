@@ -9,9 +9,9 @@ class SwampEnemy extends Enemy {
         this.setTexture("swamp-enemy"); // You might want a different texture
         this.setScale(0.06); // Adjust scale to make it look bigger
         this.health = 300; // Higher health value
-        this.damage = 3; // Lower damage value (it's tanky, not fast attacker)
-        this.value = 25; // Higher resource value for killing
-        this.baseSpeed = 0.4; // Example: Slower than normal
+        this.damage = 10; //Higher damage to base
+        this.value = 30; // Higher resource value for killing (normal is +15)
+        this.baseSpeed = 0.7; // Example: Slower than normal
         this.setData("health", this.health);
     }
 

@@ -107,7 +107,6 @@ class GameScene extends Phaser.Scene {
       let previewTexture = "default-tower";
       if (type === "Frost") previewTexture = "frost-tower";
       if (type === "Flamethrower") previewTexture = "flamethrower-tower";
-    
       if (type === "Bomb") previewTexture = "bomb-tower";
       this.towerPreview = new Tower(this, 0, 0, previewTexture);
       this.towerPreview.setAlpha(0.5);
@@ -121,7 +120,8 @@ class GameScene extends Phaser.Scene {
       }
 
       if(type=="Bomb"){
-        this.towerPreview.setScale(0.18); // Adjust scale for preview
+        this.towerPreview.setScale(0.20); // Adjust scale for preview
+        this.towerPreview.cost = 200;
       }
 
       console.log(this.towerPreview);
@@ -159,6 +159,7 @@ class GameScene extends Phaser.Scene {
         const enoughMoneyFrost = this.hasEnoughResources(125);
         const enoughMoneyFlame = this.hasEnoughResources(150);
         const enoughMoneyFire = this.hasEnoughResources(150);
+        const enoughMoneyBomb = this.hasEnoughResources(200);
         this.towerPreview.costText.destroy();
         this.towerPreview.costText = undefined;
         if (isValid && (enoughMoneyFrost || enoughMoneyFlame || enoughMoneyFire)) {
@@ -172,7 +173,7 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
           }
-          else if (this.selectedTowerType === "Bomb") {
+          else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
             towerToPlace.setScale(0.2); //changed size of bombTower image was too big

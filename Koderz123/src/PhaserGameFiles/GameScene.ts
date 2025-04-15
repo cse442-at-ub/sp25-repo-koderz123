@@ -7,7 +7,7 @@ import TowerMenu from "./TowerFiles/TowerMenu";
 import ExitButton from "./ExitButton";
 import Tower from "./TowerFiles/Tower";
 import FrostTower from "./TowerFiles/FrostTower";
-import FlamethrowerTower from "./TowerFiles/FlamethrowerTower";
+import ShockTower from "./TowerFiles/ShockTower";
 import BombTower from "./TowerFiles/BombTower";
 import FireTower from "./TowerFiles/FireTower";
 
@@ -74,9 +74,9 @@ class GameScene extends Phaser.Scene {
 
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
-    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
+    this.load.image("shock-tower", "assets/towers/shock-tower.png")
     this.load.image("bomb-tower", "assets/towers/bomb-tower.png");
-    
+
     // Load projectile textures with error handling
     this.load.image("Frost_Projectile", "assets/projectiles/Frost_Projectile.png")
       .on('complete', () => console.log('Frost projectile loaded successfully'))
@@ -85,7 +85,7 @@ class GameScene extends Phaser.Scene {
     this.load.image("Flame_Projectile", "assets/projectiles/Flame_Projectile.png")
       .on('complete', () => console.log('Flame projectile loaded successfully'))
       .on('error', (file) => console.error('Error loading Flame projectile:', file));
-      
+
     console.log('Finished loading assets');
 
   }
@@ -115,7 +115,7 @@ class GameScene extends Phaser.Scene {
       // 🔽 Choose the correct tower class and texture
       let previewTexture = "default-tower";
       if (type === "Frost") previewTexture = "frost-tower";
-      if (type === "Flamethrower") previewTexture = "flamethrower-tower";
+      if (type === "Shock") previewTexture = "shock-tower";
       if (type === "Bomb") previewTexture = "bomb-tower";
       this.towerPreview = new Tower(this, 0, 0, previewTexture);
       this.towerPreview.setAlpha(0.5);
@@ -123,8 +123,8 @@ class GameScene extends Phaser.Scene {
         this.towerPreview.setScale(0.18); // Adjust scale for preview
         this.towerPreview.cost = 125;
       }
-      if(type=="Flamethrower"){
-        this.towerPreview.setScale(0.30); // Adjust scale for preview
+      if(type=="Shock"){
+        this.towerPreview.setScale(0.10); // Adjust scale for preview
         this.towerPreview.cost = 150;
       }
 
@@ -181,9 +181,10 @@ class GameScene extends Phaser.Scene {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
           } 
-          else if (this.selectedTowerType === "Flamethrower" && enoughMoneyFlame) {
-            towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
+          else if (this.selectedTowerType === "Shock" && enoughMoneyFlame) {
+            towerToPlace = new ShockTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
+            towerToPlace.setScale(0.12);
           }
           else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);

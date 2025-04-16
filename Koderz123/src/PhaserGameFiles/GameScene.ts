@@ -86,6 +86,10 @@ class GameScene extends Phaser.Scene {
       .on('complete', () => console.log('Flame projectile loaded successfully'))
       .on('error', (file) => console.error('Error loading Flame projectile:', file));
 
+    this.load.image("Shock_Projectile", "assets/projectiles/Shock_Projectile.png")
+      .on('complete', () => console.log('Shock projectile loaded successfully'))
+      .on('error', (file) => console.error('Error loading Shock projectile:', file));
+
     console.log('Finished loading assets');
 
   }

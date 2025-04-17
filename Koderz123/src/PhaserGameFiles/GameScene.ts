@@ -12,6 +12,7 @@ import BombTower from "./TowerFiles/BombTower";
 import FireTower from "./TowerFiles/FireTower";
 
 import PauseButton from "./PauseButton"; // Import the PauseButton class
+import GameOverScene from "./GameOverScene";
 
 class GameScene extends Phaser.Scene {
   public enemies!: Phaser.GameObjects.Group;
@@ -638,6 +639,7 @@ class GameScene extends Phaser.Scene {
         this.baseHealthText.setText(`HP: ${Math.max(0, this.baseHealth)}`);
         enemy.destroy();
         this.enemiesAlive--;
+        console.log("Base HP: ",this.baseHealth);
         if (this.baseHealth <= 0) {
           this.gameOver();
         }
@@ -647,30 +649,7 @@ class GameScene extends Phaser.Scene {
 
   gameOver() {
     this.scene.pause();
-    const { width, height } = this.scale;
-    const gameOverText = this.add.text(width / 2, height / 2 - 50, "Game Over", {
-      fontSize: "48px",
-      color: "#ff0000",
-      align: "center",
-    }).setOrigin(0.5);
-
-    const restartButton = this.add.text(width / 2, height / 2 + 20, "Restart", {
-      fontSize: "24px",
-      color: "#ffffff",
-      backgroundColor: "#444",
-      padding: { left: 20, right: 20, top: 10, bottom: 10 },
-    }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
-      this.scene.restart();
-    });
-
-    const mainMenuButton = this.add.text(width / 2, height / 2 + 70, "Main Menu", {
-      fontSize: "24px",
-      color: "#ffffff",
-      backgroundColor: "#444",
-      padding: { left: 20, right: 20, top: 10, bottom: 10 },
-    }).setOrigin(0.5).setInteractive().on('pointerdown', () => {
-      window.open('/mainmenu', '_self');
-    });
+    this.scene.launch('GameOverScene');
   }
 
   blinkResourceText(resourceText, duration = 3000) { // Default duration: 3 seconds

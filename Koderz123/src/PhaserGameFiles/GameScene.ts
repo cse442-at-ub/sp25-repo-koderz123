@@ -77,6 +77,8 @@ class GameScene extends Phaser.Scene {
     this.load.image("shock-tower", "assets/towers/shock-tower.png")
     this.load.image("bomb-tower", "assets/towers/bomb-tower.png");
 
+
+
     // Load projectile textures with error handling
     this.load.image("Frost_Projectile", "assets/projectiles/Frost_Projectile.png")
       .on('complete', () => console.log('Frost projectile loaded successfully'))
@@ -85,10 +87,6 @@ class GameScene extends Phaser.Scene {
     this.load.image("Flame_Projectile", "assets/projectiles/Flame_Projectile.png")
       .on('complete', () => console.log('Flame projectile loaded successfully'))
       .on('error', (file) => console.error('Error loading Flame projectile:', file));
-
-    this.load.image("Shock_Projectile", "assets/projectiles/Shock_Projectile.png")
-      .on('complete', () => console.log('Shock projectile loaded successfully'))
-      .on('error', (file) => console.error('Error loading Shock projectile:', file));
 
     console.log('Finished loading assets');
 
@@ -109,46 +107,66 @@ class GameScene extends Phaser.Scene {
 
     
 
-    this.towerMenu = new TowerMenu(this, (type) => {
-      this.selectedTowerType = type;
-    
-      if (this.towerPreview) {
-        this.towerPreview.destroy();
+    this.towerMenu = new TowerMenu(
+      this,
+  
+      // ── onTowerSelect ──
+      (type) => {
+        // exactly your old “select” logic, including preview + scale:
+        this.selectedTowerType = type;
+        if (this.towerPreview) this.towerPreview.destroy();
+  
+        let previewTexture = "default-tower";
+        if (type === "Frost") previewTexture = "frost-tower";
+        if (type === "Shock") previewTexture = "shock-tower";
+        if (type === "Bomb")  previewTexture = "bomb-tower";
+        if (type === "Fire")  previewTexture = "default-tower";
+  
+        this.towerPreview = new Tower(this, 0, 0, previewTexture);
+        this.towerPreview.setAlpha(0.5);
+  
+        // **your existing scale settings**:
+        if (type === "Frost") this.towerPreview.setScale(0.18);
+        if (type === "Shock") this.towerPreview.setScale(0.10);
+        if (type === "Bomb")  this.towerPreview.setScale(0.10);
+        if (type === "Fire")  this.towerPreview.setScale(0.10);
+  
+        // and cost/display logic as before
+        if (type === "Frost") this.towerPreview.cost = 125;
+        if (type === "Shock") this.towerPreview.cost = 150;
+        if (type === "Bomb")  this.towerPreview.cost = 175;
+        if (type === "Fire")  this.towerPreview.cost = 200;
+  
+        this.towerPreview.displayCost(this.towerPreview.x, this.towerPreview.y);
+        this.towerMenu.setVisibleAllUI(false);
+        this.startWaveButton.setVisible(false);
+        this.exitButton.setVisible(false);
+        this.justSelectedTower = true;
+      },
+  
+      // ── onBuy ──
+      (type) => {
+        // cost map
+        const costMap: Record<string, number> = {
+          Frost: 125,
+          Shock: 150,
+          Bomb: 175,
+          Fire: 200
+        };
+        const cost = costMap[type] || 0;
+  
+        // if not enough coins, flash and veto
+        if (!this.hasEnoughResources(cost)) {
+          this.blinkResourceText(this.resourceText, 1500);
+          return false;
+        }
+  
+        // otherwise deduct and approve
+        this.removeResources(cost);
+        this.updateResourceText();
+        return true;
       }
-    
-      // 🔽 Choose the correct tower class and texture
-      let previewTexture = "default-tower";
-      if (type === "Frost") previewTexture = "frost-tower";
-      if (type === "Shock") previewTexture = "shock-tower";
-      if (type === "Bomb") previewTexture = "bomb-tower";
-      this.towerPreview = new Tower(this, 0, 0, previewTexture);
-      this.towerPreview.setAlpha(0.5);
-      if(type=="Frost"){
-        this.towerPreview.setScale(0.18); // Adjust scale for preview
-        this.towerPreview.cost = 125;
-      }
-      if(type=="Shock"){
-        this.towerPreview.setScale(0.10); // Adjust scale for preview
-        this.towerPreview.cost = 150;
-      }
-
-      if(type=="Bomb"){
-        this.towerPreview.setScale(0.10); // Adjust scale for preview
-      }
-      if(type=="Fire"){
-        this.towerPreview.setScale(0.10); // Adjust scale for preview
-        this.towerPreview.cost = 200;
-      }
-
-      console.log(this.towerPreview);
-      this.towerPreview.displayCost(this.towerPreview.x, this.towerPreview.y);
-
-      this.towerMenu.setVisibleAllUI(false);
-      this.startWaveButton.setVisible(false);
-      this.exitButton.setVisible(false);
-      this.justSelectedTower = true;
-    });
-    
+    );
     
     
 
@@ -172,56 +190,31 @@ class GameScene extends Phaser.Scene {
     
       if (this.towerPreview && this.selectedTowerType) {
         const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
-        const enoughMoneyFrost = this.hasEnoughResources(125);
-        const enoughMoneyFlame = this.hasEnoughResources(150);
-        const enoughMoneyFire = this.hasEnoughResources(150);
-        const enoughMoneyBomb = this.hasEnoughResources(200);
-        this.towerPreview.costText.destroy();
-        this.towerPreview.costText = undefined;
-        if (isValid && (enoughMoneyFrost || enoughMoneyFlame || enoughMoneyFire)) {
+    
+        if (isValid) {
           let towerToPlace: Tower;
-
-          if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
-            towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
-            this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-          } 
-          else if (this.selectedTowerType === "Shock" && enoughMoneyFlame) {
-            towerToPlace = new ShockTower(this, pointer.worldX, pointer.worldY);
-            this.towersGroup.add(towerToPlace);
-            towerToPlace.setScale(0.12);
+          switch (this.selectedTowerType) {
+            case "Frost":  towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY); break;
+            case "Shock":  towerToPlace = new ShockTower(this, pointer.worldX, pointer.worldY); towerToPlace.setScale(0.12); break;
+            case "Bomb":   towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY); towerToPlace.setScale(0.12); break;
+            case "Fire":
+            default:       towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY); towerToPlace.setScale(0.12);  break;
           }
-          else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
-            towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
-            this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-            towerToPlace.setScale(0.12); //changed size of bombTower image was too big
-          }
-          else if (this.selectedTowerType === "Fire" && enoughMoneyFire) {
-            towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
-            this.towersGroup.add(towerToPlace);
-            towerToPlace.setScale(0.12);
-          }
-          else {
-            towerToPlace = new Tower(this, pointer.worldX, pointer.worldY, "default-tower");
-            this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-
-          }
-
-          
-
+    
+          this.towersGroup.add(towerToPlace);
           towerToPlace.place(pointer.worldX, pointer.worldY);
-          this.resources -= towerToPlace.cost;
-          this.updateResourceText();
-          this.towerPreview.destroy(); // destroy the preview
-          this.towerPreview = undefined;
-          this.selectedTowerType = null;
-          this.restoreUI();
-        }
-        else{
-          this.blinkResourceText(this.resourceText, 2000);
+    
+          
           this.towerPreview.destroy();
           this.towerPreview = undefined;
           this.selectedTowerType = null;
           this.restoreUI();
+        } else {
+          this.blinkResourceText(this.resourceText, 1500);
+          //this.towerPreview.destroy();
+          //this.towerPreview = undefined;
+          //this.selectedTowerType = null;
+          //this.restoreUI();
         }
       }
     });
@@ -299,8 +292,8 @@ class GameScene extends Phaser.Scene {
     });
 
     // Create text objects to display enemy speeds in the bottom left
-    const speedDisplayY = height - 50;
-    const speedDisplayX = 120;
+    const speedDisplayY = height - 120;
+    const speedDisplayX = 20;
     const speedOffsetY = 20;
 
     this.normalEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY, " Speed: N/A", {

@@ -1,8 +1,10 @@
+// TowerMenu.ts
 import Phaser from "phaser";
 
 class TowerMenu {
   private scene: Phaser.Scene;
   private onTowerSelect: (towerType: string) => void;
+  private onBuy: (towerType: string) => boolean;
 
   private hamburgerContainer!: Phaser.GameObjects.Container;
   private towerMenuContainer!: Phaser.GameObjects.Container;
@@ -27,18 +29,21 @@ class TowerMenu {
   private towerTypes = ["Frost", "Shock", "Bomb", "Fire"];
 
   private towerCounts: Record<string, number> = {};
-
   private baselineY = 0;
   private hiddenY = 0;
   private towerMenuX = 0;
-
   private open = false;
   private shopOpen = false;
   
 
-  constructor(scene: Phaser.Scene, onTowerSelect: (towerType: string) => void) {
+  constructor(
+    scene: Phaser.Scene,
+    onTowerSelect: (towerType: string) => void,
+    onBuy: (towerType: string) => boolean
+  ) {
     this.scene = scene;
     this.onTowerSelect = onTowerSelect;
+    this.onBuy = onBuy;
 
     // initialize counts
     this.towerTypes.forEach(type => { this.towerCounts[type] = 0; });
@@ -96,7 +101,6 @@ class TowerMenu {
         .setOrigin(0.5)
         .setInteractive()
         .on("pointerdown", () => {
-          // Decrease count on selection if available
           if (this.towerCounts[type] > 0) {
             this.towerCounts[type]--;
             this.updateTowerButtonLabels();
@@ -159,7 +163,9 @@ class TowerMenu {
       const buyBtn = scene.add
         .text(panelW - 30, 0, "Buy", {
           fontSize: "16px",
-          color: "#ffffff"
+          color: "#ffffff",
+          backgroundColor: "#333",
+          padding: { left: 6, right: 6, top: 2, bottom: 2 }
         })
         .setOrigin(1, 0.5)
         .setInteractive({ cursor: "pointer" })
@@ -239,6 +245,11 @@ class TowerMenu {
   }
 
   private buyTower(type: string) {
+    // ask GameScene if we can afford it and deduct coins
+    if (!this.onBuy(type)) {
+      return;
+    }
+    // only increment count if purchase succeeded
     this.towerCounts[type]++;
     this.updateTowerButtonLabels();
   }

@@ -35,7 +35,6 @@ class GameScene extends Phaser.Scene {
   private towerMenu!: TowerMenu;
   private towersGroup!: Phaser.GameObjects.Group;
 
-
   private selectedTowerType: string | null = null;
   private towerPreview?: Tower;
   private placementRadius = 80;
@@ -58,15 +57,16 @@ class GameScene extends Phaser.Scene {
   private normalEnemySpeedText: Phaser.GameObjects.Text | null = null;
   private swampEnemySpeedText: Phaser.GameObjects.Text | null = null;
 
+  private isGamePaused: boolean = false;
 
   constructor() {
     super({ key: "GameScene" });
-    this.isGamePaused = false; // Add pause flag
+    this.isGamePaused = false;
   }
 
   preload() {
-    console.log('Starting to load assets...');
-    
+    console.log("Starting to load assets...");
+
     this.load.image("background", "assets/GameScreenBackground.png");
 
     //loading enemies
@@ -75,44 +75,47 @@ class GameScene extends Phaser.Scene {
 
     this.load.image("default-tower", "assets/towers/default-tower.png");
     this.load.image("frost-tower", "assets/towers/frost-tower.png");
-    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png")
+    this.load.image("flamethrower-tower", "assets/towers/flame-tower.png");
     this.load.image("bomb-tower", "assets/towers/bomb-tower.png");
-    
-    // Load projectile textures with error handling
-    this.load.image("Frost_Projectile", "assets/projectiles/Frost_Projectile.png")
-      .on('complete', () => console.log('Frost projectile loaded successfully'))
-      .on('error', (file) => console.error('Error loading Frost projectile:', file));
-      
-    this.load.image("Flame_Projectile", "assets/projectiles/Flame_Projectile.png")
-      .on('complete', () => console.log('Flame projectile loaded successfully'))
-      .on('error', (file) => console.error('Error loading Flame projectile:', file));
-      
-    console.log('Finished loading assets');
 
+    // Load projectile textures with error handling
+    this.load
+      .image("Frost_Projectile", "assets/projectiles/Frost_Projectile.png")
+      .on("complete", () => console.log("Frost projectile loaded successfully"))
+      .on("error", (file) =>
+        console.error("Error loading Frost projectile:", file)
+      );
+
+    this.load
+      .image("Flame_Projectile", "assets/projectiles/Flame_Projectile.png")
+      .on("complete", () => console.log("Flame projectile loaded successfully"))
+      .on("error", (file) =>
+        console.error("Error loading Flame projectile:", file)
+      );
+
+    console.log("Finished loading assets");
   }
 
   create() {
-    console.log('Starting game scene creation...');
+    console.log("Starting game scene creation...");
     const { width, height } = this.scale;
     const background = this.add.image(width / 2, height / 2, "background");
     background.setOrigin(0.5, 0.5);
     background.setDisplaySize(width, height);
     background.setDepth(-1);
     this.towersGroup = this.add.group();
-    console.log('Game scene created successfully');
+    console.log("Game scene created successfully");
 
     this.exitButton = new ExitButton(this);
     this.exitButton.setVisible(true); // ✅ make sure it's visible at start
 
-    
-
     this.towerMenu = new TowerMenu(this, (type) => {
       this.selectedTowerType = type;
-    
+
       if (this.towerPreview) {
         this.towerPreview.destroy();
       }
-    
+
       // 🔽 Choose the correct tower class and texture
       let previewTexture = "default-tower";
       if (type === "Frost") previewTexture = "frost-tower";
@@ -120,20 +123,20 @@ class GameScene extends Phaser.Scene {
       if (type === "Bomb") previewTexture = "bomb-tower";
       this.towerPreview = new Tower(this, 0, 0, previewTexture);
       this.towerPreview.setAlpha(0.5);
-      if(type=="Frost"){
+      if (type == "Frost") {
         this.towerPreview.setScale(0.18); // Adjust scale for preview
         this.towerPreview.cost = 125;
       }
-      if(type=="Flamethrower"){
-        this.towerPreview.setScale(0.30); // Adjust scale for preview
+      if (type == "Flamethrower") {
+        this.towerPreview.setScale(0.3); // Adjust scale for preview
         this.towerPreview.cost = 150;
       }
 
-      if(type=="Bomb"){
-        this.towerPreview.setScale(0.10); // Adjust scale for preview
+      if (type == "Bomb") {
+        this.towerPreview.setScale(0.1); // Adjust scale for preview
       }
-      if(type=="Fire"){
-        this.towerPreview.setScale(0.10); // Adjust scale for preview
+      if (type == "Fire") {
+        this.towerPreview.setScale(0.1); // Adjust scale for preview
         this.towerPreview.cost = 200;
       }
 
@@ -145,64 +148,73 @@ class GameScene extends Phaser.Scene {
       this.exitButton.setVisible(false);
       this.justSelectedTower = true;
     });
-    
-    
-    
-
 
     this.input.on("pointermove", (pointer) => {
       if (this.towerPreview && !this.towerPreview.isPlaced) {
         this.towerPreview.setPosition(pointer.worldX, pointer.worldY);
         this.towerPreview.displayCost(pointer.worldX, pointer.worldY);
-    
-        const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
+
+        const isValid = this.isValidTowerPlacement(
+          pointer.worldX,
+          pointer.worldY
+        );
         this.towerPreview.setValidPlacement(isValid);
       }
     });
-    
 
     this.input.on("pointerdown", (pointer) => {
       if (this.justSelectedTower) {
         this.justSelectedTower = false;
         return;
       }
-    
+
       if (this.towerPreview && this.selectedTowerType) {
-        const isValid = this.isValidTowerPlacement(pointer.worldX, pointer.worldY);
+        const isValid = this.isValidTowerPlacement(
+          pointer.worldX,
+          pointer.worldY
+        );
         const enoughMoneyFrost = this.hasEnoughResources(125);
         const enoughMoneyFlame = this.hasEnoughResources(150);
         const enoughMoneyFire = this.hasEnoughResources(150);
         const enoughMoneyBomb = this.hasEnoughResources(200);
         this.towerPreview.costText.destroy();
         this.towerPreview.costText = undefined;
-        if (isValid && (enoughMoneyFrost || enoughMoneyFlame || enoughMoneyFire)) {
+        if (
+          isValid &&
+          (enoughMoneyFrost || enoughMoneyFlame || enoughMoneyFire)
+        ) {
           let towerToPlace: Tower;
 
           if (this.selectedTowerType === "Frost" && enoughMoneyFrost) {
             towerToPlace = new FrostTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-          } 
-          else if (this.selectedTowerType === "Flamethrower" && enoughMoneyFlame) {
-            towerToPlace = new FlamethrowerTower(this, pointer.worldX, pointer.worldY);
+          } else if (
+            this.selectedTowerType === "Flamethrower" &&
+            enoughMoneyFlame
+          ) {
+            towerToPlace = new FlamethrowerTower(
+              this,
+              pointer.worldX,
+              pointer.worldY
+            );
             this.towersGroup.add(towerToPlace);
-          }
-          else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
+          } else if (this.selectedTowerType === "Bomb" && enoughMoneyBomb) {
             towerToPlace = new BombTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
             towerToPlace.setScale(0.12); //changed size of bombTower image was too big
-          }
-          else if (this.selectedTowerType === "Fire" && enoughMoneyFire) {
+          } else if (this.selectedTowerType === "Fire" && enoughMoneyFire) {
             towerToPlace = new FireTower(this, pointer.worldX, pointer.worldY);
             this.towersGroup.add(towerToPlace);
             towerToPlace.setScale(0.12);
-          }
-          else {
-            towerToPlace = new Tower(this, pointer.worldX, pointer.worldY, "default-tower");
+          } else {
+            towerToPlace = new Tower(
+              this,
+              pointer.worldX,
+              pointer.worldY,
+              "default-tower"
+            );
             this.towersGroup.add(towerToPlace); // ✅ Adds to update loop
-
           }
-
-          
 
           towerToPlace.place(pointer.worldX, pointer.worldY);
           this.resources -= towerToPlace.cost;
@@ -211,8 +223,7 @@ class GameScene extends Phaser.Scene {
           this.towerPreview = undefined;
           this.selectedTowerType = null;
           this.restoreUI();
-        }
-        else{
+        } else {
           this.blinkResourceText(this.resourceText, 2000);
           this.towerPreview.destroy();
           this.towerPreview = undefined;
@@ -221,7 +232,6 @@ class GameScene extends Phaser.Scene {
         }
       }
     });
-    
 
     this.input.keyboard.on("keydown-ESC", () => {
       if (this.towerPreview) {
@@ -231,7 +241,6 @@ class GameScene extends Phaser.Scene {
         this.restoreUI(); // ✅ restore buttons
       }
     });
-    
 
     const graphics = this.add.graphics();
     this.path = new Phaser.Curves.Path(-32, 140);
@@ -245,7 +254,7 @@ class GameScene extends Phaser.Scene {
     this.path.lineTo(1000, 180);
 
     graphics.lineStyle(3, 0xffffff, 1);
-   // this.path.draw(graphics);
+    // this.path.draw(graphics);
     //this.path.setDepth(1);
 
     // ✅ Create the "Start Wave" button using StartWaveButton class
@@ -279,35 +288,55 @@ class GameScene extends Phaser.Scene {
     this.nextEnemy = 0;
 
     // Create resource text
-    this.resourceText = this.add.text(width - 170,height - 150, `Coins: ${this.resources}`, {
-      fontSize: "24px",
-      color: "#ffffff",
-    });
+    this.resourceText = this.add.text(
+      width - 170,
+      height - 150,
+      `Coins: ${this.resources}`,
+      {
+        fontSize: "24px",
+        color: "#ffffff",
+      }
+    );
 
     this.updateResourceText(); // Display initial resources
-  
+
     this.input.on("gameobjectdown", this.handleTowerClick, this); // Listen for tower clicks
     this.input.on("pointerdown", this.handleSceneClick, this); // Listen for other clicks
 
-    this.baseHealthText = this.add.text(width - 150, 300, `HP: ${this.baseHealth}`, {
-      fontSize: "24px",
-      color: "#ffffff",
-    });
+    this.baseHealthText = this.add.text(
+      width - 150,
+      300,
+      `HP: ${this.baseHealth}`,
+      {
+        fontSize: "24px",
+        color: "#ffffff",
+      }
+    );
 
     // Create text objects to display enemy speeds in the bottom left
     const speedDisplayY = height - 50;
     const speedDisplayX = 20;
     const speedOffsetY = 20;
 
-    this.normalEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY, " Speed: N/A", {
+    this.normalEnemySpeedText = this.add.text(
+      speedDisplayX,
+      speedDisplayY,
+      " Speed: N/A",
+      {
         fontSize: "16px",
         color: "#ffffff",
-    });
+      }
+    );
 
-    this.swampEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY + speedOffsetY, "Swampo Speed: N/A", {
+    this.swampEnemySpeedText = this.add.text(
+      speedDisplayX,
+      speedDisplayY + speedOffsetY,
+      "Swampo Speed: N/A",
+      {
         fontSize: "16px",
         color: "#ffffff",
-    });
+      }
+    );
 
     this.updateEnemySpeedDisplay();
 
@@ -316,7 +345,32 @@ class GameScene extends Phaser.Scene {
     window.addEventListener("beforeunload", () => {
       this.saveGameToServer();
     });
-    
+
+    // Reset game state on scene creation
+    this.WAVE_NUMBER = 1;
+    this.WAVE_SIZE = 6;
+    this.ENEMY_SPEED = 1 / 5000;
+    this.multiplier = (1).toFixed(2);
+    this.waveActive = false;
+    this.enemiesSpawned = 0;
+    this.countdownSeconds = 60;
+    this.resources = 1000;
+    this.baseHealth = 100;
+    this.updateResourceText();
+    this.baseHealthText.setText(`HP: ${this.baseHealth}`);
+    this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
+    this.countdownText.setText(
+      `Time: ${this.countdownSeconds}     x${this.multiplier}`
+    );
+    this.updateEnemySpeedDisplay();
+
+    // ADD THESE LINES:
+    this.towersGroup.clear(true, true); // Destroy all existing towers
+    this.enemies.clear(true, true); // Destroy all existing enemies
+    if (this.countdownTimer) {
+      this.countdownTimer.destroy(); // Destroy the old timer if it exists
+      this.countdownTimer = undefined;
+    }
   }
 
   pauseGame() {
@@ -324,7 +378,7 @@ class GameScene extends Phaser.Scene {
     if (this.countdownTimer) {
       this.countdownTimer.paused = true;
     }
-    this.pauseButton.setText('Resume');
+    this.pauseButton.setText("Resume");
   }
 
   resumeGame() {
@@ -332,19 +386,27 @@ class GameScene extends Phaser.Scene {
     if (this.countdownTimer) {
       this.countdownTimer.paused = false;
     }
-    this.pauseButton.setText('Pause');
+    this.pauseButton.setText("Pause");
   }
 
   private updateEnemySpeedDisplay() {
     if (this.normalEnemySpeedText) {
-        const normalSpeed = (this.ENEMY_SPEED * this.normalEnemyBaseSpeed * 5000).toFixed(2);
-        this.normalEnemySpeedText.setText(`Fast Enemy Speed: ${normalSpeed}`);
+      const normalSpeed = (
+        this.ENEMY_SPEED *
+        this.normalEnemyBaseSpeed *
+        5000
+      ).toFixed(2);
+      this.normalEnemySpeedText.setText(`Fast Enemy Speed: ${normalSpeed}`);
     }
     if (this.swampEnemySpeedText) {
-        const swampSpeed = (this.ENEMY_SPEED * this.swampEnemyBaseSpeed * 5000).toFixed(2);
-        this.swampEnemySpeedText.setText(`Slow Enemy Speed: ${swampSpeed}`);
+      const swampSpeed = (
+        this.ENEMY_SPEED *
+        this.swampEnemyBaseSpeed *
+        5000
+      ).toFixed(2);
+      this.swampEnemySpeedText.setText(`Slow Enemy Speed: ${swampSpeed}`);
     }
-}
+  }
 
   update(time: number, delta: number) {
     if (this.isGamePaused) {
@@ -379,104 +441,113 @@ class GameScene extends Phaser.Scene {
     let enemy: Enemy | SwampEnemy;
 
     switch (enemyType) {
-        case 0:
-            enemy = new Enemy(this);
-            break;
-        case 1:
-            enemy = new SwampEnemy(this);
-            break;
-        default:
-            enemy = new Enemy(this); // Fallback
-            break;
+      case 0:
+        enemy = new Enemy(this);
+        break;
+      case 1:
+        enemy = new SwampEnemy(this);
+        break;
+      default:
+        enemy = new Enemy(this); // Fallback
+        break;
     }
 
     this.enemies.add(enemy);
     enemy.startOnPath();
   }
 
-  handleTowerClick(pointer: Phaser.Input.Pointer, gameObject: Phaser.GameObjects.GameObject) {
+  handleTowerClick(
+    pointer: Phaser.Input.Pointer,
+    gameObject: Phaser.GameObjects.GameObject
+  ) {
     if (gameObject instanceof Tower && gameObject.isPlaced) {
       console.log("Tower clicked!");
-        this.selectedTower = gameObject;
-        this.showUpgradeButton();
-        this.towerClicked = true;
+      this.selectedTower = gameObject;
+      this.showUpgradeButton();
+      this.towerClicked = true;
     }
   }
 
   handleSceneClick(pointer: Phaser.Input.Pointer) {
     if (!this.towerClicked) {
       console.log("Scene clicked!");
-  
+
       if (this.upgradeButton) {
         this.upgradeButton.destroy();
         this.upgradeButton = null;
       }
-  
+
       if (this.removeButton) {
         this.removeButton.destroy();
         this.removeButton = null;
       }
-  
+
       if (this.selectedTower) {
         this.selectedTower.hideRange();
         this.selectedTower = null;
       }
     }
-  
+
     this.towerClicked = false;
   }
 
   saveGameToServer() {
     const playerID = localStorage.getItem("user_id");
     if (!playerID) return;
-  
+
     // Build tower save data
     const towersToSave = this.towersGroup.getChildren().map((tower: any) => ({
       type: tower.constructor.name, // e.g., FrostTower, BombTower
       x: tower.x,
-      y: tower.y
+      y: tower.y,
     }));
-  
+
     const saveData = {
       playerID: parseInt(playerID),
       money: this.resources,
       wave: this.WAVE_NUMBER,
       health: this.baseHealth,
-      towers: towersToSave
+      towers: towersToSave,
     };
-  
-    fetch("https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/api.php?action=save-game", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(saveData),
-      keepalive: true // ✅ Ensures the request still completes if the tab closes
-    });
+
+    fetch(
+      "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/api.php?action=save-game",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(saveData),
+        keepalive: true, // ✅ Ensures the request still completes if the tab closes
+      }
+    );
   }
-  
-  
 
   showUpgradeButton() {
     // Remove existing UI
     if (this.upgradeButton) this.upgradeButton.destroy();
     if (this.removeButton) this.removeButton.destroy();
-  
+
     if (this.selectedTower) {
       this.selectedTower.showRange();
-  
+
       // Upgrade button
       this.upgradeButton = this.add
-        .text(this.selectedTower.x, this.selectedTower.y - 50, `Upgrade (${this.selectedTower.upgradeCost})`, {
-          fontSize: "16px",
-          color: "#ffffff",
-          backgroundColor: "#555",
-          padding: { left: 10, right: 10, top: 5, bottom: 5 },
-        })
+        .text(
+          this.selectedTower.x,
+          this.selectedTower.y - 50,
+          `Upgrade (${this.selectedTower.upgradeCost})`,
+          {
+            fontSize: "16px",
+            color: "#ffffff",
+            backgroundColor: "#555",
+            padding: { left: 10, right: 10, top: 5, bottom: 5 },
+          }
+        )
         .setOrigin(0.5)
         .setInteractive()
         .on("pointerdown", () => {
           this.upgradeSelectedTower();
         });
-  
+
       // Remove button
       this.removeButton = this.add
         .text(this.selectedTower.x, this.selectedTower.y - 20, "Remove", {
@@ -491,35 +562,34 @@ class GameScene extends Phaser.Scene {
           if (this.selectedTower) {
             this.resources += Math.floor(this.selectedTower.cost / 2);
             this.resourceText.setText(`Coins: ${this.resources}`);
-            this.selectedTower.hideRange();      // ✅ Hide the range circle
-            this.selectedTower.destroy();        // ✅ Destroy the tower image
+            this.selectedTower.hideRange(); // ✅ Hide the range circle
+            this.selectedTower.destroy(); // ✅ Destroy the tower image
           }
 
-          this.upgradeButton?.destroy();         // ✅ Remove upgrade button
-          this.removeButton?.destroy();          // ✅ Remove remove button
+          this.upgradeButton?.destroy(); // ✅ Remove upgrade button
+          this.removeButton?.destroy(); // ✅ Remove remove button
 
           this.selectedTower = null;
           this.upgradeButton = null;
           this.removeButton = null;
 
-          pointer.event.stopPropagation();       // ✅ Prevent scene click cleanup from overriding
+          pointer.event.stopPropagation(); // ✅ Prevent scene click cleanup from overriding
         });
     }
   }
-  
 
   upgradeSelectedTower() {
-      if (this.selectedTower) {
-          if (this.hasEnoughResources(this.selectedTower.upgradeCost)) {
-              this.removeResources(this.selectedTower.upgradeCost);
-              this.selectedTower.upgrade();
-              this.showUpgradeButton();
-              this.updateResourceText();
-          } else {
-              console.log("Not enough resources to upgrade.");
-              this.blinkResourceText(this.resourceText,2000);
-          }
+    if (this.selectedTower) {
+      if (this.hasEnoughResources(this.selectedTower.upgradeCost)) {
+        this.removeResources(this.selectedTower.upgradeCost);
+        this.selectedTower.upgrade();
+        this.showUpgradeButton();
+        this.updateResourceText();
+      } else {
+        console.log("Not enough resources to upgrade.");
+        this.blinkResourceText(this.resourceText, 2000);
       }
+    }
   }
 
   hasEnoughResources(cost: number): boolean {
@@ -527,8 +597,8 @@ class GameScene extends Phaser.Scene {
   }
 
   removeResources(cost: number) {
-      this.resources -= cost;
-      console.log(`Removed ${cost} resources.`);
+    this.resources -= cost;
+    console.log(`Removed ${cost} resources.`);
   }
 
   updateResourceText() {
@@ -603,7 +673,11 @@ class GameScene extends Phaser.Scene {
   }
 
   checkWaveEnd() {
-    if (this.waveActive && this.enemies.getLength() === 0 && this.enemiesSpawned === this.WAVE_SIZE) {
+    if (
+      this.waveActive &&
+      this.enemies.getLength() === 0 &&
+      this.enemiesSpawned === this.WAVE_SIZE
+    ) {
       this.waveActive = false;
       this.WAVE_NUMBER++;
       this.WAVE_SIZE += this.WAVE_ACCUMULATOR;
@@ -617,17 +691,19 @@ class GameScene extends Phaser.Scene {
       // ✅ Update button text and make it visible again
       this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
       this.startWaveButton.setVisible(true);
-      
+
       this.countdownSeconds = 60;
-      this.countdownText.setText(`Time: ${this.countdownSeconds}     x${this.multiplier}`);
-      
+      this.countdownText.setText(
+        `Time: ${this.countdownSeconds}     x${this.multiplier}`
+      );
+
       // Stop the current timer
       if (this.countdownTimer) {
         this.countdownTimer.remove();
       }
 
       this.updateEnemySpeedDisplay();
-      
+
       // Don't start a new timer until the next wave begins
     }
   }
@@ -639,7 +715,7 @@ class GameScene extends Phaser.Scene {
         this.baseHealthText.setText(`HP: ${Math.max(0, this.baseHealth)}`);
         enemy.destroy();
         this.enemiesAlive--;
-        console.log("Base HP: ",this.baseHealth);
+        console.log("Base HP: ", this.baseHealth);
         if (this.baseHealth <= 0) {
           this.gameOver();
         }
@@ -648,35 +724,37 @@ class GameScene extends Phaser.Scene {
   }
 
   gameOver() {
-    this.scene.pause();
-    this.scene.launch('GameOverScene');
+    this.scene.pause("GameScene");
+    this.scene.launch("GameOverScene");
   }
 
-  blinkResourceText(resourceText, duration = 3000) { // Default duration: 3 seconds
+  blinkResourceText(resourceText, duration = 3000) {
+    // Default duration: 3 seconds
     let isRed = false;
     const originalColor = resourceText.style.color; // Store the original color
     let elapsedTime = 0;
-  
+
     function toggleColor(time, delta) {
       elapsedTime += delta;
       if (elapsedTime >= duration) {
         resourceText.setColor(originalColor);
-        resourceText.scene.events.off('update', toggleColor); // Remove the listener
+        resourceText.scene.events.off("update", toggleColor); // Remove the listener
         return;
       }
-  
-      if (elapsedTime % 500 < delta) { // Toggle roughly every 500ms
-          if (isRed) {
-            resourceText.setColor(originalColor);
-          } else {
-            resourceText.setColor("#ff0000"); // Red color
-          }
-          isRed = !isRed;
+
+      if (elapsedTime % 500 < delta) {
+        // Toggle roughly every 500ms
+        if (isRed) {
+          resourceText.setColor(originalColor);
+        } else {
+          resourceText.setColor("#ff0000"); // Red color
+        }
+        isRed = !isRed;
       }
     }
-  
+
     // Add an 'update' event listener to the scene
-    resourceText.scene.events.on('update', toggleColor);
+    resourceText.scene.events.on("update", toggleColor);
   }
 
   restoreUI() {
@@ -685,7 +763,5 @@ class GameScene extends Phaser.Scene {
     this.exitButton.setVisible(true);
   }
 }
-
-
 
 export default GameScene;

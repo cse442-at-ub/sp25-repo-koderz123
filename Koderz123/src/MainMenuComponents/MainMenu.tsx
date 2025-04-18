@@ -33,6 +33,11 @@ const MainMenu: React.FC = () => {
         };
     }, []);
     */
+
+    const clickLoadGame = () => {
+      navigate("/loadgame");
+    };
+    
   
   const clickNewGame = () => {
     navigate("/levelselect");
@@ -121,6 +126,15 @@ const MainMenu: React.FC = () => {
       >
         NEW GAME
       </div>
+      <div
+        className="menu-item"
+        onClick={clickLoadGame}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
+      >
+        LOAD GAME
+</div>
+
       <div
         className="menu-item"
         onClick={clickOptions}

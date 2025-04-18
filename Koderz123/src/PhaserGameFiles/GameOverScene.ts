@@ -10,7 +10,8 @@ class GameOverScene extends Phaser.Scene {
     const overlay = this.add.rectangle(0, 0, width, height, 0x000000, 0.7); // Black color, 70% opacity
     overlay.setOrigin(0); // Position it at the top-left corner
 
-    const gameOverText = this.add
+    //Adding gameOverText
+    this.add
       .text(width / 2, height / 2 - 50, "Game Over", {
         fontSize: "48px",
         color: "#ff0000",
@@ -18,7 +19,8 @@ class GameOverScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    const restartButton = this.add
+    //Adding restartButton
+    this.add
       .text(width / 2, height / 2 + 20, "Restart", {
         fontSize: "24px",
         color: "#ffffff",
@@ -38,7 +40,8 @@ class GameOverScene extends Phaser.Scene {
         this.input.setDefaultCursor("default");
       });
 
-    const mainMenuButton = this.add
+    //Adding mainMenuButton
+    this.add
       .text(width / 2, height / 2 + 70, "Main Menu", {
         fontSize: "24px",
         color: "#ffffff",

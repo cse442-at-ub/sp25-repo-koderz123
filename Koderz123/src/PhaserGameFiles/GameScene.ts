@@ -300,7 +300,7 @@ class GameScene extends Phaser.Scene {
 
     // Create text objects to display enemy speeds in the bottom left
     const speedDisplayY = height - 50;
-    const speedDisplayX = 20;
+    const speedDisplayX = 120;
     const speedOffsetY = 20;
 
     this.normalEnemySpeedText = this.add.text(speedDisplayX, speedDisplayY, " Speed: N/A", {

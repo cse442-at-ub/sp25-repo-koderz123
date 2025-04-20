@@ -12,9 +12,13 @@ import TutorialScreen from "./TutorialScreenComponents/TutorialScreen";
 import Leaderboard from "./LeaderboardComponents/Leaderboard";
 import ProtectedRoute from "./ProtectedRoute.tsx";
 import LoadGameScreen from "./LoadGameScreenComponents/LoadGameScreen";
+import RelaxedInitialGameComponent from './PhaserGameFiles/RelaxedInitialGameComponent';
+import IntenseInitialGameComponent from './PhaserGameFiles/IntenseInitialGameComponent';
+import BrutalInitialGameComponent from './PhaserGameFiles/BrutalInitialGameComponent';
+
+
 
 const App: React.FC = () => {
-
   return (
     <MusicProvider>
       <Router basename="">
@@ -26,21 +30,21 @@ const App: React.FC = () => {
             <Route path="/loadgame" element={<LoadGameScreen />} />
             {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
-            <Route element={<ProtectedRoute />}>
-               
-
+            {/*<Route element={<ProtectedRoute />}>*/}
               <Route path="/levelselect" element={<LevelSelect />} />{" "}
               {/* replace the html code with difficulty page component */}
               <Route path="/mainmenu" element={<MainMenu />} />{" "}
               {/*replace the html code with main menu component*/}
-              <Route path="/gamescreen" element={<InitialGame />} />{" "}
+              <Route path="/gamescreen/relaxed" element={<RelaxedInitialGameComponent />} />
+              <Route path="/gamescreen/intense" element={<IntenseInitialGameComponent />} />
+              <Route path="/gamescreen/brutal" element={<BrutalInitialGameComponent />} />
               {/* replace the html code with gamescreen component */}
               <Route path="/options" element={<OptionScreen />} />{" "}
               {/* replace the html code with options component */}
               <Route path="/PhaserHelloWorld" element={<PhaserHelloWorld />} />
               <Route path="/tutorial" element={<TutorialScreen />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
-            </Route>
+            {/*</Route>*/}
             <Route path="*" element={<div>404 - Not Found</div>} />{" "}
             {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
           </Routes>

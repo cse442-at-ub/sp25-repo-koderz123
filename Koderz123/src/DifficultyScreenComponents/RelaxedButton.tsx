@@ -30,7 +30,7 @@ const RelaxedButton: React.FC<RelaxedButtonProps> = ({ onClick }) => {
           <img src={EasyDescription} alt="Easy Description" className="r-description-image" />
 
           {/* Green 'Go' Button navigates to Game Menu */}
-          <button className="relaxed-go-button" onClick={() => navigate("/gamescreen")}>
+          <button className="relaxed-go-button" onClick={() => navigate("/gamescreen/relaxed")}>
             Go
           </button>
         </div>

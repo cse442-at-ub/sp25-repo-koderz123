@@ -27,7 +27,7 @@ const BrutalButton: React.FC<BrutalButtonProps> = ({ onClick }) => {
         <div className="description-container">
           <img src={HardDescription} alt="Hard Description" className="b-description-image" />
 
-          <button className="brutal-go-button" onClick={() => navigate("/gamescreen")}>
+          <button className="brutal-go-button" onClick={() => navigate("/gamescreen/brutal")}>
             Go
           </button>
         </div>

@@ -30,7 +30,7 @@ const App: React.FC = () => {
             <Route path="/loadgame" element={<LoadGameScreen />} />
             {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
-            {/*<Route element={<ProtectedRoute />}>*/}
+            <Route element={<ProtectedRoute />}>
               <Route path="/levelselect" element={<LevelSelect />} />{" "}
               {/* replace the html code with difficulty page component */}
               <Route path="/mainmenu" element={<MainMenu />} />{" "}
@@ -38,13 +38,13 @@ const App: React.FC = () => {
               <Route path="/gamescreen/relaxed" element={<RelaxedInitialGameComponent />} />
               <Route path="/gamescreen/intense" element={<IntenseInitialGameComponent />} />
               <Route path="/gamescreen/brutal" element={<BrutalInitialGameComponent />} />
-              {/* replace the html code with gamescreen component */}
+              {/* replace the html code with gamescreen components */}
               <Route path="/options" element={<OptionScreen />} />{" "}
               {/* replace the html code with options component */}
               <Route path="/PhaserHelloWorld" element={<PhaserHelloWorld />} />
               <Route path="/tutorial" element={<TutorialScreen />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
-            {/*</Route>*/}
+            </Route>
             <Route path="*" element={<div>404 - Not Found</div>} />{" "}
             {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
           </Routes>

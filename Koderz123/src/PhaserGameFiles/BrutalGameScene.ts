@@ -45,10 +45,10 @@ class BrutalGameScene extends Phaser.Scene {
   private upgradeButton: Phaser.GameObjects.Text | null = null;
   private removeButton: Phaser.GameObjects.Text | null = null;
   private towerClicked = false;
-  private resources = 700; // Initialize number of resources
-  private resourceText: Phaser.GameObjects.Text;
+  private resources : number = 700; // Initialize number of resources
+  private baseHealth : number = 100; 
 
-  private baseHealth = 100; // Add base health
+  private resourceText: Phaser.GameObjects.Text;
   private baseHealthText: Phaser.GameObjects.Text;
 
   private playerScore = 0;
@@ -113,7 +113,7 @@ class BrutalGameScene extends Phaser.Scene {
     this.exitButton = new ExitButton(this);
     this.exitButton.setVisible(true); // ✅ make sure it's visible at start
 
-
+   
     
 
     this.towerMenu = new TowerMenu(
@@ -349,8 +349,6 @@ class BrutalGameScene extends Phaser.Scene {
     this.waveActive = false;
     this.enemiesSpawned = 0;
     this.countdownSeconds = 60;
-    this.resources = 1000;
-    this.baseHealth = 100;
     this.updateResourceText();
     this.baseHealthText.setText(`HP: ${this.baseHealth}`);
     this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);

@@ -350,8 +350,8 @@ class IntenseGameScene extends Phaser.Scene {
     this.waveActive = false;
     this.enemiesSpawned = 0;
     this.countdownSeconds = 60;
-    this.resources = 1000;
-    this.baseHealth = 100;
+    this.resources = 850;
+    this.baseHealth = 150;
     this.updateResourceText();
     this.baseHealthText.setText(`HP: ${this.baseHealth}`);
     this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);

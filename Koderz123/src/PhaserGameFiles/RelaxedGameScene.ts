@@ -351,7 +351,7 @@ class RelaxedGameScene extends Phaser.Scene {
     this.enemiesSpawned = 0;
     this.countdownSeconds = 60;
     this.resources = 1000;
-    this.baseHealth = 100;
+    this.baseHealth = 200;
     this.updateResourceText();
     this.baseHealthText.setText(`HP: ${this.baseHealth}`);
     this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
@@ -716,7 +716,7 @@ class RelaxedGameScene extends Phaser.Scene {
         enemy.destroy();
         this.enemiesAlive--;
         console.log("Base HP: ", this.baseHealth);
-        if (this.baseHealth <= 0) {
+        if (this.baseHealth <= 0 || this.baseHealth == 0) {
           this.gameOver();
         }
       }

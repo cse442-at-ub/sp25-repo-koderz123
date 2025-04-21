@@ -28,6 +28,7 @@ const App: React.FC = () => {
             {/* replace the html code with landing page component*/}
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/loadgame" element={<LoadGameScreen />} />
+            
             {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
             <Route element={<ProtectedRoute />}>
@@ -44,7 +45,7 @@ const App: React.FC = () => {
               <Route path="/PhaserHelloWorld" element={<PhaserHelloWorld />} />
               <Route path="/tutorial" element={<TutorialScreen />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
-            </Route>
+            </Route> 
             <Route path="*" element={<div>404 - Not Found</div>} />{" "}
             {/* the star represents a catch all so anything that we havent routed out goes to 404 page */}
           </Routes>

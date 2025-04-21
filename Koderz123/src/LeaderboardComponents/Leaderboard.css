@@ -158,4 +158,9 @@
   text-align: center;
 }
 
+.highlighted-user {
+  background-color: rgba(0, 255, 255, 0.1);
+  border: 2px solid #00f2ff;
+  font-weight: bold;
+}
 

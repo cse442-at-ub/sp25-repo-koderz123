@@ -1,6 +1,8 @@
 // FrostTower.ts
 import Tower from "./Tower";
-import GameScene from "../GameScene"; // adjust the path if needed
+import RelaxedGameScene from "../RelaxedGameScene"; // Adjust the path if needed
+import IntenseGameScene from "../IntenseGameScene";
+import BrutalGameScene from "../BrutalGameScene";
 import FastFrostTower from "./FastFrostTower";
 import SlowFrostTower from "./SlowFrostTower";
 
@@ -32,7 +34,7 @@ class FrostTower extends Tower {
 
   // Method to upgrade to Fast Frost Tower
   upgradeToFast() {
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const newTower = new FastFrostTower(gameScene, this.x, this.y);
     newTower.place(this.x, this.y);
     this.destroy();
@@ -40,7 +42,7 @@ class FrostTower extends Tower {
 
   // Method to upgrade to Slow Frost Tower
   upgradeToSlow() {
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const newTower = new SlowFrostTower(gameScene, this.x, this.y);
     newTower.place(this.x, this.y);
     this.destroy();
@@ -51,7 +53,7 @@ class FrostTower extends Tower {
     super.update(time, delta);
     if (!this.isPlaced) return;
   
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const enemies = gameScene.enemies.getChildren() as any[];
   
     enemies.forEach((enemy) => {

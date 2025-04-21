@@ -51,8 +51,11 @@ class GameScene extends Phaser.Scene {
   private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
+  private playerScore = 0;
+
   private normalEnemyBaseSpeed: number = 1; // Store base speed for normal enemy
   private swampEnemyBaseSpeed: number = 0.6; // Store base speed for swamp enemy (adjust as needed)
+
 
   private normalEnemySpeedText: Phaser.GameObjects.Text | null = null;
   private swampEnemySpeedText: Phaser.GameObjects.Text | null = null;
@@ -411,9 +414,12 @@ class GameScene extends Phaser.Scene {
       this.enemiesSpawned < this.WAVE_SIZE &&
       time > this.nextEnemy
     ) {
-      this.spawnEnemy(); // Call a new function to handle enemy spawning
+      const enemy = this.spawnEnemy();
       this.enemiesSpawned++;
-      this.nextEnemy = time + this.SPAWN_DELAY;
+      this.nextEnemy = time + this.SPAWN_DELAY; // Spawn next enemy based on delay
+      enemy.once("destroy", () => {
+        this.playerScore += 10; // Or any value you want to award
+      });
     }
 
     // Update all towers and their projectiles
@@ -447,6 +453,7 @@ class GameScene extends Phaser.Scene {
 
     this.enemies.add(enemy);
     enemy.startOnPath();
+    return enemy;
   }
 
   handleTowerClick(
@@ -718,8 +725,26 @@ class GameScene extends Phaser.Scene {
 
   gameOver() {
     this.scene.pause("GameScene");
+  
+    // ✅ Send score to backend
+    const score = this.playerScore || 0; // replace with real score variable if needed
+  
+    fetch("https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/update_score.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      credentials: "include",
+      body: `score=${score}`
+    })
+      .then(res => res.json())
+      .then(data => console.log("Score submission result:", data))
+      .catch(err => console.error("Score submission error:", err));
+  
+    // ✅ Proceed with game over screen
     this.scene.launch("GameOverScene");
   }
+  
 
   blinkResourceText(resourceText, duration = 3000) {
     // Default duration: 3 seconds

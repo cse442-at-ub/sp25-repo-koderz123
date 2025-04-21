@@ -1,5 +1,7 @@
 import Tower from "./Tower";
-import GameScene from "../GameScene"; // Adjust the path if needed
+import RelaxedGameScene from "../RelaxedGameScene"; // Adjust the path if needed
+import IntenseGameScene from "../IntenseGameScene";
+import BrutalGameScene from "../BrutalGameScene";
 
 class BombTower extends Tower {
   private blinkDuration: number = 1000; // Time for blinking effect (1 second)
@@ -76,7 +78,7 @@ class BombTower extends Tower {
     super.update(time, delta);
     if (!this.isPlaced) return;
 
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const enemies = gameScene.enemies.getChildren() as any[];
 
     if (time > this.nextFire) {

@@ -1,6 +1,8 @@
 // FlamethrowerTower.ts
 import Tower from "./Tower";
-import GameScene from "../GameScene"; // adjust the path if needed
+import RelaxedGameScene from "../RelaxedGameScene"; // Adjust the path if needed
+import IntenseGameScene from "../IntenseGameScene";
+import BrutalGameScene from "../BrutalGameScene";
 
 
 class ShockTower extends Tower {
@@ -35,7 +37,7 @@ class ShockTower extends Tower {
   update(time: number) {
     if (!this.isPlaced) return;
   
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const enemies = gameScene.enemies.getChildren() as any[];
     
     if (time > this.nextFire){

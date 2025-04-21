@@ -31,7 +31,7 @@ const App: React.FC = () => {
             
             {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
-            <Route element={<ProtectedRoute />}>
+             <Route element={<ProtectedRoute />}>
               <Route path="/levelselect" element={<LevelSelect />} />{" "}
               {/* replace the html code with difficulty page component */}
               <Route path="/mainmenu" element={<MainMenu />} />{" "}

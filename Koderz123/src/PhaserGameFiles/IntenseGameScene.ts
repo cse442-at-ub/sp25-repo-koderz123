@@ -724,7 +724,8 @@ class IntenseGameScene extends Phaser.Scene {
   }
 
   gameOver() {
-    this.scene.pause("GameScene");
+    this.scene.pause("IntenseGameScene");
+    this.scene.launch("IntenseGameOver");
   
     // ✅ Send score to backend
     const score = this.playerScore || 0; // replace with real score variable if needed
@@ -742,7 +743,7 @@ class IntenseGameScene extends Phaser.Scene {
       .catch(err => console.error("Score submission error:", err));
   
     // ✅ Proceed with game over screen
-    this.scene.launch("GameOverScene");
+    this.scene.launch("IntenseGameOver");
   }
   
 

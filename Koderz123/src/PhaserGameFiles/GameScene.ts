@@ -45,10 +45,8 @@ class GameScene extends Phaser.Scene {
   private upgradeButton: Phaser.GameObjects.Text | null = null;
   private removeButton: Phaser.GameObjects.Text | null = null;
   private towerClicked = false;
-  public resources = 1000; // Initialize number of resources
   private resourceText: Phaser.GameObjects.Text;
 
-  private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
   private playerScore = 0;

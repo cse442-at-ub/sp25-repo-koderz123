@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Phaser from 'phaser';
 import BrutalGameScene from './BrutalGameScene';
+import BrutalGameOver from './BrutalGameOver';
 
 const BrutalInitialGameComponent: React.FC = () => {
   useEffect(() => {
@@ -8,7 +9,7 @@ const BrutalInitialGameComponent: React.FC = () => {
       type: Phaser.AUTO,
       width: 1000,
       height: 512,
-      scene: BrutalGameScene,
+      scene: [BrutalGameScene, BrutalGameOver]
     };
 
     const game = new Phaser.Game(config);

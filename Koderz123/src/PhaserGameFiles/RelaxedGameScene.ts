@@ -12,7 +12,7 @@ import BombTower from "./TowerFiles/BombTower";
 import FireTower from "./TowerFiles/FireTower";
 
 import PauseButton from "./PauseButton"; // Import the PauseButton class
-import GameOverScene from "./GameOverScene";
+import RelaxedGameOver from "./RelaxedGameOver";
 
 class RelaxedGameScene extends Phaser.Scene {
   public enemies!: Phaser.GameObjects.Group;
@@ -355,6 +355,7 @@ class RelaxedGameScene extends Phaser.Scene {
     this.updateResourceText();
     this.baseHealthText.setText(`HP: ${this.baseHealth}`);
     this.startWaveButton.setText(`Start Wave ${this.WAVE_NUMBER}`);
+    
     this.countdownText.setText(
       `Time: ${this.countdownSeconds}     x${this.multiplier}`
     );
@@ -716,7 +717,7 @@ class RelaxedGameScene extends Phaser.Scene {
         enemy.destroy();
         this.enemiesAlive--;
         console.log("Base HP: ", this.baseHealth);
-        if (this.baseHealth <= 0 || this.baseHealth == 0) {
+        if (this.baseHealth <= 0) {
           this.gameOver();
         }
       }
@@ -724,7 +725,8 @@ class RelaxedGameScene extends Phaser.Scene {
   }
 
   gameOver() {
-    this.scene.pause("GameScene");
+    this.scene.pause("RelaxedGameScene");
+    this.scene.launch("RelaxedGameOver");
   
     // ✅ Send score to backend
     const score = this.playerScore || 0; // replace with real score variable if needed
@@ -742,7 +744,7 @@ class RelaxedGameScene extends Phaser.Scene {
       .catch(err => console.error("Score submission error:", err));
   
     // ✅ Proceed with game over screen
-    this.scene.launch("GameOverScene");
+    this.scene.launch("RelaxedGameOver");
   }
   
 

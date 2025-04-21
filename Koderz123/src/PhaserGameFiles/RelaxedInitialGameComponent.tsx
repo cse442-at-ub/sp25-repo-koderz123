@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Phaser from 'phaser';
 import RelaxedGameScene from './RelaxedGameScene';
+import RelaxedGameOver from './RelaxedGameOver';
 
 const RelaxedInitialGameComponent: React.FC = () => {
   useEffect(() => {
@@ -8,7 +9,7 @@ const RelaxedInitialGameComponent: React.FC = () => {
       type: Phaser.AUTO,
       width: 1000,
       height: 512,
-      scene: RelaxedGameScene,
+      scene: [RelaxedGameScene, RelaxedGameOver],
     };
 
     const game = new Phaser.Game(config);

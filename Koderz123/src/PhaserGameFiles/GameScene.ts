@@ -180,7 +180,10 @@ class GameScene extends Phaser.Scene {
     this.input.on("pointermove", (pointer) => {
       if (this.towerPreview && !this.towerPreview.isPlaced) {
         this.towerPreview.setPosition(pointer.worldX, pointer.worldY);
-        this.towerPreview.displayCost(pointer.worldX, pointer.worldY);
+        //this.towerPreview.displayCost(pointer.worldX, pointer.worldY);
+        if (!this.towerPreview.isPlaced) {
+          this.towerPreview.displayCost(pointer.worldX, pointer.worldY);
+        }
 
         const isValid = this.isValidTowerPlacement(
           pointer.worldX,

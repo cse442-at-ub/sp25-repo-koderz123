@@ -28,13 +28,20 @@ class TowerMenu {
   private shopGap = 5;
   private towerTypes = ["Frost", "Shock", "Bomb", "Fire"];
 
+  // Added mapping of tower costs
+  private towerCosts: Record<string, number> = {
+    Frost: 100,
+    Shock: 150,
+    Bomb: 200,
+    Fire: 250
+  };
+
   private towerCounts: Record<string, number> = {};
   private baselineY = 0;
   private hiddenY = 0;
   private towerMenuX = 0;
   private open = false;
   private shopOpen = false;
-  
 
   constructor(
     scene: Phaser.Scene,
@@ -146,15 +153,16 @@ class TowerMenu {
     this.drawRoundedBg(this.shopPanelBg, panelW, panelH, 15, 0x2c3e50, 0.7);
     this.shopPanelContainer.add(this.shopPanelBg);
 
-    // List towers with Buy buttons
+    // List towers with Buy buttons and prices
     const itemHeight = 24;
     const itemGap = 10;
     const textX = 20;
     this.towerTypes.forEach((type, i) => {
+      const price = this.towerCosts[type];
       const y = 20 + i * (itemHeight + itemGap);
       const row = scene.add.container(textX, y);
       const nameTxt = scene.add
-        .text(0, 0, type, { fontSize: "18px", color: "#ffffff" })
+        .text(0, 0, `${type} - ${price}c`, { fontSize: "18px", color: "#ffffff" })
         .setOrigin(0, 0.5)
         .setInteractive()
         .on("pointerup", () => {
@@ -252,6 +260,7 @@ class TowerMenu {
     // only increment count if purchase succeeded
     this.towerCounts[type]++;
     this.updateTowerButtonLabels();
+    this.shopDescText.setText(this.getDescriptionFor(type));
   }
 
   public setVisibleAllUI(visible: boolean) {

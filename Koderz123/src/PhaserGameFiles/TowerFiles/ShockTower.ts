@@ -3,10 +3,10 @@ import Tower from "./Tower";
 import GameScene from "../GameScene"; // adjust the path if needed
 
 
-class FlamethrowerTower extends Tower {
+class ShockTower extends Tower {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     // Call base class constructor with flamethrower-specific texture
-    super(scene, x, y, "flamethrower-tower");
+    super(scene, x, y, "shock-tower");
 
     this.range = 100;
     this.cost = 150;
@@ -21,7 +21,7 @@ class FlamethrowerTower extends Tower {
   dealDamage(enemy: Phaser.GameObjects.GameObject) {
     if (enemy.getData("health")) {
       enemy.setData("health", enemy.getData("health") - this.damage);
-      console.log(`Flamethrower AOE dealt ${this.damage} damage. Enemy health: ${enemy.getData("health")}`);
+      console.log(`Shock AOE dealt ${this.damage} damage. Enemy health: ${enemy.getData("health")}`);
     }
   }
 
@@ -29,7 +29,7 @@ class FlamethrowerTower extends Tower {
     super.upgrade(); // Call base class upgrade
     this.damage += 10; // Increase damage by 10
     this.fireRate *= 0.9; // Increase fire rate by 10%
-    console.log(`Flamethrower upgraded to level ${this.level}. Damage: ${this.damage}, Fire Rate: ${this.fireRate}`);
+    console.log(`Shock upgraded to level ${this.level}. Damage: ${this.damage}, Fire Rate: ${this.fireRate}`);
   }
 
   update(time: number) {
@@ -42,7 +42,7 @@ class FlamethrowerTower extends Tower {
       enemies.forEach((enemy) => {
         if (enemy.active && Phaser.Math.Distance.Between(this.x, this.y, enemy.x, enemy.y) <= this.range) {
             this.dealDamage(enemy);
-            console.log(`Flamethrower AOE dealt damage to enemy at (${enemy.x}, ${enemy.y})`);
+            console.log(`Shock AOE dealt damage to enemy at (${enemy.x}, ${enemy.y})`);
             if(enemy.getData('health') <= 0){
               gameScene.resources += enemy.value;
               console.log("Resources now after health <= 0: ", gameScene.resources);
@@ -59,4 +59,4 @@ class FlamethrowerTower extends Tower {
 
 }
 
-export default FlamethrowerTower;
+export default ShockTower;

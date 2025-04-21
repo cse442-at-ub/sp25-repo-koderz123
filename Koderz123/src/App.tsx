@@ -11,6 +11,7 @@ import InitialGame from "./PhaserGameFiles/InitialGame";
 import TutorialScreen from "./TutorialScreenComponents/TutorialScreen";
 import Leaderboard from "./LeaderboardComponents/Leaderboard";
 import ProtectedRoute from "./ProtectedRoute.tsx";
+import LoadGameScreen from "./LoadGameScreenComponents/LoadGameScreen";
 
 const App: React.FC = () => {
 
@@ -21,10 +22,14 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<LandingPage />} />{" "}
             {/* replace the html code with landing page component*/}
-            <Route path="/login" element={<LoginScreen />} /> 
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/loadgame" element={<LoadGameScreen />} />
+            
             {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
-            <Route element={<ProtectedRoute />}> 
+            <Route element={<ProtectedRoute />}>
+               
+
               <Route path="/levelselect" element={<LevelSelect />} />{" "}
               {/* replace the html code with difficulty page component */}
               <Route path="/mainmenu" element={<MainMenu />} />{" "}

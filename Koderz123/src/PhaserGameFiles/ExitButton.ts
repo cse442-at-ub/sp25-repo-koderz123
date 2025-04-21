@@ -13,7 +13,7 @@ class ExitButton {
   private buttonContainer!: Phaser.GameObjects.Container;
   private buttonBg!: Phaser.GameObjects.Graphics;
   private buttonText!: Phaser.GameObjects.Text;
-  private popupContainer!: Phaser.GameObjects.Container;
+  private popupContainer: Phaser.GameObjects.Container| null = null;
 
   constructor(scene: Phaser.Scene) {
     this.scene = scene;
@@ -132,7 +132,10 @@ class ExitButton {
     });
 
     const noButton = this.createPopupButton("No", (3 * popupWidth) / 4, 100, () => {
-      this.popupContainer.destroy(true);
+      if (this.popupContainer) {
+        this.popupContainer.destroy(true);
+        this.popupContainer = null; // Clear reference so it does not reappear
+      }
     });
 
     this.popupContainer = this.scene.add.container(

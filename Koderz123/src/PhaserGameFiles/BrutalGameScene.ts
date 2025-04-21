@@ -14,7 +14,7 @@ import FireTower from "./TowerFiles/FireTower";
 import PauseButton from "./PauseButton"; // Import the PauseButton class
 import GameOverScene from "./GameOverScene";
 
-class GameScene extends Phaser.Scene {
+class BrutalGameScene extends Phaser.Scene {
   public enemies!: Phaser.GameObjects.Group;
   private nextEnemy!: number;
   private WAVE_SIZE = 6;
@@ -22,7 +22,7 @@ class GameScene extends Phaser.Scene {
   private WAVE_ACCUMULATOR = 2;
   public path!: Phaser.Curves.Path;
   public ENEMY_SPEED = 1 / 5000; // Adjust speed
-  private const_speed_multiplier = 1.1;
+  private const_speed_multiplier = 1.5;
   private multiplier = (1).toFixed(2);
   private MIN_SPEED_MULTIPLIER = 0.5; // Minimum speed multiplier
   private waveActive = false;
@@ -45,8 +45,10 @@ class GameScene extends Phaser.Scene {
   private upgradeButton: Phaser.GameObjects.Text | null = null;
   private removeButton: Phaser.GameObjects.Text | null = null;
   private towerClicked = false;
+  public resources = 1000; // Initialize number of resources
   private resourceText: Phaser.GameObjects.Text;
 
+  private baseHealth = 100; // Add base health
   private baseHealthText: Phaser.GameObjects.Text;
 
   private playerScore = 0;
@@ -61,7 +63,7 @@ class GameScene extends Phaser.Scene {
   private isGamePaused: boolean = false;
 
   constructor() {
-    super({ key: "GameScene" });
+    super({ key: "BrutalGameScene" });
     this.isGamePaused = false;
   }
 
@@ -348,7 +350,7 @@ class GameScene extends Phaser.Scene {
     this.waveActive = false;
     this.enemiesSpawned = 0;
     this.countdownSeconds = 60;
-    this.resources = 1000;
+    this.resources = 700;
     this.baseHealth = 100;
     this.updateResourceText();
     this.baseHealthText.setText(`HP: ${this.baseHealth}`);
@@ -722,7 +724,8 @@ class GameScene extends Phaser.Scene {
   }
 
   gameOver() {
-    this.scene.pause("GameScene");
+    this.scene.pause("BrutalGameScene");
+    this.scene.launch("BrutalGameOver");
   
     // ✅ Send score to backend
     const score = this.playerScore || 0; // replace with real score variable if needed
@@ -740,7 +743,7 @@ class GameScene extends Phaser.Scene {
       .catch(err => console.error("Score submission error:", err));
   
     // ✅ Proceed with game over screen
-    this.scene.launch("GameOverScene");
+    this.scene.launch("BrutalGameOver");
   }
   
 
@@ -780,4 +783,4 @@ class GameScene extends Phaser.Scene {
   }
 }
 
-export default GameScene;
+export default BrutalGameScene;

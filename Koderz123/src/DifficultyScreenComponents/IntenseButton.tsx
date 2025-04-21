@@ -27,7 +27,7 @@ const IntenseButton: React.FC<IntenseButtonProps> = ({ onClick }) => {
         <div className="description-container">
           <img src={MediumDescription} alt="Medium Description" className="i-description-image" />
 
-          <button className="intense-go-button" onClick={() => navigate("/gamescreen")}>
+          <button className="intense-go-button" onClick={() => navigate("/gamescreen/intense")}>
             Go
           </button>
         </div>

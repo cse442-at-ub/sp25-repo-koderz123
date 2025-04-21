@@ -5,14 +5,14 @@ const ProtectedRoute = () => {
   const loggedInUsername = localStorage.getItem("loggedInUsername");
 
   if (loggedInUsername) {
-    return <Outlet />;
+     return <Outlet />;
   } else {
-    useEffect(() => {
-      alert("Please login first");
-    }, []);
+     useEffect(() => {
+       alert("Please login first");
+     }, []);
 
-    return <Navigate to="/" />;
-  }
+     return <Navigate to="/" />;
+   }
 };
 
 export default ProtectedRoute;

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import LevelSelect from "./DifficultyScreenComponents/DifficultyScreen";
@@ -27,7 +28,7 @@ const App: React.FC = () => {
             <Route path="/" element={<LandingPage />} />{" "}
             {/* replace the html code with landing page component*/}
             <Route path="/login" element={<LoginScreen />} />
-            <Route path="/loadgame" element={<LoadGameScreen />} />
+
             
             {/* Any links that should be protected and only accessible via login should be placed   inside
             the below element*/}
@@ -35,6 +36,7 @@ const App: React.FC = () => {
               <Route path="/levelselect" element={<LevelSelect />} />{" "}
               {/* replace the html code with difficulty page component */}
               <Route path="/mainmenu" element={<MainMenu />} />{" "}
+
               {/*replace the html code with main menu component*/}
               <Route path="/gamescreen/relaxed" element={<RelaxedInitialGameComponent />} />
               <Route path="/gamescreen/intense" element={<IntenseInitialGameComponent />} />

@@ -11,4 +11,4 @@
 
 # Project Member Names
 
-Caleb Heigl, Mashfique Mohiuddin
+Caleb Heigl, Mashfique Mohiuddin, Herbert Acheampong

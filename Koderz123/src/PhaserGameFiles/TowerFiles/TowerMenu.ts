@@ -30,10 +30,10 @@ class TowerMenu {
 
   // Added mapping of tower costs
   private towerCosts: Record<string, number> = {
-    Frost: 100,
+    Frost: 125,
     Shock: 150,
-    Bomb: 200,
-    Fire: 250
+    Bomb: 175,
+    Fire: 200
   };
 
   private towerCounts: Record<string, number> = {};

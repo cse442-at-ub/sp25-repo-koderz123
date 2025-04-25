@@ -1,39 +1,49 @@
-/* Full-page gray background */
+/* src/components/DifficultyScreen.css */
 .difficulty-screen {
+  background-image: url("../assets/menu-background-image.png");
+  background-size: cover;
   width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #4d5667; /* Gray background */
   overflow: hidden;
+  position: relative;
 }
 
-/* Game container (smaller, centered, rounded) */
+.sparkle-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background:
+    radial-gradient(white 1px, transparent 1px) 0 0,
+    radial-gradient(white 1px, transparent 1px) 10px 10px;
+  background-size: 20px 20px;
+  opacity: 0.15;
+  animation: sparkle 2s infinite ease-in-out alternate;
+  z-index: 0;
+}
+
+@keyframes sparkle {
+  to { opacity: 0.3; }
+}
+
 .game-container {
-  width: 94vw;  /* Match your partner’s size */
+  width: 94vw;
   height: 95vh;
-  background-color: #3a3f4a; /* Darker contrast */
-  border-radius: 40px; /* Rounded corners */
+  background: transparent;
+  border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Space background (now contained inside game-container) */
-.space-background {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Prevents distortion */
-  border-radius: 20px; /* Matches game-container */
-  z-index: 0; /* Keeps it behind other elements */
-}
-
-/* Title image (Ensures it’s above the background) */
 .title-image {
   position: absolute;
   top: 10%;
@@ -42,68 +52,65 @@
   z-index: 2;
 }
 
-/* Back Button */
-.back-button {
-  position: absolute;
-  bottom: 5%; /* Positions it at the bottom */
-  width: 10%;
-  max-width: 125px;
-  cursor: pointer;
-  transition: transform 0.2s, filter 0.2s ease-in-out;
-}
-
-/* Hover Effect (Slight Glow & Scale) */
-.back-button:hover {
-  transform: scale(1.1);
-  filter: brightness(1.2);
-}
-
-/* Click Effect (Shrinks Slightly) */
-.back-button:active {
-  transform: scale(0.95);
-  filter: brightness(0.9);
-}
-
-.difficulty-buttons {
-  display: flex;          /* Aligns buttons in a row */
-  justify-content: center; /* Centers them horizontally */
-  align-items: center;     /* Centers them vertically */
-  gap: 200px;              /* Space between buttons */
-  position: absolute;     /* Change from fixed */
-  top: 60%;               /* Center vertically */
-  left: 50%;              /* Center horizontally */
-  transform: translate(-50%, -50%); /* Perfect centering */
-  width: 100%;            /* Ensures full width for centering */
-}
-
-
 .instruction-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  position: absolute;
+  top: 30%;
+  text-align: center;
+  z-index: 2;
 }
 
 .instruction-text {
   font-size: 25px;
   font-weight: bold;
-  color: gray;
-  text-align: center;
-  margin-top: -370px; 
-  margin-bottom: 10px; /* Adjust to prevent pushing */
-  opacity: 0.9;
-  font-family: "Arial", sans-serif;
+  color: white;
+  margin: 0;
 }
 
 .choose-text {
   font-size: 22px;
   font-weight: bold;
-  color: white;
-  text-align: center;
-  margin-top: 10px; /* Adjust spacing */
-  opacity: 0.9;
-  font-family: "Arial", sans-serif;
+  color: #0ff;
+  animation: blink 1.5s infinite ease-in-out;
 }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.difficulty-buttons button {
+  transition: transform 0.3s, box-shadow 0.3s ease-in-out;
+}
+
+.difficulty-buttons button:hover {
+  transform: scale(1.1);
+  box-shadow:
+    0 0 16px rgba(0, 200, 255, 0.6),
+    0 0 24px rgba(0, 0, 0, 0.7);
+}
+
+.back-button {
+  position: absolute;
+  bottom: 5%;
+  width: 10%;
+  max-width: 125px;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.2s, filter 0.2s ease;
+}
+
+.back-button:hover { transform: scale(1.1); filter: brightness(1.2); }
+.back-button:active { transform: scale(0.95); filter: brightness(0.9); }
 
 
 

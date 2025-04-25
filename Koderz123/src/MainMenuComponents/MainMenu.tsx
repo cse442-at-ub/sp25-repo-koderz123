@@ -117,6 +117,8 @@ const MainMenu: React.FC = () => {
 
   return (
     <div id="MainMenupage">
+    <div className="sparkle-overlay"></div>
+      
       <h1>GALACTIC TOWER DEFENSE</h1>
       <div
         className="menu-item"
@@ -124,16 +126,8 @@ const MainMenu: React.FC = () => {
         onMouseEnter={hovering}
         onMouseLeave={notHovering}
       >
-        NEW GAME
+        <span className="menu-label">NEW GAME</span>
       </div>
-      <div
-        className="menu-item"
-        onClick={clickLoadGame}
-        onMouseEnter={hovering}
-        onMouseLeave={notHovering}
-      >
-        LOAD GAME
-</div>
 
       <div
         className="menu-item"
@@ -141,23 +135,27 @@ const MainMenu: React.FC = () => {
         onMouseEnter={hovering}
         onMouseLeave={notHovering}
       >
-        OPTIONS
+        <span className="menu-label">OPTIONS</span>
       </div>
+
+
       <div
         className="menu-item"
         onClick={clickTutorial}
         onMouseEnter={hovering}
         onMouseLeave={notHovering}
       >
-        TUTORIAL
+        <span className="menu-label">TUTORIAL</span>
       </div>
+
+
       <div
-        id="logout-button"
+        className="menu-item"
         onClick={logout}
-        onMouseEnter={hoverMouse}
-        onMouseLeave={nothoverMouse}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
       >
-        Logout
+         <span className="menu-label">LOGOUT</span>
       </div>
       <div id="username-text">
         {loggedInUsername ? (
@@ -166,13 +164,7 @@ const MainMenu: React.FC = () => {
           <p>User not logged in.</p>
         )}
       </div>
-      <div id="leaderboard-button" 
-        onClick={clickLeaderboard}
-        onMouseEnter={hovering}
-        onMouseLeave={notHovering}>
-        <FaTrophy size={30} color="black" />
-        <span className="tooltip">Leaderboard</span>
-      </div>
+      
     </div>
   );
 };

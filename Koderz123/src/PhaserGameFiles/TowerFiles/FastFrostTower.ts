@@ -1,6 +1,8 @@
 // FastFrostTower.ts
 import Tower from "./Tower";
-import GameScene from "../GameScene";
+import RelaxedGameScene from "../RelaxedGameScene"; // Adjust the path if needed
+import IntenseGameScene from "../IntenseGameScene";
+import BrutalGameScene from "../BrutalGameScene";
 
 class FastFrostTower extends Tower {
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -22,7 +24,7 @@ class FastFrostTower extends Tower {
     super.update(time, delta);
     if (!this.isPlaced) return;
   
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const enemies = gameScene.enemies.getChildren() as any[];
   
     enemies.forEach((enemy) => {

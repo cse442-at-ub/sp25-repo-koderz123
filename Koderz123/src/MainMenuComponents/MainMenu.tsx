@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MainMenu.css";
-import music from "../assets/menu_music.mp3"; 
+import music from "../assets/menu_music.mp3";
 import { FaTrophy } from "react-icons/fa";
 
-const API_BASE_URL = "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
+const API_BASE_URL =
+  "https://se-prod.cse.buffalo.edu/CSE442/2025-Spring/cse-442p/backend/";
 
 const MainMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -33,7 +34,11 @@ const MainMenu: React.FC = () => {
         };
     }, []);
     */
-  
+
+  const clickLoadGame = () => {
+    navigate("/loadgame");
+  };
+
   const clickNewGame = () => {
     navigate("/levelselect");
   };
@@ -90,7 +95,9 @@ const MainMenu: React.FC = () => {
         console.log("✅ Logout successful:", data);
       } else {
         console.error("⚠️ Logout failed:", data.message);
-        alert("Failed to log out on the server. You have been logged out locally.");
+        alert(
+          "Failed to log out on the server. You have been logged out locally."
+        );
       }
     } catch (error) {
       console.error("⚠️ Network error during logout:", error);
@@ -99,10 +106,10 @@ const MainMenu: React.FC = () => {
       // Clear local storage
       localStorage.removeItem("user_id");
       localStorage.removeItem("loggedInUsername");
-      
+
       // Show logout message first
       alert("You have been logged out!");
-      
+
       // Then navigate after the alert is closed
       setTimeout(() => {
         navigate("/");
@@ -112,6 +119,8 @@ const MainMenu: React.FC = () => {
 
   return (
     <div id="MainMenupage">
+      <div className="sparkle-overlay"></div>
+
       <h1>GALACTIC TOWER DEFENSE</h1>
       <div
         className="menu-item"
@@ -119,31 +128,34 @@ const MainMenu: React.FC = () => {
         onMouseEnter={hovering}
         onMouseLeave={notHovering}
       >
-        NEW GAME
+        <span className="menu-label">NEW GAME</span>
       </div>
+
       <div
         className="menu-item"
         onClick={clickOptions}
         onMouseEnter={hovering}
         onMouseLeave={notHovering}
       >
-        OPTIONS
+        <span className="menu-label">OPTIONS</span>
       </div>
+
       <div
         className="menu-item"
         onClick={clickTutorial}
         onMouseEnter={hovering}
         onMouseLeave={notHovering}
       >
-        TUTORIAL
+        <span className="menu-label">TUTORIAL</span>
       </div>
+
       <div
-        id="logout-button"
+        className="menu-item"
         onClick={logout}
-        onMouseEnter={hoverMouse}
-        onMouseLeave={nothoverMouse}
+        onMouseEnter={hovering}
+        onMouseLeave={notHovering}
       >
-        Logout
+        <span className="menu-label">LOGOUT</span>
       </div>
       <div id="username-text">
         {loggedInUsername ? (
@@ -151,13 +163,6 @@ const MainMenu: React.FC = () => {
         ) : (
           <p>User not logged in.</p>
         )}
-      </div>
-      <div id="leaderboard-button" 
-        onClick={clickLeaderboard}
-        onMouseEnter={hovering}
-        onMouseLeave={notHovering}>
-        <FaTrophy size={30} color="black" />
-        <span className="tooltip">Leaderboard</span>
       </div>
     </div>
   );

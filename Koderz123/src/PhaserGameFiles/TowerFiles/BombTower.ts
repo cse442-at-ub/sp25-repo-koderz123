@@ -1,5 +1,7 @@
 import Tower from "./Tower";
-import GameScene from "../GameScene"; // Adjust the path if needed
+import RelaxedGameScene from "../RelaxedGameScene"; // Adjust the path if needed
+import IntenseGameScene from "../IntenseGameScene";
+import BrutalGameScene from "../BrutalGameScene";
 
 class BombTower extends Tower {
   private blinkDuration: number = 1000; // Time for blinking effect (1 second)
@@ -12,6 +14,7 @@ class BombTower extends Tower {
     this.cost = 200;
     this.upgradeCost = 250;
     this.fireRate = 1500; // Slower fire rate due to explosions
+    this.damage = 40;
 
     this.setScale(0.35);
   }
@@ -27,13 +30,10 @@ class BombTower extends Tower {
           // Apply damage after the blinking effect
           this.scene.time.delayedCall(this.blinkDuration, () => {
             sprite.clearTint(); // Remove the red tint
-            sprite.setData("health", sprite.getData("health") - 40); // Deal damage
-            console.log(`Bomb exploded! Enemy took 40 damage.`);
+            sprite.setData("health", sprite.getData("health") - this.damage); // Deal damage
+            console.log(`Bomb exploded! Enemy took ${this.damage} damage.`);
             console.log(`Enemy health after explosion: ${sprite.getData("health")}`);
   
-            if (sprite.getData("health") <= 0) {
-              sprite.destroy(); // Destroy enemy if health is 0 or below
-            }
           });
         }
       }
@@ -42,14 +42,15 @@ class BombTower extends Tower {
 
   // Function to make the enemy blink red like a time bomb
   private blinkRed(enemy: Phaser.GameObjects.Sprite) {
+    let scene = this.scene;
     let isRed = false;
-    const blinkStartTime = this.scene.time.now;
+    const blinkStartTime = scene.time.now;
     
     // Use a timer to toggle the tint on and off
-    this.scene.time.addEvent({
+    scene.time.addEvent({
       delay: this.blinkInterval,
       callback: () => {
-        if (this.scene.time.now - blinkStartTime < this.blinkDuration) {
+        if (scene.time.now - blinkStartTime < this.blinkDuration) {
           if (isRed) {
             enemy.clearTint(); // Reset to original color
           } else {
@@ -77,7 +78,7 @@ class BombTower extends Tower {
     super.update(time, delta);
     if (!this.isPlaced) return;
 
-    const gameScene = this.scene as GameScene;
+    const gameScene = this.scene as RelaxedGameScene | IntenseGameScene | BrutalGameScene;
     const enemies = gameScene.enemies.getChildren() as any[];
 
     if (time > this.nextFire) {
@@ -88,11 +89,21 @@ class BombTower extends Tower {
       if (targetEnemies.length > 0) {
         this.createExplosionEffect(this.x, this.y);
         this.dealDamage(targetEnemies);
+
+        targetEnemies.forEach((enemy) => {
+          if (enemy.getData("health") <= 0) {
+            gameScene.resources += enemy.getData("value");
+            gameScene.updateResourceText();
+            enemy.destroy();
+          }
+        });
       }
 
       this.nextFire = time + this.fireRate;
     }
   }
+
+  
 }
 
 export default BombTower;

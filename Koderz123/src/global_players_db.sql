@@ -31,7 +31,8 @@ CREATE TABLE `global_players_db` (
   `playerID` int(11) NOT NULL,
   `playerName` varchar(50) NOT NULL,
   `playerPassword` varchar(255) NOT NULL,
-  `playerAccountLvl` int(11) NOT NULL
+  `playerAccountLvl` int(11) NOT NULL,
+  `topScore` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -57,6 +58,34 @@ ALTER TABLE `global_players_db`
   ADD UNIQUE KEY `playerName` (`playerName`),
   ADD UNIQUE KEY `playerID` (`playerID`,`playerName`);
 COMMIT;
+
+
+-- --------------------------------------------------------
+
+-- Table structure for table `highscores`
+--
+
+CREATE TABLE `highscores` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `playerID` INT NOT NULL,
+  `score` INT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`playerID`) REFERENCES `global_players_db`(`playerID`) ON DELETE CASCADE
+);
+ALTER TABLE highscores ADD COLUMN mode VARCHAR(20) NOT NULL DEFAULT 'relaxed';
+
+CREATE TABLE saved_games (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  playerID INT NOT NULL,
+  money INT NOT NULL,
+  wave INT NOT NULL,
+  health INT NOT NULL,
+  towers TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (playerID) REFERENCES global_players_db(playerID) ON DELETE CASCADE
+);
+
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

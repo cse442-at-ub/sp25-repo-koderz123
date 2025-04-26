@@ -1,59 +1,77 @@
-.button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
+/* RelaxedButton.css */
+
+/* layout wrapper */
+.button-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px;
+  position: relative;                /* ← NEW */
 }
 
-.button-relaxed {
-  padding: 15px 25px;
-  font-size: 24px;
-  background-color: gray;  
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+/* ─── default style: Main-Menu “card” ─── */
+.button-relaxed{
+  padding:15px 25px;
+  font-size:24px;
+  background:linear-gradient(145deg,#1f1f2e,#2c2c40);
+  background-size:200%;
+  background-position:left;
+  color:#0ff;
+  font-family:'Orbitron','Segoe UI',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-weight:700;
+  border:1px solid rgba(0,255,255,0.15);
+  border-radius:12px;
+  box-shadow:0 0 12px rgba(0,255,255,0.1),
+             0 4px 16px rgba(0,0,0,0.5);
+  cursor:pointer;
+  transition:background .4s, transform .4s, box-shadow .4s;
 }
 
-.button-relaxed:hover {
-  transform: scale(1.1); /* Slightly increases size */
-  background-color: darkgray; /* Optional: changes shade on hover */
+.button-relaxed:hover{
+  transform:scale(1.05);
+  background-position:right;
+  background:linear-gradient(145deg,#292940,#3a3a5e);
+  box-shadow:0 0 16px rgba(0,255,255,0.4),
+             0 0 24px rgba(0,0,0,0.7);
 }
 
-
-.button-relaxed.active {
-  background-color: #228B22;  
-  color: white;
-  transform: scale(1.1);
+.button-relaxed.active{
+  background:#228B22;
+  color:#fff;
+  transform:scale(1.1);
 }
 
-.r-description-image {
-  margin-top: 15px;
-  width: 250px;  
-  height: auto;
-  border-radius: 10px;
+.relaxed-go-button{
+  margin-top:10px;
+  padding:10px 20px;
+  font-size:24px;
+  background:#228B22;
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  transition:background .3s;
+}
+.relaxed-go-button:hover{ background:darkgreen; }
+
+/* pop-up panel now anchors below the button */
+.description-container{
+  position: absolute;                /* ← NEW */
+  top: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px;
+  z-index:1;                         /* stays beneath instruction text */
 }
 
-.relaxed-go-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  font-size: 24px;
-  background-color: #228B22;  
-  color: white;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.r-description-image{
+  margin-top:15px;
+  width:250px;
+  height:auto;
+  border-radius:10px;
 }
-
-.relaxed-go-button:hover {
-  background-color: darkgreen;
-}
-
-.description-container {
-  display: flex;
-  flex-direction: column;  
-  align-items: center;     
-  gap: 15px;              
-}
-

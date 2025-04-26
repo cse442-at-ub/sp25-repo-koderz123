@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import "./RelaxedButton.css";
 import EasyDescription from "../assets/EasyDescription.png"; 
 
-const RelaxedButton: React.FC = () => {  
+interface RelaxedButtonProps {
+  onClick: () => void;
+}
+
+const RelaxedButton: React.FC<RelaxedButtonProps> = ({ onClick }) => { 
   const [isClicked, setIsClicked] = useState(false);
   const navigate = useNavigate(); 
 
@@ -12,7 +16,10 @@ const RelaxedButton: React.FC = () => {
       {/* Reflect Button */}
       <button
         className={`button-relaxed ${isClicked ? "active" : ""}`}
-        onClick={() => setIsClicked(!isClicked)}
+        onClick={() => {
+          setIsClicked(!isClicked);
+          onClick(); // notify parent that this was clicked
+        }}
       >
         Relaxed
       </button>
@@ -23,7 +30,7 @@ const RelaxedButton: React.FC = () => {
           <img src={EasyDescription} alt="Easy Description" className="r-description-image" />
 
           {/* Green 'Go' Button navigates to Game Menu */}
-          <button className="relaxed-go-button" onClick={() => navigate("/gamescreen")}>
+          <button className="relaxed-go-button" onClick={() => navigate("/gamescreen/relaxed")}>
             Go
           </button>
         </div>

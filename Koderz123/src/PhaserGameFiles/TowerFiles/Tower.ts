@@ -24,10 +24,10 @@ class Tower extends Phaser.GameObjects.Image {
 
   constructor(scene: Phaser.Scene, x: number, y: number, texture: string = "default-tower", type: string = "default") {
     super(scene, x, y, texture);
-    this.scene = scene;
+    // this.scene = scene;
+    this.isPlaced = false;
     this.range = 100;
     this.cost = 150;
-    this.isPlaced = false;
     this.level = 1;
     this.upgradeCost = 50;
     this.type = type;
@@ -81,6 +81,7 @@ class Tower extends Phaser.GameObjects.Image {
 
     console.log(`Tower placed at (${x}, ${y})`);
 
+    this.showRange(); // Ensure range is shown when placed
   }
 
   public setValidPlacement(isValid: boolean) {
@@ -93,6 +94,15 @@ class Tower extends Phaser.GameObjects.Image {
       this.rangeCircle.fillStyle(0x00ffff, 0.2); // semi-opaque cyan
       this.rangeCircle.fillCircle(this.x, this.y, this.range);
       this.rangeCircle.setDepth(-1); // behind tower
+
+      // Add pulsing effect
+      this.scene.tweens.add({
+        targets: this.rangeCircle,
+        alpha: { from: 0.2, to: 0.4 },
+        duration: 500,
+        yoyo: true,
+        repeat: -1
+      });
     }
   }
 
@@ -105,7 +115,7 @@ class Tower extends Phaser.GameObjects.Image {
 
   upgrade() {
     this.level++;
-    this.range += 20; // Example upgrade: increase range
+    this.range += 100; // Increase range by 100 on upgrade
     this.upgradeCost += 50; // Example upgrade: increase upgrade cost
     this.fireRate *= 0.9; // Increase fire rate by 10% on upgrade
     this.projectileSpeed *= 1.1; // Increase projectile speed by 10% on upgrade
@@ -276,21 +286,31 @@ class Tower extends Phaser.GameObjects.Image {
     super.destroy();
   }
 
-  displayCost(x: number, y: number) {
+  public displayCost(x: number, y: number) {
+    if (this.isPlaced) return;   // ← never draw on placed towers
+  
     if (this.costText) {
-      // Update existing costText
-      this.costText.setPosition(x, y + this.displayHeight / 2);
-    } else {
-      // Create new costText
-      console.log("Creating new costText");
-      this.costText = this.scene.add.text(x, y + this.displayHeight / 2, `Cost: ${this.cost}`, {
+      this.costText.destroy();
+    }
+  
+    this.costText = this.scene.add
+      .text(x, y + this.displayHeight / 2, `Cost: ${this.cost}`, {
         fontSize: "16px",
         color: "#ffffff",
         backgroundColor: "#333",
         padding: { left: 5, right: 5, top: 2, bottom: 2 },
-      }).setOrigin(0.5);
-      console.log(this.costText);
+      })
+      .setOrigin(0.5);
+  }
+
+  public destroy(fromScene?: boolean) {
+    // first destroy any cost label
+    if (this.costText) {
+      this.costText.destroy();
+      this.costText = undefined;
     }
+    // then run Phaser's own destroy
+    super.destroy(fromScene);
   }
 }
 

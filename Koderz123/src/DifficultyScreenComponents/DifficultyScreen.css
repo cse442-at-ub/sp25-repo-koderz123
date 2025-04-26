@@ -11,6 +11,7 @@
   position: relative;
 }
 
+/* sparkle */
 .sparkle-overlay {
   position: fixed;
   top: 0;
@@ -27,34 +28,35 @@
   z-index: 0;
 }
 
-@keyframes sparkle {
-  to { opacity: 0.3; }
-}
+@keyframes sparkle { to { opacity: 0.3; } }
 
-.game-container {
+/* ── difficulty-specific wrapper (no card) ── */
+.difficulty-container {
   width: 94vw;
   height: 95vh;
-  background: transparent;
-  border-radius: 40px;
+  position: relative;      /* anchor for absolute children */
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  background: transparent;
 }
 
-.title-image {
+/* title */
+.difficulty-container .title-image {
   position: absolute;
   top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
   width: 60%;
   max-width: 600px;
   z-index: 2;
 }
 
+/* instructions */
 .instruction-container {
   position: absolute;
-  top: 30%;
+  top: 20%;                /* moved up */
   text-align: center;
   z-index: 2;
 }
@@ -62,7 +64,7 @@
 .instruction-text {
   font-size: 25px;
   font-weight: bold;
-  color: white;
+  color: #fff;
   margin: 0;
 }
 
@@ -78,11 +80,12 @@
   50%      { opacity: 0.4; }
 }
 
+/* buttons row */
 .difficulty-buttons {
   display: flex;
   gap: 200px;
   position: absolute;
-  top: 50%;
+  top: 40%;                /* moved up */
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -99,6 +102,7 @@
     0 0 24px rgba(0, 0, 0, 0.7);
 }
 
+/* back button */
 .back-button {
   position: absolute;
   bottom: 5%;
@@ -109,12 +113,8 @@
   transition: transform 0.2s, filter 0.2s ease;
 }
 
-.back-button:hover { transform: scale(1.1); filter: brightness(1.2); }
+.back-button:hover  { transform: scale(1.1);  filter: brightness(1.2); }
 .back-button:active { transform: scale(0.95); filter: brightness(0.9); }
-
-
-
-
 
 
 

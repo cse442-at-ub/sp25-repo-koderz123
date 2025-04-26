@@ -1,58 +1,79 @@
-.intense-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-  }
-  
-  .button-intense {
-    padding: 15px 25px;
-    font-size: 24px;
-    background-color: gray;  /* Default color */
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
-  }
+/* IntenseButton.css */
 
-  .button-intense:hover {
-    transform: scale(1.1); /* Slightly increases size */
-    background-color: darkgray; /* Optional: changes shade on hover */
-  }
-  
-  .button-intense.active {
-    background-color: #DAA520;  /* Turns FFD700 OTHER yellow when clicked */
-    color: rgb(255, 255, 255);
-    transform: scale(1.1);
-  }
-  
-  .intense-go-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 24px;
-    background-color: #DAA520;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    color: white;
-  }
-  
-  .intense-go-button:hover {
-    background-color: #E5C100;
-  }
-  
-  .description-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .i-description-image {
-    margin-top: 15px;
-    width: 250px;  
-    height: auto;
-    border-radius: 10px;
-  }
-  
+/* layout wrapper */
+.intense-container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px;
+  position: relative;
+}
+
+/* ─── default style: Main-Menu card ─── */
+.button-intense{
+  padding:15px 25px;
+  font-size:24px;
+  background:linear-gradient(145deg,#1f1f2e,#2c2c40);
+  background-size:200%;
+  background-position:left;
+  color:#0ff;                              /* cyan text */
+  font-family:'Orbitron','Segoe UI',sans-serif;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  font-weight:700;
+
+  border:1px solid rgba(0,255,255,0.15);
+  border-radius:12px;
+  box-shadow:0 0 12px rgba(0,255,255,0.1),
+             0 4px 16px rgba(0,0,0,0.5);
+
+  cursor:pointer;
+  transition:background .4s ease,
+              transform  .4s ease,
+              box-shadow .4s ease;
+}
+
+/* hover: shimmer + brighter glow */
+.button-intense:hover{
+  transform:scale(1.05);
+  background-position:right;
+  background:linear-gradient(145deg,#292940,#3a3a5e);
+  box-shadow:0 0 16px rgba(0,255,255,0.4),
+             0 0 24px rgba(0,0,0,0.7);
+}
+
+/* ─── active / clicked: keep gold highlight ─── */
+.button-intense.active{
+  background:#DAA520;      /* gold */
+  color:#fff;
+  transform:scale(1.1);
+}
+
+/* “Go” button in the same gold */
+.intense-go-button{
+  margin-top:10px;
+  padding:10px 20px;
+  font-size:24px;
+  background:#DAA520;
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  transition:background .3s;
+}
+.intense-go-button:hover{ background:#E5C100; }
+
+/* helpers */
+.description-container{
+  position: absolute;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.i-description-image{
+  margin-top:15px;
+  width:250px;
+  height:auto;
+  border-radius:10px;
+}
